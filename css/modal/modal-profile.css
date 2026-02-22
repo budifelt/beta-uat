@@ -1,16 +1,9 @@
 /* ===================================
-   PROFILE MODAL STYLES - Flat Design
+   PROFILE MODAL CONTENT STYLES
+   Only styles for the modal body/content
    =================================== */
 
-/* Profile Modal Container */
-#modal-profile.profile-modal .modal-content {
-  max-width: 600px;
-  width: 90vw;
-  border-radius: 0;
-  overflow: hidden;
-}
-
-/* Profile Header */
+/* Profile Header - inside modal body */
 #modal-profile .profile-header {
   padding: var(--space-8) var(--space-6);
   background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-primary) 100%);
@@ -31,7 +24,6 @@
   font-size: 48px;
   color: #F18C8E;
   font-weight: var(--font-weight-bold);
-  box-shadow: 0 4px 20px rgba(241, 140, 142, 0.1);
   position: relative;
   overflow: hidden;
 }

@@ -27,12 +27,10 @@ window.loadProfileData = () => {
   }
   
   // Update email
-  const emailElements = document.querySelectorAll('.info-value');
-  emailElements.forEach(element => {
-    if (element.textContent.includes('john.doe@example.com')) {
-      element.textContent = currentUser.email || 'No email set';
-    }
-  });
+  const emailElement = document.getElementById('profile-email');
+  if (emailElement) {
+    emailElement.textContent = currentUser.email || 'No email set';
+  }
   
   // Update avatar
   const avatarElements = document.querySelectorAll('.profile-avatar-img, .ep-avatar');

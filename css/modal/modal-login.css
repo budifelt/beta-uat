@@ -1,26 +1,7 @@
 /* ===================================
-   LOGIN MODAL STYLES - Flat Design
+   LOGIN MODAL CONTENT STYLES
+   Only styles for the modal body/content
    =================================== */
-
-/* Auth Modal Container */
-#modal-login.auth-modal .modal-content {
-  max-width: 420px;
-  width: 90vw;
-  border-radius: 0;
-  overflow: hidden;
-}
-
-/* Login Modal Header */
-#modal-login.auth-modal .modal-header {
-  padding: var(--space-8) var(--space-6) var(--space-6);
-  text-align: center;
-}
-
-#modal-login.auth-modal .modal-title {
-  font-size: var(--font-size-2xl);
-  font-weight: var(--font-weight-bold);
-  margin: 0;
-}
 
 /* Login Form */
 #modal-login .login-form {

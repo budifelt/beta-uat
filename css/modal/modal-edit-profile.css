@@ -1,19 +1,9 @@
 /* ===================================
-   EDIT PROFILE MODAL STYLES - Flat Design
+   EDIT PROFILE MODAL CONTENT STYLES
+   Only styles for the modal body/content
    =================================== */
 
-/* Edit Profile Modal Container */
-#modal-edit-profile.modal .modal-content {
-  width: 90vw;
-  max-width: 800px;
-  max-height: 90vh;
-  border-radius: 0;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-}
-
-/* Modal Body */
+/* Modal Body - inside modal */
 #modal-edit-profile .modal-body {
   flex: 1;
   overflow-y: auto;
@@ -44,12 +34,8 @@
   cursor: pointer;
   position: relative;
   overflow: hidden;
-  transition: all var(--transition-fast);
 }
 
-.avatar-preview:hover {
-  transform: scale(1.05);
-}
 
 .avatar-overlay {
   position: absolute;
@@ -62,7 +48,6 @@
   align-items: center;
   justify-content: center;
   opacity: 0;
-  transition: opacity var(--transition-fast);
 }
 
 .avatar-preview:hover .avatar-overlay {
@@ -127,7 +112,6 @@
   font-size: var(--font-size-sm);
   background: #FFFFFF;
   color: #495057;
-  transition: all var(--transition-fast);
 }
 
 .form-input:focus,
@@ -136,7 +120,6 @@
   outline: none;
   border-color: var(--accent-primary);
   background: #FFFFFF;
-  box-shadow: 0 0 0 3px rgba(241, 140, 142, 0.1);
 }
 
 .form-textarea {
@@ -186,7 +169,6 @@
   background: #E9ECEF;
   border-radius: 12px;
   position: relative;
-  transition: background var(--transition-fast);
 }
 
 .toggle-switch::before {
@@ -198,16 +180,12 @@
   height: 20px;
   background: #FFFFFF;
   border-radius: 10px;
-  transition: transform var(--transition-fast);
 }
 
 .toggle-input:checked + .toggle-switch {
   background: var(--accent-primary);
 }
 
-.toggle-input:checked + .toggle-switch::before {
-  transform: translateX(20px);
-}
 
 /* Modal Footer */
 #modal-edit-profile .modal-footer {
@@ -245,7 +223,6 @@
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-medium);
   cursor: pointer;
-  transition: all var(--transition-fast);
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
@@ -258,8 +235,6 @@
 
 .btn-primary:hover {
   background: #F18C8E;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(241, 140, 142, 0.3);
 }
 
 .btn-secondary {
@@ -269,7 +244,6 @@
 
 .btn-secondary:hover {
   background: #DEE2E6;
-  transform: translateY(-1px);
 }
 
 .btn-ghost {

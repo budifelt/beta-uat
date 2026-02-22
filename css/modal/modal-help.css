@@ -1,18 +1,9 @@
 /* ===================================
-   HELP MODAL STYLES - Flat Design
+   HELP MODAL CONTENT STYLES
+   Only styles for the modal body/content
    =================================== */
 
-/* Help Modal Container */
-#modal-help.help-modal .modal-content {
-  width: 90vw;
-  max-width: 800px;
-  height: 80vh;
-  max-height: 600px;
-  border-radius: 0;
-  overflow: hidden;
-}
-
-/* Help Modal Body */
+/* Help Modal Body - inside modal */
 #modal-help.help-modal .modal-body {
   padding: 0;
   display: flex;

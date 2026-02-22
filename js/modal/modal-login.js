@@ -93,6 +93,7 @@ window.handleLogin = async (event) => {
           username: 'admin',
           email: 'admin@example.com',
           name: 'Administrator',
+          role: 'Administrator',
           level: 2
         };
       } else if (email === 'user' && password === 'user') {
@@ -101,6 +102,7 @@ window.handleLogin = async (event) => {
           username: 'user',
           email: 'user@example.com',
           name: 'Demo User',
+          role: 'User',
           level: 1
         };
       } else if (email === 'demo' && password === 'demo') {
@@ -109,6 +111,7 @@ window.handleLogin = async (event) => {
           username: 'demo',
           email: 'demo@example.com',
           name: 'Demo Account',
+          role: 'Demo',
           level: 1
         };
       }
@@ -131,6 +134,7 @@ window.handleLogin = async (event) => {
       username: user.username,
       email: user.email,
       name: user.name || user.username,
+      role: user.role || 'User',
       level: user.level || 1,
       loginTime: new Date().toISOString()
     };

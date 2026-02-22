@@ -34,10 +34,20 @@ window.showEditProfileModal = () => {
 
       const form = document.getElementById('edit-profile-form');
       if (form && currentUser) {
+        console.log('Loading user data:', currentUser);
+        
         // Basic info
         if (form.fullname) form.fullname.value = currentUser.name || '';
         if (form.username) form.username.value = currentUser.username || '';
         if (form.email) form.email.value = currentUser.email || '';
+        
+        // Also try by ID for reliability
+        const emailField = document.getElementById('edit-email');
+        if (emailField) {
+          emailField.value = currentUser.email || '';
+          console.log('Email field set to:', emailField.value);
+        }
+        
         if (form.bio) {
           form.bio.value = currentUser.bio || '';
           // Update bio character count
@@ -45,42 +55,30 @@ window.showEditProfileModal = () => {
           if (bioCount) bioCount.textContent = form.bio.value.length;
         }
         
-        // Additional info
-        const phoneForm = document.getElementById('edit-profile-form-2');
-        if (phoneForm) {
-          if (phoneForm.phone) phoneForm.phone.value = currentUser.phone || '';
-          if (phoneForm.birthday) phoneForm.birthday.value = currentUser.birthday || '';
-          if (phoneForm.location) phoneForm.location.value = currentUser.location || '';
-          if (phoneForm.website) phoneForm.website.value = currentUser.website || '';
-          if (phoneForm.gender) phoneForm.gender.value = currentUser.gender || '';
-          if (phoneForm.languages) phoneForm.languages.value = currentUser.languages || '';
-        }
+        // Additional info - all in the same form
+        if (form.phone) form.phone.value = currentUser.phone || '';
+        if (form.birthday) form.birthday.value = currentUser.birthday || '';
+        if (form.location) form.location.value = currentUser.location || '';
+        if (form.website) form.website.value = currentUser.website || '';
+        if (form.gender) form.gender.value = currentUser.gender || '';
+        if (form.languages) form.languages.value = currentUser.languages || '';
         
-        // Professional info
-        const profForm = document.getElementById('edit-profile-form-3');
-        if (profForm) {
-          if (profForm.company) profForm.company.value = currentUser.company || '';
-          if (profForm.jobtitle) profForm.jobtitle.value = currentUser.jobtitle || '';
-          if (profForm.experience) profForm.experience.value = currentUser.experience || '';
-          if (profForm.skills) profForm.skills.value = currentUser.skills || '';
-        }
+        // Professional info - all in the same form
+        if (form.company) form.company.value = currentUser.company || '';
+        if (form.jobtitle) form.jobtitle.value = currentUser.jobtitle || '';
+        if (form.experience) form.experience.value = currentUser.experience || '';
+        if (form.skills) form.skills.value = currentUser.skills || '';
         
-        // Social links
-        const socialForm = document.getElementById('edit-profile-form-4');
-        if (socialForm) {
-          if (socialForm.linkedin) socialForm.linkedin.value = currentUser.linkedin || '';
-          if (socialForm.github) socialForm.github.value = currentUser.github || '';
-          if (socialForm.twitter) socialForm.twitter.value = currentUser.twitter || '';
-          if (socialForm.instagram) socialForm.instagram.value = currentUser.instagram || '';
-        }
+        // Social links - all in the same form
+        if (form.linkedin) form.linkedin.value = currentUser.linkedin || '';
+        if (form.github) form.github.value = currentUser.github || '';
+        if (form.twitter) form.twitter.value = currentUser.twitter || '';
+        if (form.instagram) form.instagram.value = currentUser.instagram || '';
         
-        // Privacy settings
-        const privacyForm = document.getElementById('edit-profile-form-5');
-        if (privacyForm) {
-          if (privacyForm['profile-public']) privacyForm['profile-public'].checked = currentUser.profilePublic || false;
-          if (privacyForm['show-email']) privacyForm['show-email'].checked = currentUser.showEmail || false;
-          if (privacyForm['show-phone']) privacyForm['show-phone'].checked = currentUser.showPhone || false;
-        }
+        // Privacy settings - all in the same form
+        if (form['profile-public']) form['profile-public'].checked = currentUser.profilePublic || false;
+        if (form['show-email']) form['show-email'].checked = currentUser.showEmail || false;
+        if (form['show-phone']) form['show-phone'].checked = currentUser.showPhone || false;
       }
     }, 100);
     

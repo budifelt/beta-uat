@@ -1,16 +1,9 @@
 /* ===================================
-   LOGOUT MODAL STYLES - Flat Design
+   LOGOUT MODAL CONTENT STYLES
+   Only styles for the modal body/content
    =================================== */
 
-/* Logout Modal Container */
-#modal-logout.modal .modal-content {
-  width: 90vw;
-  max-width: 500px;
-  border-radius: 0;
-  overflow: hidden;
-}
-
-/* Modal Body */
+/* Modal Body - inside modal */
 #modal-logout .modal-body {
   padding: var(--space-6);
 }

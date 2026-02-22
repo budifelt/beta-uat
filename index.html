@@ -57,12 +57,6 @@
         } else {
           if (loginBtn) {
             loginBtn.style.display = 'flex';
-            // Add pulse animation to login button
-            loginBtn.classList.add('pulse');
-            // Remove pulse after 5 seconds
-            setTimeout(() => {
-              loginBtn.classList.remove('pulse');
-            }, 5000);
           }
           if (profileDropdown) profileDropdown.style.display = 'none';
         }
@@ -134,6 +128,7 @@
                 </div>
                 <div class="profile-details">
                   <div class="profile-name-display" id="profile-name-display">User</div>
+                  <div class="profile-email-display" id="profile-email-display" style="font-size: 12px; opacity: 0.8;">user@example.com</div>
                   <div class="profile-role-display" id="profile-role-display">User</div>
                 </div>
               </div>
@@ -334,6 +329,7 @@
   <div id="settings-container"></div>
 
 <script src="js/modal-manager.js" defer></script>
+<script src="js/nav.js" defer></script>
 <script src="js/pages/index.js" defer></script>
 <script src="js/version-config.js" defer></script>
 <script src="js/toast-manager.js" defer></script>

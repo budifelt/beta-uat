@@ -1,18 +1,9 @@
 /* ===================================
-   NOTIFICATIONS MODAL STYLES - Flat Design
+   NOTIFICATIONS MODAL CONTENT STYLES
+   Only styles for the modal body/content
    =================================== */
 
-/* Notifications Modal Container */
-#modal-notifications.notifications-modal .modal-content {
-  width: 90vw;
-  max-width: 500px;
-  height: 70vh;
-  max-height: 600px;
-  border-radius: 0;
-  overflow: hidden;
-}
-
-/* Notifications Header */
+/* Notifications Header - inside modal */
 #modal-notifications.notifications-modal .modal-header {
   padding: var(--space-5) var(--space-6);
   display: flex;

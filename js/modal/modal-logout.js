@@ -153,15 +153,15 @@ document.addEventListener('DOMContentLoaded', () => {
   // Add hover effects to logout button
   const logoutBtn = document.getElementById('logout-btn');
   if (logoutBtn) {
-    logoutBtn.addEventListener('mouseenter', () => {
-      if (!logoutBtn.disabled) {
-        logoutBtn.style.transform = 'translateY(-2px) scale(1.02)';
+    logoutBtn.addEventListener('mousedown', () => {
+      if (logoutBtn) {
+        logoutBtn.style.backgroundColor = '#C82333';
       }
     });
     
     logoutBtn.addEventListener('mouseleave', () => {
       if (!logoutBtn.disabled) {
-        logoutBtn.style.transform = 'translateY(0) scale(1)';
+        logoutBtn.style.backgroundColor = '';
       }
     });
   }

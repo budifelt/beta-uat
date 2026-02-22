@@ -1,26 +1,7 @@
 /* ===================================
-   REGISTER MODAL STYLES - Flat Design
+   REGISTER MODAL CONTENT STYLES
+   Only styles for the modal body/content
    =================================== */
-
-/* Auth Modal Container */
-#modal-register.register-modal .modal-content {
-  max-width: 480px;
-  width: 90vw;
-  border-radius: 0;
-  overflow: hidden;
-}
-
-/* Register Modal Header */
-#modal-register.register-modal .modal-header {
-  padding: var(--space-8) var(--space-6) var(--space-6);
-  text-align: center;
-}
-
-#modal-register.register-modal .modal-title {
-  font-size: var(--font-size-2xl);
-  font-weight: var(--font-weight-bold);
-  margin: 0;
-}
 
 /* Register Form */
 #modal-register .register-form {

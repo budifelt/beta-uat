@@ -86,7 +86,11 @@ function showSettingsModal() {
 }
 
 function showEditProfileModal() {
-  showModal('edit-profile').catch(e => console.error('Failed to show edit profile modal:', e));
+  // This function is handled by modal-edit-profile.js
+  // Just ensure the modal can be shown
+  if (window.modalManager) {
+    window.modalManager.showModal('edit-profile');
+  }
 }
 
 function showNotificationsModal() {
@@ -352,7 +356,6 @@ window.hideLoginModal = hideLoginModal;
 window.hideRegisterModal = hideRegisterModal;
 window.showProfileModal = showProfileModal;
 window.showSettingsModal = showSettingsModal;
-window.showEditProfileModal = showEditProfileModal;
 window.showNotificationsModal = showNotificationsModal;
 window.showHelpModal = showHelpModal;
 window.showLogoutModal = showLogoutModal;
