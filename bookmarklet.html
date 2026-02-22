@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+  
+  <!-- Meta Tags -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="eDM Helper Bookmarklet - Browser tools for email marketing">
+  <meta name="keywords" content="edm, bookmarklet, browser, tools, marketing">
+  <meta name="author" content="eDM Helper">
+  
+  <!-- CSS Structure -->
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/theme.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/modal-base.css">
+  <link rel="stylesheet" href="css/pages/bookmarklet.css">
+  
+  <title>Bookmarklet - eDM Helper</title>
+  <meta name="theme-color" content="#0f172a" />
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body>
+  <!-- Check login state immediately to prevent flash -->
+  <script>
+    // Immediately check login state to prevent UI flash
+    (function() {
+      let user = null;
+      const rawUser = localStorage.getItem('currentUser');
+      if (rawUser) {
+        try {
+          user = JSON.parse(rawUser);
+        } catch (e) {
+          user = null;
+        }
+      }
+
+      document.addEventListener('DOMContentLoaded', () => {
+        const loginBtn = document.getElementById('login-btn');
+        const profileDropdown = document.getElementById('profile-dropdown');
+        const profileName = document.getElementById('profile-name');
+        const profileNameDisplay = document.getElementById('profile-name-display');
+        const displayName = user?.name || user?.fullName || user?.fullname || user?.username || 'User';
+
+        if (user) {
+          if (loginBtn) loginBtn.style.display = 'none';
+          if (profileDropdown) profileDropdown.style.display = 'inline-block';
+          if (profileName) profileName.textContent = displayName;
+          if (profileNameDisplay) profileNameDisplay.textContent = displayName;
+        } else {
+          if (loginBtn) {
+            loginBtn.style.display = 'flex';
+            // Add pulse animation to login button
+            loginBtn.classList.add('pulse');
+            // Remove pulse after 5 seconds
+            setTimeout(() => {
+              loginBtn.classList.remove('pulse');
+            }, 5000);
+          }
+          if (profileDropdown) profileDropdown.style.display = 'none';
+        }
+      });
+      
+      // Define updateUserUI function globally
+      window.updateUserUI = function() {
+        const loginBtn = document.getElementById('login-btn');
+        const profileDropdown = document.getElementById('profile-dropdown');
+        const profileName = document.getElementById('profile-name');
+        const profileNameDisplay = document.getElementById('profile-name-display');
+        
+        const rawUser = localStorage.getItem('currentUser');
+        const user = rawUser ? JSON.parse(rawUser) : null;
+        const displayName = user?.name || user?.fullName || user?.fullname || user?.username || 'User';
+
+        if (user) {
+          if (loginBtn) loginBtn.style.display = 'none';
+          if (profileDropdown) profileDropdown.style.display = 'inline-block';
+          if (profileName) profileName.textContent = displayName;
+          if (profileNameDisplay) profileNameDisplay.textContent = displayName;
+        } else {
+          if (loginBtn) {
+            loginBtn.style.display = 'flex';
+            loginBtn.classList.add('pulse');
+            setTimeout(() => {
+              loginBtn.classList.remove('pulse');
+            }, 5000);
+          }
+          if (profileDropdown) profileDropdown.style.display = 'none';
+        }
+      };
+    })();
+  </script>
+  
+  <header class="header">
+    <nav class="nav">
+      <!-- Home Button -->
+      <div class="nav-left">
+        <a href="index.html" class="nav-link">
+          <i class="fa-solid fa-home"></i>
+          <span>Home</span>
+        </a>
+      </div>
+      
+      <!-- Profile Section -->
+      <div class="profile-section">
+        <!-- Login Button (shown when not logged in) -->
+        <button id="login-btn" onclick="showLoginModal()" class="login-trigger-btn">
+          <i class="fa-solid fa-right-to-bracket"></i>
+          <span>Login</span>
+        </button>
+        
+        <!-- Profile Dropdown (shown when logged in) -->
+        <div id="profile-dropdown" class="profile-dropdown" style="width: auto !important; min-width: 220px !important; max-width: 260px !important; display: none;">
+          <button onclick="toggleProfileMenu()" class="profile-trigger">
+            <div class="profile-avatar">
+              <i class="fa-solid fa-user"></i>
+            </div>
+            <span id="profile-name" style="flex: 1; min-width: 0; display: inline-block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">John Doe</span>
+            <i class="fa-solid fa-chevron-down"></i>
+          </button>
+          
+          <div id="profile-menu" class="profile-menu" style="width: 220px !important; min-width: 220px !important; max-width: 260px !important;">
+            <div class="profile-header" onclick="showProfileModal(); toggleProfileMenu();" style="cursor: pointer;">
+              <div class="profile-info">
+                <div class="profile-avatar-large">
+                  <i class="fa-solid fa-user"></i>
+                </div>
+                <div class="profile-details">
+                  <div class="profile-name-display" id="profile-name-display">John Doe</div>
+                  <div class="profile-email-display" id="profile-email-display">john@example.com</div>
+                  <div class="profile-role-display" id="profile-role-display">User</div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="profile-actions">
+              <a href="#" onclick="showSettingsModal()" class="profile-action">
+                <i class="fa-solid fa-cog"></i>
+                <span>Settings</span>
+                <i class="fa-solid fa-chevron-right" style="margin-left: auto; font-size: 12px; opacity: 0.5;"></i>
+              </a>
+              
+              <a href="#" onclick="showEditProfileModal()" class="profile-action">
+                <i class="fa-solid fa-user-edit"></i>
+                <span>Edit Profile</span>
+                <i class="fa-solid fa-chevron-right" style="margin-left: auto; font-size: 12px; opacity: 0.5;"></i>
+              </a>
+              
+              <a href="#" onclick="showNotificationsModal()" class="profile-action">
+                <i class="fa-solid fa-bell"></i>
+                <span>Notifications</span>
+                <span class="notification-badge" style="margin-left: auto; background: var(--accent-primary); color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px; min-width: 18px; text-align: center;">3</span>
+              </a>
+              
+              <a href="#" onclick="showHelpModal()" class="profile-action">
+                <i class="fa-solid fa-question-circle"></i>
+                <span>Help & Support</span>
+                <i class="fa-solid fa-chevron-right" style="margin-left: auto; font-size: 12px; opacity: 0.5;"></i>
+              </a>
+              
+              <div class="profile-divider"></div>
+              
+              <button onclick="showLogoutModal()" class="profile-action profile-logout">
+                <i class="fa-solid fa-sign-out-alt"></i>
+                <span>Logout</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main id="main-content" class="page bookmarklet-page">
+    <div class="bookmarklet-container">
+        <h1>eDM Helper Bookmarklets</h1>
+        <p class="subtitle">Kumpulan bookmarklet berguna untuk daily work Anda</p>
+        
+        <!-- Quick Guide -->
+        <div class="instructions">
+            <h3><i class="fa-solid fa-circle-info"></i> Cara Menggunakan Bookmarklet:</h3>
+            <ol>
+                <li><strong>Drag</strong> tombol bookmarklet di bawah ini ke <strong>bookmark bar</strong> browser Anda</li>
+                <li>Alternatif: <strong>Klik kanan</strong> → <strong>Add to Bookmarks</strong></li>
+                <li>Buka halaman target dan <strong>klik bookmarklet</strong> untuk menjalankan</li>
+            </ol>
+            <div class="browser-notes">
+                <p><strong>Catatan:</strong> Works on Chrome, Firefox, Edge, Safari. Pastikan bookmark bar visible (Ctrl+Shift+B).</p>
+            </div>
+        </div>
+
+        <!-- Search/Filter Section -->
+        <div class="bookmarklet-filter">
+            <input type="text" class="bookmarklet-search" placeholder="Cari bookmarklet..." id="bookmarkletSearch">
+            <button class="bookmarklet-filter-btn" onclick="clearSearch()">
+                <i class="fa-solid fa-times"></i>
+                Clear
+            </button>
+            <button class="bookmarklet-filter-btn" onclick="toggleView()">
+                <i class="fa-solid fa-grip"></i>
+                Grid
+            </button>
+        </div>
+
+        <!-- Bookmarklets Grid -->
+        <div class="bookmarklets-grid" id="bookmarkletsGrid">
+            <!-- Copy Page Source -->
+            <div class="bookmarklet-card">
+                <div class="bookmarklet-header">
+                    <i class="fa-solid fa-code"></i>
+                    <h3>Copy Page Source</h3>
+                </div>
+                <p>Salin source code lengkap halaman ke clipboard</p>
+                <button id="copy-source" class="bookmarklet-btn" data-tool="Copy Page Source">
+                    <i class="fa-solid fa-play"></i>
+                    Run Tool
+                </button>
+            </div>
+
+            <!-- Extract All Links -->
+            <div class="bookmarklet-card">
+                <div class="bookmarklet-header">
+                    <i class="fa-solid fa-link"></i>
+                    <h3>Extract All Links</h3>
+                </div>
+                <p>Extract semua link dari halaman dalam format yang terstruktur</p>
+                <button id="extract-links" class="bookmarklet-btn" data-tool="Extract All Links">
+                    <i class="fa-solid fa-play"></i>
+                    Run Tool
+                </button>
+            </div>
+
+            <!-- Extract Images -->
+            <div class="bookmarklet-card">
+                <div class="bookmarklet-header">
+                    <i class="fa-solid fa-image"></i>
+                    <h3>Extract Images</h3>
+                </div>
+                <p>Extract semua URL gambar dari halaman</p>
+                <button id="extract-images" class="bookmarklet-btn" data-tool="Extract Images">
+                    <i class="fa-solid fa-play"></i>
+                    Run Tool
+                </button>
+            </div>
+
+            <!-- View Meta Tags -->
+            <div class="bookmarklet-card">
+                <div class="bookmarklet-header">
+                    <i class="fa-solid fa-tags"></i>
+                    <h3>View Meta Tags</h3>
+                </div>
+                <p>Tampilkan semua meta tags halaman (SEO, OG, dll)</p>
+                <button id="view-meta" class="bookmarklet-btn" data-tool="View Meta Tags">
+                    <i class="fa-solid fa-play"></i>
+                    Run Tool
+                </button>
+            </div>
+
+            <!-- Remove Element -->
+            <div class="bookmarklet-card">
+                <div class="bookmarklet-header">
+                    <i class="fa-solid fa-eraser"></i>
+                    <h3>Remove Element</h3>
+                </div>
+                <p>Klik element untuk menghapusnya dari halaman</p>
+                <button id="remove-element" class="bookmarklet-btn" data-tool="Remove Element">
+                    <i class="fa-solid fa-play"></i>
+                    Run Tool
+                </button>
+            </div>
+
+            <!-- Page Info -->
+            <div class="bookmarklet-card">
+                <div class="bookmarklet-header">
+                    <i class="fa-solid fa-info-circle"></i>
+                    <h3>Page Info</h3>
+                </div>
+                <p>Tampilkan informasi lengkap tentang halaman</p>
+                <button id="page-info" class="bookmarklet-btn" data-tool="Page Info">
+                    <i class="fa-solid fa-play"></i>
+                    Run Tool
+                </button>
+            </div>
+        </div>
+
+        <!-- No Results Message -->
+        <div class="no-results" id="noResults">
+            <i class="fa-solid fa-search"></i>
+            <p>Tidak ada bookmarklet yang ditemukan</p>
+            <p style="font-size: var(--font-size-sm); margin-top: var(--space-2);">Coba kata kunci lain</p>
+        </div>
+
+        <!-- Manual Script Section -->
+        <div class="instructions">
+            <h3><i class="fa-solid fa-terminal"></i> Script Manual (Console)</h3>
+            <p>Salin dan jalankan script di console browser (F12 → Console):</p>
+            <div class="script-container">
+                <textarea id="manual-script" readonly>// Copy Page Source Script
+(function(){
+    fetch(location.href)
+    .then(res => res.text())
+    .then(source => {
+        if (navigator.clipboard && window.isSecureContext) {
+            navigator.clipboard.writeText(source)
+                .then(() => console.log('✅ Source berhasil disalin!'))
+                .catch(() => fallbackCopy(source));
+        } else {
+            fallbackCopy(source);
+        }
+
+        function fallbackCopy(text){
+            const ta = document.createElement('textarea');
+            ta.value = text;
+            ta.style.position = 'fixed';
+            ta.style.left = '-9999px';
+            document.body.appendChild(ta);
+            ta.focus();
+            ta.select();
+            try {
+                document.execCommand('copy');
+                console.log('✅ Source berhasil disalin!');
+            } catch(err) {
+                console.error('Gagal menyalin:', err);
+                prompt('Copy manual:', text);
+            }
+            document.body.removeChild(ta);
+        }
+    })
+    .catch(err => console.error('❌ Gagal mengambil source:', err));
+})();</textarea>
+                <button id="copy-script-btn" class="copy-btn" onclick="copyManualScript()">
+                    <i class="fa-solid fa-copy"></i>
+                    <span>Copy Script</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Keyboard Shortcuts -->
+        <div class="instructions">
+            <h3><i class="fa-solid fa-keyboard"></i> Shortcut Keyboard Berguna:</h3>
+            <div class="shortcuts-grid">
+                <div class="shortcut-item">
+                    <kbd>Ctrl</kbd> + <kbd>U</kbd>
+                    <span>View source code</span>
+                </div>
+                <div class="shortcut-item">
+                    <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>C</kbd>
+                    <span>Inspect element</span>
+                </div>
+                <div class="shortcut-item">
+                    <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>J</kbd>
+                    <span>Open console</span>
+                </div>
+                <div class="shortcut-item">
+                    <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>B</kbd>
+                    <span>Toggle bookmark bar</span>
+                </div>
+                <div class="shortcut-item">
+                    <kbd>Ctrl</kbd> + <kbd>A</kbd>
+                    <span>Select all</span>
+                </div>
+                <div class="shortcut-item">
+                    <kbd>Ctrl</kbd> + <kbd>C</kbd>
+                    <span>Copy</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tips Section -->
+        <div class="tips-section">
+            <h3><i class="fa-solid fa-lightbulb"></i> Pro Tips:</h3>
+            <ul>
+                <li>Bookmarklets bekerja lebih baik di modern browsers (Chrome, Firefox, Edge, Safari 12+)</li>
+                <li>Beberapa website mungkin memblokir fetch API - gunakan view source sebagai alternatif</li>
+                <li>Simpan bookmarklets di folder khusus untuk organisasi yang lebih baik</li>
+                <li>Test bookmarklets di development environment terlebih dahulu</li>
+            </ul>
+        </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-left">
+          <p class="footer-text">
+            &copy; <span id="footer-year">2025</span> eDM Helper <span class="footer-version" data-version>v1.0.0</span>. 
+            Built with <i class="fa-solid fa-heart"></i> for me.
+          </p>
+        </div>
+        <div class="footer-right">
+          <div class="footer-links">
+            <a href="https://github.com/budifelt" target="_blank" class="footer-link">
+              <i class="fa-brands fa-github"></i>
+            </a>
+            <a href="https://instagram.com/budife.psd/" target="_blank" class="footer-link">
+              <i class="fa-brands fa-instagram"></i>
+            </a>
+            <a href="https://linkedin.com/in/budifelt/" target="_blank" class="footer-link">
+              <i class="fa-brands fa-linkedin"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Settings Modal -->
+  <div id="settings-container"></div>
+
+<script src="js/modal-manager.js" defer></script>
+<script src="js/nav.js" defer></script>
+<script src="js/version-config.js" defer></script>
+<script src="js/toast-manager.js" defer></script>
+<script src="js/pages/bookmarklet.js" defer></script>
+<script>
+// Copy manual script to clipboard
+function copyManualScript() {
+    const textarea = document.getElementById('manual-script');
+    const btn = document.getElementById('copy-script-btn');
+    const originalHTML = btn.innerHTML;
+    
+    if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(textarea.value)
+            .then(() => {
+                btn.innerHTML = '<i class="fa-solid fa-check"></i><span>Copied!</span>';
+                btn.classList.add('copied');
+                setTimeout(() => {
+                    btn.innerHTML = originalHTML;
+                    btn.classList.remove('copied');
+                }, 2000);
+            })
+            .catch(() => fallbackCopy(textarea.value));
+    } else {
+        fallbackCopy(textarea.value);
+    }
+    
+    function fallbackCopy(text) {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.left = '-9999px';
+        document.body.appendChild(ta);
+        ta.focus();
+        ta.select();
+        try {
+            document.execCommand('copy');
+            btn.innerHTML = '<i class="fa-solid fa-check"></i><span>Copied!</span>';
+            btn.classList.add('copied');
+            setTimeout(() => {
+                btn.innerHTML = originalHTML;
+                btn.classList.remove('copied');
+            }, 2000);
+        } catch (err) {
+            console.error('Failed to copy:', err);
+            prompt('Copy manually:', text);
+        }
+        document.body.removeChild(ta);
+    }
+}
+
+// Search and Filter Functionality
+function clearSearch() {
+    document.getElementById('bookmarkletSearch').value = '';
+    filterBookmarklets();
+}
+
+function filterBookmarklets() {
+    const searchTerm = document.getElementById('bookmarkletSearch').value.toLowerCase();
+    const bookmarkletCards = document.querySelectorAll('.bookmarklet-card');
+    const noResults = document.getElementById('noResults');
+    let visibleCount = 0;
+    
+    bookmarkletCards.forEach(card => {
+        const title = card.querySelector('h3').textContent.toLowerCase();
+        const description = card.querySelector('p').textContent.toLowerCase();
+        
+        if (title.includes(searchTerm) || description.includes(searchTerm)) {
+            card.style.display = 'block';
+            card.style.animation = 'fadeInUp 0.5s ease-out';
+            visibleCount++;
+        } else {
+            card.style.display = 'none';
+        }
+    });
+    
+    // Show/hide no results message
+    if (visibleCount === 0 && searchTerm !== '') {
+        noResults.classList.add('show');
+    } else {
+        noResults.classList.remove('show');
+    }
+}
+
+// Toggle view between grid and list
+function toggleView() {
+    const grid = document.querySelector('.bookmarklets-grid');
+    const btn = event.currentTarget;
+    
+    if (grid.classList.contains('grid-view')) {
+        grid.classList.remove('grid-view');
+        grid.classList.add('list-view');
+        btn.innerHTML = '<i class="fa-solid fa-list"></i> List';
+    } else {
+        grid.classList.remove('list-view');
+        grid.classList.add('grid-view');
+        btn.innerHTML = '<i class="fa-solid fa-grip"></i> Grid';
+    }
+}
+
+// Add search input event listener
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('bookmarkletSearch');
+    if (searchInput) {
+        searchInput.addEventListener('input', filterBookmarklets);
+    }
+    
+    const bookmarkletBtns = document.querySelectorAll('.bookmarklet-btn');
+    
+    bookmarkletBtns.forEach(btn => {
+        btn.addEventListener('mouseenter', function() {
+            this.style.transform = 'scale(1.05)';
+        });
+        
+        btn.addEventListener('mouseleave', function() {
+            this.style.transform = 'scale(1)';
+        });
+    });
+});
+</script>
+</body>
+</html>

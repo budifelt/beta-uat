@@ -1,0 +1,144 @@
+<!-- Register Modal -->
+<link rel="stylesheet" href="../css/modal/modal-register.css">
+<script src="../js/modal/modal-register.js"></script>
+<div id="modal-register" class="modal register-modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 class="modal-title">
+        <i class="fa-solid fa-user-plus"></i>
+        Create Account
+      </h2>
+      <button class="modal-close-btn" onclick="hideRegisterModal()">
+        <i class="fa-solid fa-times"></i>
+      </button>
+    </div>
+    
+    <div class="modal-body">
+      <form id="register-form" class="register-form" onsubmit="handleRegister(event)">
+        <!-- Username Field -->
+        <div class="register-form-group">
+          <label for="register-username" class="register-form-label">
+            <i class="fa-solid fa-user"></i>
+            Username
+          </label>
+          <div class="register-input-wrapper">
+            <i class="fa-solid fa-user register-input-icon"></i>
+            <input 
+              type="text" 
+              id="register-username" 
+              name="username" 
+              class="register-input"
+              required 
+              minlength="3"
+              maxlength="20"
+              pattern="[a-zA-Z0-9_]+"
+              title="Username must be 3-20 characters, letters, numbers, and underscores only"
+              placeholder="Choose a username"
+            >
+          </div>
+          <span class="form-hint">3-20 characters, letters, numbers, and underscores</span>
+        </div>
+        
+        <!-- Email Field -->
+        <div class="register-form-group">
+          <label for="register-email" class="register-form-label">
+            <i class="fa-solid fa-envelope"></i>
+            Email Address
+          </label>
+          <div class="register-input-wrapper">
+            <i class="fa-solid fa-envelope register-input-icon"></i>
+            <input 
+              type="email" 
+              id="register-email" 
+              name="email" 
+              class="register-input"
+              required 
+              placeholder="your@email.com"
+            >
+          </div>
+        </div>
+        
+        <!-- Password Field -->
+        <div class="register-form-group">
+          <label for="register-password" class="register-form-label">
+            <i class="fa-solid fa-lock"></i>
+            Password
+          </label>
+          <div class="register-input-wrapper">
+            <i class="fa-solid fa-lock register-input-icon"></i>
+            <input 
+              type="password" 
+              id="register-password" 
+              name="password" 
+              class="register-input"
+              required 
+              minlength="6"
+              placeholder="Create a strong password"
+              oninput="checkPasswordStrength(this.value)"
+            >
+            <button 
+              type="button" 
+              class="password-toggle-btn"
+              onclick="toggleRegisterPassword('register-password')"
+            >
+              <i class="fa-solid fa-eye" id="register-password-icon"></i>
+            </button>
+          </div>
+          <span class="form-hint">Minimum 6 characters</span>
+          <div class="password-strength">
+            <div class="password-strength-bar">
+              <div class="password-strength-fill" id="password-strength-fill"></div>
+            </div>
+            <span class="password-strength-text" id="password-strength-text"></span>
+          </div>
+        </div>
+        
+        <!-- Confirm Password Field -->
+        <div class="register-form-group">
+          <label for="register-confirm-password" class="register-form-label">
+            <i class="fa-solid fa-lock"></i>
+            Confirm Password
+          </label>
+          <div class="register-input-wrapper">
+            <i class="fa-solid fa-lock register-input-icon"></i>
+            <input 
+              type="password" 
+              id="register-confirm-password" 
+              name="confirmPassword" 
+              class="register-input"
+              required 
+              minlength="6"
+              placeholder="Confirm your password"
+            >
+            <button 
+              type="button" 
+              class="password-toggle-btn"
+              onclick="toggleRegisterPassword('register-confirm-password')"
+            >
+              <i class="fa-solid fa-eye" id="register-confirm-password-icon"></i>
+            </button>
+          </div>
+        </div>
+        
+        <!-- Terms & Conditions -->
+        <div class="terms-section">
+          <div class="terms-checkbox">
+            <input type="checkbox" id="register-agree-terms" name="agreeTerms" required>
+            <label for="register-agree-terms">
+              I agree to the <a href="#" class="link-primary">Terms of Service</a> and <a href="#" class="link-primary">Privacy Policy</a>
+            </label>
+          </div>
+        </div>
+        
+        <button type="submit" class="btn-register">
+          <i class="fa-solid fa-user-plus"></i>
+          Create Account
+        </button>
+      </form>
+      
+      <div class="login-prompt">
+        Already have an account? <a href="#" onclick="event.preventDefault(); hideRegisterModal(); showLoginModal();" class="login-link">Login</a>
+      </div>
+    </div>
+  </div>
+</div>

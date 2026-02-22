@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- CSS Structure -->
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/utilities.css">
+  <link rel="stylesheet" href="css/theme-default.css">
+  
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Layout Checker</title>
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css"/>
+</head>
+<body>
+<!-- Navigation Bar -->
+<header class="header">
+  <nav class="nav">
+    <div class="container">
+      <!-- Home Button -->
+  
+  .settings-tab-btn:hover {
+    background: rgba(102, 126, 234, 0.1);
+    color: #667eea;
+  }
+  
+  .settings-tab-btn.active {
+    background: #667eea;
+    color: white;
+  }
+  
+  .settings-tab-btn i {
+    width: 16px;
+    text-align: center;
+  }
+</style>
+
+<div style="max-width: 1200px; margin: 0 auto; padding: 20px; margin-top: 25px;">
+<h1 style="text-align: center; margin-bottom: 10px; color: var(--text); font-size: 2.5rem; font-weight: 700;">Layout Checker</h1>
+<p style="text-align: center; color: var(--text-secondary); margin-bottom: 40px; font-size: 1.1rem;">Advanced HTML Layout Analysis Tool</p>
+
+<div style="display: flex; gap: 8px; align-items: center; justify-content: center; margin-bottom: 30px; max-width: 800px; margin-left: auto; margin-right: auto;">
+  <input type="text" id="originalUrlInput" placeholder="Enter full URL of the HTML file" style="flex: 1; padding: 12px; font-size: 14px; border-radius: 8px; border: 2px solid var(--border); background: var(--surface); color: var(--text);" />
+  <button id="downloadBtn" style="display: none; background-color: var(--success); color: white; border: none; padding: 12px 16px; font-size: 14px; border-radius: 8px; cursor: pointer; white-space: nowrap; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); transform: translateY(0);">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="margin-right: 4px;">
+      <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
+    </svg>
+    Download
+  </button>
+  <button id="manualPasteBtn" style="display: none; background-color: var(--info); color: white; border: none; padding: 12px 16px; font-size: 14px; border-radius: 8px; cursor: pointer; white-space: nowrap; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); transform: translateY(0);">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="margin-right: 4px;">
+      <path d="M9 3V4H4V6H5V19A2 2 0 0 0 7 21H17A2 2 0 0 0 19 19V6H20V4H15V3H9M7 6H17V19H7V6M9 8V17H11V8H9M13 8V17H15V8H13Z"/>
+    </svg>
+    Manual Paste
+  </button>
+  <button id="textModeBtn" style="display: none; background-color: var(--warning); color: white; border: none; padding: 12px 16px; font-size: 14px; border-radius: 8px; cursor: pointer; white-space: nowrap; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); transform: translateY(0);">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="margin-right: 4px;">
+      <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
+    </svg>
+    Text Mode
+  </button>
+</div>
+
+<div style="display: flex; gap: 30px; align-items: flex-start;">
+  <!-- Left Column: KRHRED Values -->
+  <div style="flex: 0 0 300px;">
+    <label for="krhredInput" style="display: block; margin-bottom: 10px; font-weight: 600; color: var(--text);">KRHRED Values:</label>
+    <textarea id="krhredInput" placeholder="Paste value from brickstreet" style="width: 100%; height: 400px; padding: 15px; font-family: monospace; border-radius: 8px; border: 2px solid var(--border); background: var(--surface); color: var(--text); resize: vertical;"></textarea>
+    <div style="display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap;">
+      <button id="applyKrhredBtn" style="background-color: var(--success); color: white; border: none; padding: 12px 20px; font-size: 15px; border-radius: 8px; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); transform: translateY(0);">Apply values</button>
+      <button id="checkLayoutBtn" style="background-color: var(--primary); color: white; border: none; padding: 12px 20px; font-size: 15px; border-radius: 8px; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); transform: translateY(0);">Check Layout</button>
+      <button id="addKrhredBtn" style="background-color: var(--info); color: white; border: none; padding: 12px 20px; font-size: 15px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); transform: translateY(0);">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+        </svg>
+        Add Unit
+      </button>
+      <button id="clearAllBtn" style="background-color: var(--error); color: white; border: none; padding: 12px 20px; font-size: 15px; border-radius: 8px; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); transform: translateY(0);">Clear All</button>
+    </div>
+  </div>
+
+  <!-- Right Column: CodeMirror + KRHRED Units -->
+  <div style="flex: 1;">
+    <div style="display: flex; flex-direction: column; gap: 20px;">
+      <!-- HTML Content (CodeMirror) -->
+      <div>
+        <label for="htmlInput" style="display: block; margin-bottom: 10px; font-weight: 600; color: var(--text);">HTML Content:</label>
+        <textarea id="htmlInput" placeholder="Paste your HTML content here" style="width: 100%; height: 300px; padding: 15px; font-family: monospace; border-radius: 8px; border: 2px solid var(--border); background: var(--surface); color: var(--text); resize: vertical;"></textarea>
+      </div>
+
+      <!-- KRHRED Units Container (4x2 grid) -->
+      <div id="krhredUnitsContainer" style="display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(2, auto); gap: 12px; margin: 0; padding: 20px; background: #f8fafc; border-radius: 12px; border: 1px solid #e2e8f0; height: 300px; overflow-y: auto;">
+        <div style="display: flex; flex-direction: column; align-items: stretch; grid-column: 1 / -1;">
+          <label style="font-size: 11px; font-weight: 600; color: #64748b; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px;">KRHRED Units</label>
+          <div id="inputGrid" style="display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(2, auto); gap: 8px;">
+            <!-- Row 1 -->
+            <div style="display: flex; flex-direction: column;">
+              <input type="text" id="krhred_unit_30" name="krhred_unit_30" placeholder="30" />
+            </div>
+            <div style="display: flex; flex-direction: column;">
+              <input type="text" id="krhred_unit_31" name="krhred_unit_31" placeholder="31" />
+            </div>
+            <div style="display: flex; flex-direction: column;">
+              <input type="text" id="krhred_unit_32" name="krhred_unit_32" placeholder="32" />
+            </div>
+            <div style="display: flex; flex-direction: column;">
+              <input type="text" id="krhred_unit_33" name="krhred_unit_33" placeholder="33" />
+            </div>
+            <!-- Row 2 -->
+            <div style="display: flex; flex-direction: column;">
+              <input type="text" id="krhred_unit_34" name="krhred_unit_34" placeholder="34" />
+            </div>
+            <div style="display: flex; flex-direction: column;">
+              <input type="text" id="krhred_unit_35" name="krhred_unit_35" placeholder="35" />
+            </div>
+            <div style="display: flex; flex-direction: column;">
+              <input type="text" id="krhred_unit_36" name="krhred_unit_36" placeholder="36" />
+            </div>
+            <div style="display: flex; flex-direction: column;">
+              <input type="text" id="krhred_unit_37" name="krhred_unit_37" placeholder="37" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Login Modal -->
+<div id="login-modal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 2000; align-items: center; justify-content: center;">
+  <div style="background: white; padding: 32px; border-radius: 16px; max-width: 400px; width: 90%; border: 1px solid rgba(0,0,0,0.1);">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+      <h3 style="margin: 0; color: #1e293b; font-size: 20px; font-weight: 600;">
+        <i class="fa-solid fa-sign-in-alt" style="margin-right: 8px; color: #667eea;"></i>Login
+      </h3>
+      <button onclick="hideLoginModal()" style="background: none; border: none; color: #6b7280; cursor: pointer; font-size: 20px; padding: 0; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center;">
+        <i class="fa-solid fa-times"></i>
+      </button>
+    </div>
+    
+    <form id="login-form" onsubmit="handleLogin(event)">
+      <div style="margin-bottom: 16px;">
+        <label style="display: block; margin-bottom: 6px; font-weight: 500; color: #374151; font-size: 14px;">Username</label>
+        <input type="text" id="login-username" required style="width: 100%; padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px; transition: border-color 0.2s;" placeholder="Enter your username">
+      </div>
+      
+      <div style="margin-bottom: 20px;">
+        <label style="display: block; margin-bottom: 6px; font-weight: 500; color: #374151; font-size: 14px;">Password</label>
+        <input type="password" id="login-password" required style="width: 100%; padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px; transition: border-color 0.2s;" placeholder="Enter your password">
+      </div>
+      
+      <div style="display: flex; gap: 12px;">
+        <button type="button" onclick="hideLoginModal()" style="flex: 1; background: #f3f4f6; color: #374151; padding: 10px 16px; border: none; border-radius: 6px; cursor: pointer; font-weight: 500; transition: background 0.2s;">
+          Cancel
+        </button>
+        <button type="submit" style="flex: 1; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 10px 16px; border: none; border-radius: 6px; cursor: pointer; font-weight: 500; transition: all 0.2s;">
+          Login
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Settings Modal with Sidebar -->
+<div id="settings-modal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 3000; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: opacity 0.2s ease, visibility 0.2s ease;">
+  <div style="background: white; border-radius: 12px; width: 750px; height: 500px; overflow: hidden; display: flex; transform: scale(0.95); transition: transform 0.2s ease;">
+    <!-- Sidebar -->
+    <div style="width: 200px; background: #f8fafc; border-right: 1px solid #e5e7eb; padding: 0;">
+      <div style="padding: 16px;">
+        <h3 style="margin: 0 0 16px 0; color: #1e293b; font-size: 14px; font-weight: 600;">
+          <i class="fa-solid fa-sliders" style="margin-right: 6px; color: #667eea;"></i>Settings
+        </h3>
+        
+        <!-- Menu Items -->
+        <div style="display: flex; flex-direction: column; gap: 3px;">
+          <button onclick="showSettingsSection('general')" class="settings-tab-btn active" id="tab-general" style="padding: 10px 12px; font-size: 13px;">
+            <i class="fa-solid fa-globe" style="width: 14px;"></i> Umum
+          </button>
+          <button onclick="showSettingsSection('appearance')" class="settings-tab-btn" id="tab-appearance" style="padding: 10px 12px; font-size: 13px;">
+            <i class="fa-solid fa-palette" style="width: 14px;"></i> Tampilan
+          </button>
+          <button onclick="showSettingsSection('account')" class="settings-tab-btn" id="tab-account" style="padding: 10px 12px; font-size: 13px;">
+            <i class="fa-solid fa-user" style="width: 14px;"></i> Akun
+          </button>
+          <button onclick="showSettingsSection('notifications')" class="settings-tab-btn" id="tab-notifications" style="padding: 10px 12px; font-size: 13px;">
+            <i class="fa-solid fa-bell" style="width: 14px;"></i> Notifikasi
+          </button>
+          <button onclick="showSettingsSection('privacy')" class="settings-tab-btn" id="tab-privacy" style="padding: 10px 12px; font-size: 13px;">
+            <i class="fa-solid fa-shield-halved" style="width: 14px;"></i> Privasi
+          </button>
+          <button onclick="showSettingsSection('advanced')" class="settings-tab-btn" id="tab-advanced" style="padding: 10px 12px; font-size: 13px;">
+            <i class="fa-solid fa-cog" style="width: 14px;"></i> Lanjutan
+          </button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Content Area -->
+    <div style="flex: 1; padding: 16px; padding-bottom: 80px; overflow-y: auto;">
+      <!-- Header -->
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h3 id="settings-title" style="margin: 0; color: #1e293b; font-size: 18px; font-weight: 600;">Pengaturan Umum</h3>
+        <button onclick="hideSettingsModal()" style="background: none; border: none; color: #6b7280; cursor: pointer; font-size: 18px; padding: 0; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center;">
+          <i class="fa-solid fa-times"></i>
+        </button>
+      </div>
+      
+      <!-- General Section -->
+      <div id="general-content" class="settings-content">
+        <div style="background: #f8fafc; border-radius: 6px; padding: 16px; margin-bottom: 12px;">
+          <h4 style="margin: 0 0 12px 0; color: #1e293b; font-size: 15px; font-weight: 600;">Language & Region</h4>
+          
+          <div style="margin-bottom: 12px;">
+            <label style="display: block; margin-bottom: 4px; font-weight: 500; color: #374151; font-size: 13px;">Bahasa</label>
+            <select id="language-select" style="width: 100%; padding: 8px 10px; border: 1px solid #d1d5db; border-radius: 4px; font-size: 13px;">
+              <option value="id">🇮🇩 Bahasa Indonesia</option>
+              <option value="en">🇺🇸 English</option>
+              <option value="es">🇪🇸 Español</option>
+            </select>
+          </div>
+          
+          <div>
+            <label style="display: block; margin-bottom: 4px; font-weight: 500; color: #374151; font-size: 13px;">Format Waktu</label>
+            <select id="time-format-select" style="width: 100%; padding: 8px 10px; border: 1px solid #d1d5db; border-radius: 4px; font-size: 13px;">
+              <option value="24h">24 Jam</option>
+              <option value="12h">12 Jam (AM/PM)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Appearance Section -->
+      <div id="appearance-content" class="settings-content" style="display: none;">
+        <div style="background: #f8fafc; border-radius: 6px; padding: 16px;">
+          <h4 style="margin: 0 0 12px 0; color: #1e293b; font-size: 15px; font-weight: 600;">Tampilan</h4>
+          
+          <div style="margin-bottom: 12px;">
+            <label style="display: block; margin-bottom: 4px; font-weight: 500; color: #374151; font-size: 13px;">Theme</label>
+            <select id="theme-select" style="width: 100%; padding: 8px 10px; border: 1px solid #d1d5db; border-radius: 4px; font-size: 13px;">
+              <option value="light">☀️ Light</option>
+              <option value="dark">🌙 Dark</option>
+              <option value="auto">🎭 Auto</option>
+            </select>
+          </div>
+          
+          <div>
+            <label style="display: block; margin-bottom: 4px; font-weight: 500; color: #374151; font-size: 13px;">Ukuran Font</label>
+            <select id="font-size-select" style="width: 100%; padding: 8px 10px; border: 1px solid #d1d5db; border-radius: 4px; font-size: 13px;">
+              <option value="small">Kecil</option>
+              <option value="medium">Sedang</option>
+              <option value="large">Besar</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Account Section -->
+      <div id="account-content" class="settings-content" style="display: none;">
+        <div style="background: #f8fafc; border-radius: 6px; padding: 16px;">
+          <h4 style="margin: 0 0 12px 0; color: #1e293b; font-size: 15px; font-weight: 600;">Profil Akun</h4>
+          
+          <div style="margin-bottom: 16px;">
+            <label style="display: block; margin-bottom: 6px; font-weight: 500; color: #374151; font-size: 13px;">Foto Profil</label>
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <div id="settings-profile-avatar" style="width: 50px; height: 50px; border-radius: 50%; background: #f3f4f6; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 2px solid #e5e7eb;">
+                <i class="fa-solid fa-user" style="font-size: 20px; color: #6b7280;"></i>
+              </div>
+              <div>
+                <input type="file" id="profile-picture-input" accept="image/*" style="display: none;" onchange="handleProfilePicture(event)">
+                <button onclick="document.getElementById('profile-picture-input').click()" style="background: #667eea; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; margin-bottom: 4px;">
+                  <i class="fa-solid fa-upload"></i> Upload Foto
+                </button>
+                <div style="font-size: 11px; color: #6b7280;">JPG, PNG atau GIF (Maks 2MB)</div>
+              </div>
+            </div>
+          </div>
+          
+          <div style="margin-bottom: 12px;">
+            <label style="display: block; margin-bottom: 4px; font-weight: 500; color: #374151; font-size: 13px;">Username</label>
+            <input type="text" id="settings-username" style="width: 100%; padding: 8px 10px; border: 1px solid #d1d5db; border-radius: 4px; font-size: 13px;" placeholder="Masukkan username">
+          </div>
+          
+          <div>
+            <label style="display: block; margin-bottom: 4px; font-weight: 500; color: #374151; font-size: 13px;">Nama Tampilan</label>
+            <input type="text" id="settings-display-name" style="width: 100%; padding: 8px 10px; border: 1px solid #d1d5db; border-radius: 4px; font-size: 13px;" placeholder="Masukkan nama tampilan">
+          </div>
+        </div>
+      </div>
+      
+      <!-- Other Sections (Placeholder) -->
+      <div id="notifications-content" class="settings-content" style="display: none;">
+        <div style="background: #f8fafc; border-radius: 6px; padding: 20px; text-align: center; color: #6b7280;">
+          <i class="fa-solid fa-bell" style="font-size: 36px; margin-bottom: 12px;"></i>
+          <p style="margin: 0; font-size: 14px;">Pengaturan notifikasi akan segera hadir</p>
+        </div>
+      </div>
+      
+      <div id="privacy-content" class="settings-content" style="display: none;">
+        <div style="background: #f8fafc; border-radius: 6px; padding: 20px; text-align: center; color: #6b7280;">
+          <i class="fa-solid fa-shield-halved" style="font-size: 36px; margin-bottom: 12px;"></i>
+          <p style="margin: 0; font-size: 14px;">Pengaturan privasi akan segera hadir</p>
+        </div>
+      </div>
+      
+      <div id="advanced-content" class="settings-content" style="display: none;">
+        <div style="background: #f8fafc; border-radius: 6px; padding: 20px; text-align: center; color: #6b7280;">
+          <i class="fa-solid fa-cog" style="font-size: 36px; margin-bottom: 12px;"></i>
+          <p style="margin: 0; font-size: 14px;">Pengaturan lanjutan akan segera hadir</p>
+        </div>
+      </div>
+      
+      <!-- Footer -->
+      <div style="position: sticky; bottom: 0; left: 0; right: 0; background: white; padding: 12px 16px; border-top: 1px solid #e5e7eb; display: flex; justify-content: flex-end;">
+        <button onclick="saveSettings()" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; font-weight: 500; font-size: 13px;">
+          Simpan Perubahan
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Confirmation Dialog -->
+<div id="confirmModal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 3000; align-items: center; justify-content: center;">
+  <div style="background: white; padding: 32px; border-radius: 16px; max-width: 440px; width: 90%; border: 1px solid rgba(0,0,0,0.1);">
+    <h3 style="margin: 0 0 20px 0; color: #1e293b; font-size: 20px; font-weight: 600;">Confirm Action</h3>
+    <p id="confirmMessage" style="margin: 0 0 28px 0; color: #64748b; line-height: 1.6; font-size: 15px;"></p>
+    <div style="display: flex; gap: 12px; justify-content: flex-end;">
+      <button id="confirmCancel" style="background: #f1f5f9; color: #475569; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: 500;">Cancel</button>
+      <button id="confirmOk" style="background: #ef4444; color: white; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: 500;">Clear All</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast Notification Container -->
+<div id="toastContainer" style="position: fixed; top: 80px; right: 20px; z-index: 4000; display: flex; flex-direction: column; gap: 10px;"></div>
+
+<!-- CodeMirror CSS and JS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/material.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/xml/xml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/javascript/javascript.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/css/css.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/htmlmixed/htmlmixed.min.js"></script>
+
+
+
+
+
+<!-- Tombol Back ke Index -->
+<button class="back-btn" onclick="window.location.href='index.html'"><i class="fa-solid fa-house"></i></button>
+
+
+
+<script src="assets/js/layout-checker.js"></script>
+</body>
+</html>

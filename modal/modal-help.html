@@ -1,0 +1,150 @@
+<!-- Help Modal -->
+<link rel="stylesheet" href="../css/modal/modal-help.css">
+<script src="../js/modal/modal-help.js"></script>
+<div id="modal-help" class="modal help-modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 class="modal-title">
+        <i class="fa-solid fa-question-circle"></i>
+        Help & Support
+      </h2>
+      <button onclick="hideHelpModal()" class="modal-close-btn">
+        <i class="fa-solid fa-times"></i>
+      </button>
+    </div>
+    
+    <div class="modal-body">
+      <!-- Search Box -->
+      <div class="help-search">
+        <div class="help-search-box">
+          <i class="fa-solid fa-search"></i>
+          <input type="text" placeholder="Search help content..." onkeyup="searchHelp(this.value)">
+        </div>
+      </div>
+      
+      <div class="help-content">
+        <!-- Getting Started Section -->
+        <div class="help-section">
+          <h3 class="help-section-title">
+            <i class="fa-solid fa-rocket"></i>
+            Getting Started
+          </h3>
+          <div class="help-items">
+            <div class="help-item">
+              <h4 class="help-item-title">Quick Start Guide</h4>
+              <p class="help-item-description">Learn the basics and get up and running in minutes</p>
+            </div>
+            <div class="help-item">
+              <h4 class="help-item-title">Video Tutorials</h4>
+              <p class="help-item-description">Watch step-by-step video guides for common tasks</p>
+            </div>
+            <div class="help-item">
+              <h4 class="help-item-title">User Interface Overview</h4>
+              <p class="help-item-description">Familiarize yourself with the layout and navigation</p>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Keyboard Shortcuts Section -->
+        <div class="help-section">
+          <h3 class="help-section-title">
+            <i class="fa-solid fa-keyboard"></i>
+            Keyboard Shortcuts
+          </h3>
+          <div class="shortcuts-grid">
+            <div class="shortcut-item">
+              <span class="shortcut-description">Quick search</span>
+              <div class="shortcut-keys">
+                <kbd>Ctrl</kbd><kbd>K</kbd>
+              </div>
+            </div>
+            <div class="shortcut-item">
+              <span class="shortcut-description">Open help</span>
+              <div class="shortcut-keys">
+                <kbd>Ctrl</kbd><kbd>/</kbd>
+              </div>
+            </div>
+            <div class="shortcut-item">
+              <span class="shortcut-description">Settings</span>
+              <div class="shortcut-keys">
+                <kbd>Ctrl</kbd><kbd>,</kbd>
+              </div>
+            </div>
+            <div class="shortcut-item">
+              <span class="shortcut-description">New campaign</span>
+              <div class="shortcut-keys">
+                <kbd>Ctrl</kbd><kbd>N</kbd>
+              </div>
+            </div>
+            <div class="shortcut-item">
+              <span class="shortcut-description">Save</span>
+              <div class="shortcut-keys">
+                <kbd>Ctrl</kbd><kbd>S</kbd>
+              </div>
+            </div>
+            <div class="shortcut-item">
+              <span class="shortcut-description">Copy</span>
+              <div class="shortcut-keys">
+                <kbd>Ctrl</kbd><kbd>C</kbd>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- FAQ Section -->
+        <div class="help-section">
+          <h3 class="help-section-title">
+            <i class="fa-solid fa-circle-question"></i>
+            Frequently Asked Questions
+          </h3>
+          <div class="faq-list">
+            <div class="faq-item">
+              <button class="faq-question" onclick="toggleFAQ(this)">
+                How do I reset my password?
+                <i class="fa-solid fa-chevron-down"></i>
+              </button>
+              <div class="faq-answer">
+                <p>Click on "Forgot Password" on the login page and follow the instructions sent to your email.</p>
+              </div>
+            </div>
+            <div class="faq-item">
+              <button class="faq-question" onclick="toggleFAQ(this)">
+                How can I upgrade my account?
+                <i class="fa-solid fa-chevron-down"></i>
+              </button>
+              <div class="faq-answer">
+                <p>Go to Settings > Account > Billing and select the plan that best suits your needs.</p>
+              </div>
+            </div>
+            <div class="faq-item">
+              <button class="faq-question" onclick="toggleFAQ(this)">
+                Where can I find my API key?
+                <i class="fa-solid fa-chevron-down"></i>
+              </button>
+              <div class="faq-answer">
+                <p>Navigate to Settings > Advanced to view and manage your API keys.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Contact Support Section -->
+        <div class="contact-support">
+          <h4>Still need help?</h4>
+          <p>Our support team is here to assist you</p>
+          <button class="btn btn-primary" onclick="window.open('mailto:support@edmhelper.com')">
+            <i class="fa-solid fa-envelope"></i>
+            Contact Support
+          </button>
+        </div>
+      </div>
+    </div>
+    
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="window.open('https://docs.edmhelper.com', '_blank')">
+        <i class="fa-solid fa-book"></i>
+        View Documentation
+      </button>
+    </div>
+  </div>
+</div>

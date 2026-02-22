@@ -1,0 +1,313 @@
+(message, type = 'info') {
+    const toastContainer = document.getElementById('toastContainer');
+    const toast = document.createElement('div');
+    
+    const colors = {
+      success: { bg: '#10b981', text: 'white', icon: '✓' },
+      error: { bg: '#ef4444', text: 'white', icon: '✕' },
+      warning: { bg: '#f59e0b', text: 'white', icon: '⚠' },
+      info: { bg: '#6366f1', text: 'white', icon: 'ℹ' }
+    };
+    
+    const color = colors[type] || colors.info;
+    
+    toast.style.cssText = `
+      background: ${color.bg};
+      color: ${color.text};
+      padding: 12px 16px;
+      border-radius: 8px;
+      min-width: 280px;
+      max-width: 420px;
+      font-size: 14px;
+      font-weight: 500;
+      opacity: 0;
+      transform: translateX(100%) translateY(-20px);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 4000;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-left: 4px solid ${color.bg};
+      margin-bottom: 10px;
+    `;
+    
+    toast.innerHTML = `
+      <span style="font-size: 16px; font-weight: bold; display: flex; align-items: center; justify-content: center; width: 20px; height: 20px; background: rgba(255,255,255,0.2); border-radius: 50%; flex-shrink: 0;">
+    const messageEl = document.getElementById('confirmMessage');
+    const okBtn = document.getElementById('confirmOk');
+    const cancelBtn = document.getElementById('confirmCancel');
+    
+    messageEl.textContent = message;
+    modal.style.display = 'flex';
+    
+    const handleConfirm = () => {
+      modal.style.display = 'none';
+      okBtn.removeEventListener('click', handleConfirm);
+      cancelBtn.removeEventListener('click', handleCancel);
+      if (onConfirm) onConfirm();
+    };
+    
+    const handleCancel = () => {
+      modal.style.display = 'none';
+      okBtn.removeEventListener('click', handleConfirm);
+      cancelBtn.removeEventListener('click', handleCancel);
+      if (onCancel) onCancel();
+    };
+    
+    okBtn.addEventListener('click', handleConfirm);
+    cancelBtn.addEventListener('click', handleCancel);
+    
+    // Close on backdrop click
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        handleCancel();
+      }
+    });
+  }
+
+  checkLayoutBtn.addEventListener('click', () => {
+    let content = editor.getValue();
+    if (!content.trim()) {
+      showToast('Please paste HTML content first.', 'error');
+      return;
+    }
+    // Replace placeholders <%[KRHRED_Unit_XX]|%> with textbox values or remove if empty
+    const inputs = krhredUnitsContainer.querySelectorAll('input[id^="krhred_unit_"]');
+    let hasValidKrhred = false;
+    
+    inputs.forEach(input => {
+      const num = input.id.replace('krhred_unit_', '');
+      const regex = new RegExp(`<%\\[KRHRED_Unit_${num}\\]\\|%>`, 'g');
+      if (input.value && input.value.trim() !== '') {
+        content = content.replace(regex, input.value);
+        hasValidKrhred = true;
+      } else {
+        // Remove empty KRHRED placeholders completely
+        content = content.replace(regex, '');
+      }
+    });
+    
+    if (!hasValidKrhred) {
+      showToast('No KRHRED values to apply. Please fill in KRHRED values first.', 'warning');
+      return;
+    }
+    
+    // Fix image URLs to absolute URLs if original URL is provided
+    const originalUrlValue = document.getElementById('originalUrlInput').value.trim();
+    
+    // Convert relative image URLs to absolute URLs
+    let processedContent = content;
+    if (originalUrlValue) {
+      try {
+        const baseUrl = new URL(originalUrlValue);
+        const baseUrlString = baseUrl.origin + baseUrl.pathname.replace(/\/[^\/]*$/, '/');
+        
+        // Convert relative URLs to absolute
+        processedContent = content.replace(/src="(?!https?:\/\/)([^"]+)"/g, (match, p1) => {
+          const relativePath = p1.replace(/"/g, '');
+          // Don't convert if already absolute, data URL, or protocol-relative
+          if (!relativePath.match(/^(https?:\/\/|data:|\/\/)/)) {
+            return `src="${baseUrlString}${relativePath}"`;
+          }
+          return match;
+        });
+        
+        // Convert href attributes
+        processedContent = processedContent.replace(/href="(?!https?:\/\/)([^"]+)"/g, (match, p1) => {
+          const relativePath = p1.replace(/"/g, '');
+          // Don't convert if already absolute, data URL, or protocol-relative
+          if (!relativePath.match(/^(https?:\/\/|data:|\/\/)/)) {
+            return `href="${baseUrlString}${relativePath}"`;
+          }
+          return match;
+        });
+      } catch (error) {
+        console.log('Error processing URLs:', error);
+        processedContent = content; // Fallback to original content
+      }
+    }
+    
+    // Save content as a Blob and open in new tab
+    const blob = new Blob([processedContent], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    window.open(url, '_blank');
+    if (statusDiv) { statusDiv.textContent = ''; statusDiv.id = ''; }
+  });
+
+  addKrhredBtn.addEventListener('click', () => {
+    // Find the highest current krhred_unit number
+    const inputs = krhredUnitsContainer.querySelectorAll('input[id^="krhred_unit_"]');
+    let maxNum = 29;
+    inputs.forEach(input => {
+      const num = parseInt(input.id.replace('krhred_unit_', ''), 10);
+      if (num > maxNum) maxNum = num;
+    });
+    const newNum = maxNum + 1;
+
+    // Get input grid container
+    const inputGrid = krhredUnitsContainer.querySelector('#inputGrid');
+    if (!inputGrid) return;
+
+    // Calculate position for 4 columns, unlimited rows
+    const totalExisting = inputs.length; // Should be 8 initially
+    const columnIndex = totalExisting % 4; // Which column (0-3)
+    const rowIndex = Math.floor(totalExisting / 4); // Which row (0, 1, 2, etc.)
+
+    // Create new input
+    const div = document.createElement('div');
+    div.style.display = 'flex';
+    div.style.flexDirection = 'column';
+    div.style.alignItems = 'flex-start';
+
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.id = `krhred_unit_${newNum}`;
+    input.name = `krhred_unit_${newNum}`;
+    input.placeholder = newNum.toString();
+    div.appendChild(input);
+
+    // Insert in correct position for 4 columns layout
+    const existingDivs = inputGrid.querySelectorAll('div');
+    const insertIndex = rowIndex * 4 + columnIndex;
+    
+    if (insertIndex < existingDivs.length) {
+      inputGrid.insertBefore(div, existingDivs[insertIndex]);
+    } else {
+      inputGrid.appendChild(div);
+    }
+
+    // Add input color feedback
+    input.addEventListener('input', () => {
+      const length = input.value.trim().length;
+      if (length > 60) {
+        input.style.backgroundColor = 'red';
+      } else if (length > 0) {
+        input.style.backgroundColor = 'lightgreen';
+      } else {
+        input.style.backgroundColor = '';
+      }
+      saveState();
+    });
+
+    // Add auto-save event listener
+    input.addEventListener('input', saveState);
+
+    // Show success message
+    showToast(`Added krhred_unit_${newNum} in 4-column layout`, 'success');
+  });
+
+  // Input color feedback for existing inputs
+  const existingInputs = krhredUnitsContainer.querySelectorAll('input[id^="krhred_unit_"]');
+  existingInputs.forEach(input => {
+    input.addEventListener('input', () => {
+      const length = input.value.trim().length;
+      if (length > 60) {
+        input.style.backgroundColor = 'red';
+      } else if (length > 0) {
+        input.style.backgroundColor = 'lightgreen';
+      } else {
+        input.style.backgroundColor = '';
+      }
+    });
+  });
+
+  // Show/hide download button based on URL input
+  originalUrlInput.addEventListener('input', () => {
+    if (originalUrlInput.value.trim()) {
+      downloadBtn.style.display = 'flex';
+      manualPasteBtn.style.display = 'flex';
+      textModeBtn.style.display = 'flex';
+      // Auto-trigger download after a short delay if URL looks valid
+      const url = originalUrlInput.value.trim();
+      if (isValidUrl(url)) {
+        setTimeout(() => {
+          if (originalUrlInput.value.trim() === url) {
+            downloadBtn.click();
+          }
+        }, 0);
+      }
+    } else {
+      downloadBtn.style.display = 'none';
+      manualPasteBtn.style.display = 'none';
+      textModeBtn.style.display = 'none';
+    }
+  });
+
+  // Manual paste button functionality
+  manualPasteBtn.addEventListener('click', () => {
+    const url = originalUrlInput.value.trim();
+    if (!url) {
+      showToast('Please enter a URL first.', 'error');
+      return;
+    }
+    
+    // Open URL in new tab and show instructions
+    window.open(url, '_blank');
+    localStorage.setItem('layoutCheckerURL', url);
+    showToast('Page opened in new tab. Please copy source code (Ctrl+U or Right-click → View Page Source) and paste it here.', 'info');
+    
+    // Focus HTML editor
+    editor.focus();
+  });
+
+  // Toggle Manual functionality - REMOVED but button kept for future
+  // toggleKrhredBtn.addEventListener('click', () => {
+  //   const container = krhredUnitsContainer;
+  //   const inputGrid = container.querySelector('.input-grid');
+  //   
+  //   if (inputGrid.style.display === 'none') {
+  //     inputGrid.style.display = 'grid';
+  //     toggleKrhredBtn.innerHTML = `
+  //       <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+  //         <path d="M12 15.5A3.5 3.5 0 0 1 5 0l-3.5-3.5z"/>
+  //       </svg>
+  //       Hide Manual
+  //     `;
+  //     showToast('Manual mode enabled', 'success');
+  //   } else {
+  //     inputGrid.style.display = 'none';
+  //     toggleKrhredBtn.innerHTML = `
+  //       <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+  //         <path d="M12 15.5A3.5 3.5 0 0 1 5 0l-3.5-3.5z"/>
+  //       </svg>
+  //       Show Manual
+  //     `;
+  //     showToast('Manual mode disabled', 'info');
+  //   }
+  // });
+
+  // Text mode button functionality
+  textModeBtn.addEventListener('click', () => {
+    const url = originalUrlInput.value.trim();
+    if (!url) {
+      showToast('Please enter a URL first.', 'error');
+      return;
+    }
+    
+    // Try to fetch as plain text (some servers allow this)
+    showToast('Attempting to fetch as plain text...', 'info');
+    
+    fetch(url, {
+      headers: {
+        'Accept': 'text/plain,text/html,*/*;q=0.8'
+      }
+    }).then(response => {
+      if (response.ok) {
+        return response.text();
+      }
+      throw new Error('Failed to fetch');
+    }).then(content => {
+      if (content && content.includes('<html')) {
+        editor.setValue(content);
+        // generateKrhredColumns will be called by editor.on('change') event
+        showToast('Content fetched successfully in text mode!', 'success');
+      } else {
+        throw new Error('Invalid content received');
+      }
+    }).catch(error => {
+      showToast('Text mode failed. Please use manual paste option.', 'warning');
+      console.log('Text mode error:', error);
+    });
+  });
+
+  // Helper 

@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+  
+  <!-- Meta Tags -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="eDM Helper Link Checker - Check if your links are working">
+  <meta name="keywords" content="edm, link, checker, validation, tools">
+  <meta name="author" content="eDM Helper">
+  
+  <!-- CSS Structure -->
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/utilities.css">
+  <link rel="stylesheet" href="css/theme.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/pages/link-checker.css">
+  
+  <title>Link Live Checker - eDM Helper</title>
+  <meta name="theme-color" content="#0f172a" />
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+</head>
+<body>
+  <!-- Navigation Bar -->
+  <header class="header">
+    <nav class="nav">
+      <!-- Home Button -->
+      <div class="nav-left">
+        <a href="index.html" class="nav-link">
+          <i class="fa-solid fa-home"></i>
+          <span>Home</span>
+        </a>
+      </div>
+      
+      <!-- Profile Section -->
+      <div class="profile-section">
+        <!-- Login Button (shown when not logged in) -->
+        <button id="login-btn" onclick="showLoginModal()" class="login-trigger-btn">
+          <i class="fa-solid fa-right-to-bracket"></i>
+          <span>Login</span>
+        </button>
+        
+        <!-- Profile Dropdown (shown when logged in) -->
+        <div id="profile-dropdown" class="profile-dropdown" style="width: auto !important; min-width: 220px !important; max-width: 260px !important; display: none;">
+          <button onclick="toggleProfileMenu()" class="profile-trigger">
+            <div class="profile-avatar">
+              <i class="fa-solid fa-user"></i>
+            </div>
+            <span id="profile-name" style="flex: 1; min-width: 0; display: inline-block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">John Doe</span>
+            <i class="fa-solid fa-chevron-down"></i>
+          </button>
+          
+          <div id="profile-menu" class="profile-menu hidden" style="width: 220px !important; min-width: 220px !important; max-width: 260px !important;">
+            <div class="profile-header" onclick="showProfileModal(); toggleProfileMenu();" style="cursor: pointer;">
+              <div class="profile-info">
+                <div class="profile-avatar-large">
+                  <i class="fa-solid fa-user"></i>
+                </div>
+                <div class="profile-details">
+                  <div class="profile-name-display" id="profile-name-display">John Doe</div>
+                  <div class="profile-email-display" id="profile-email-display">john@example.com</div>
+                  <div class="profile-role-display" id="profile-role-display">User</div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="profile-actions">
+              <a href="#" onclick="showSettingsModal()" class="profile-action">
+                <i class="fa-solid fa-cog"></i>
+                <span>Settings</span>
+              </a>
+              
+              <a href="#" onclick="showProfileModal()" class="profile-action">
+                <i class="fa-solid fa-user-edit"></i>
+                <span>Edit Profile</span>
+              </a>
+              
+              <a href="#" onclick="showNotificationsModal()" class="profile-action">
+                <i class="fa-solid fa-bell"></i>
+                <span>Notifications</span>
+              </a>
+              
+              <a href="#" onclick="showHelpModal()" class="profile-action">
+                <i class="fa-solid fa-question-circle"></i>
+                <span>Help & Support</span>
+              </a>
+              
+              <div class="profile-divider"></div>
+              
+              <button onclick="logout()" class="profile-action profile-logout">
+                <i class="fa-solid fa-sign-out-alt"></i>
+                <span>Logout</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main class="page-center">
+    <!-- Panel form (sticky) -->
+    <section class="panel form-panel">
+      <h1 class="title"><i class="fa-solid fa-link"></i> Link Live Checker</h1>
+      <p class="subtitle">Masukkan link untuk mengecek apakah sudah live. Frontend only (tanpa backend).</p>
+
+      <!-- Input URL + tombol -->
+      <div class="row top-input">
+        <input class="grow" type="url" id="urlInput" placeholder="https://contoh.com/path" />
+        <button id="checkBtn" class="btn"><i class="fa-solid fa-magnifying-glass"></i> Check</button>
+      </div>
+
+      <!-- ⇩⇩ BULK DIPINDAH KE SINI (tepat di bawah kolom URL) ⇩⇩ -->
+      <details class="bulk-wrap">
+        <summary>Bulk check — paste banyak URL</summary>
+        <textarea id="bulk" rows="6" placeholder="Satu URL per baris..."></textarea>
+        <div class="row bulk-actions">
+          <button id="runBulk" class="btn"><i class="fa-solid fa-table"></i> Check Semua</button>
+          <button id="clearBulk" class="btn"><i class="fa-solid fa-eraser"></i> Clear</button>
+        </div>
+        <table id="tbl">
+          <thead><tr><th style="text-align:left">URL</th><th>Status</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </details>
+      <!-- ⇧⇧ BULK DIPINDAH KE SINI ⇧⇧ -->
+
+      <div class="mode">
+        <span class="pill">
+          <input type="radio" id="mode-direct" name="mode" checked />
+          <label for="mode-direct">Direct</label>
+        </span>
+        <span class="pill">
+          <input type="radio" id="mode-proxy" name="mode" />
+          <label for="mode-proxy">Proxy (CORS bypass)</label>
+        </span>
+      </div>
+      <p class="hint">
+        Direct bekerja untuk <em>same-origin</em> atau server yang mengizinkan CORS. Jika domain eksternal menolak CORS,
+        gunakan <b>Proxy</b> untuk cek via pembaca publik (r.jina.ai).
+      </p>
+
+      <div id="result" class="status wait">
+        <i class="fa-solid fa-circle-question"></i> Belum ada pengecekan
+      </div>
+    </section>
+
+    <!-- Panel daftar hasil -->
+    <section class="panel history-panel">
+      <div class="history-header">
+        <h2 class="history-title"><i class="fa-solid fa-list-check"></i> Daftar Hasil</h2>
+
+        <div class="history-controls">
+          <div class="filter">
+            <i class="fa-solid fa-filter"></i>
+            <input id="filterInput" type="search" placeholder="Filter title / URL..." />
+          </div>
+          <div class="history-actions">
+            <button id="exportCsv" class="btn" title="Export CSV (sesuai filter)">
+              <i class="fa-solid fa-file-export"></i> Export CSV
+            </button>
+            <button id="recheckAll" class="btn" title="Re-check semua">
+              <i class="fa-solid fa-rotate"></i> Re-check All
+            </button>
+            <button id="clearList" class="btn" title="Hapus semua">
+              <i class="fa-solid fa-trash"></i> Clear
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <ul id="historyList" class="history-list" aria-live="polite" aria-relevant="additions removals"></ul>
+
+      <div class="meta">
+        <span id="countIndicator">0 items</span>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-left">
+          <p class="footer-text">
+            &copy; <span id="footer-year">2025</span> eDM Helper <span class="footer-version" data-version>v1.0.0</span>. 
+            Built with <i class="fa-solid fa-heart"></i> for developers.
+          </p>
+        </div>
+        <div class="footer-right">
+          <div class="footer-links">
+            <a href="https://github.com/budifelt" target="_blank" class="footer-link">
+              <i class="fa-brands fa-github"></i>
+            </a>
+            <a href="https://instagram.com/budife.psd/" target="_blank" class="footer-link">
+              <i class="fa-brands fa-instagram"></i>
+            </a>
+            <a href="https://linkedin.com/in/budifelt/" target="_blank" class="footer-link">
+              <i class="fa-brands fa-linkedin"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Script -->
+<script src="js/index.js" defer></script>
+<script src="js/version-config.js" defer></script>
+<script src="js/settings-modal.js" defer></script>
+<script src="js/toast-manager.js" defer></script>
+<script src="js/modal-manager.js" defer></script>
+<script src="js/pages/link-checker.js" defer></script>
+</body>
+</html>

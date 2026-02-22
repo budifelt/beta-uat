@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+  
+  <!-- Meta Tags -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="eDM Helper Configuration - Configure your marketing tools">
+  <meta name="keywords" content="edm, config, settings, marketing, tools">
+  <meta name="author" content="eDM Helper">
+  
+  <!-- CSS Structure -->
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/utilities.css">
+  <link rel="stylesheet" href="css/theme-default.css">
+  <link rel="stylesheet" href="css/ui-buttons.css">
+  <link rel="stylesheet" href="css/ui-cards.css">
+  <link rel="stylesheet" href="css/ui-modals.css">
+  <link rel="stylesheet" href="css/ui-forms.css">
+  <link rel="stylesheet" href="css/page-components.css">
+  <link rel="stylesheet" href="css/ui-improvements.css">
+  
+  <title>Config eDM - eDM Helper</title>
+  <meta name="theme-color" content="#0f172a" />
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/codemirror.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/theme/monokai.min.css" />
+</head>
+<body>
+  <!-- Navigation Bar -->
+  <header class="header">
+    <nav class="nav">
+      <!-- Home Button -->
+      <div class="nav-left">
+        <a href="index.html" class="nav-link">
+          <i class="fa-solid fa-home"></i>
+          <span>Home</span>
+        </a>
+      </div>
+      
+      <!-- Profile Section -->
+      <div class="profile-section">
+        <!-- Login Button (shown when not logged in) -->
+        <button id="login-btn" onclick="showLoginModal()" class="login-trigger-btn">
+          <i class="fa-solid fa-right-to-bracket"></i>
+          <span>Login</span>
+        </button>
+        
+        <!-- Profile Dropdown (shown when logged in) -->
+        <div id="profile-dropdown" class="profile-dropdown" style="width: auto !important; min-width: 220px !important; max-width: 260px !important; display: none;">
+          <button onclick="toggleProfileMenu()" class="profile-trigger">
+            <div class="profile-avatar">
+              <i class="fa-solid fa-user"></i>
+            </div>
+            <span id="profile-name" style="flex: 1; min-width: 0; display: inline-block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">John Doe</span>
+            <i class="fa-solid fa-chevron-down"></i>
+          </button>
+          
+          <div id="profile-menu" class="profile-menu hidden" style="width: 220px !important; min-width: 220px !important; max-width: 260px !important;">
+            <div class="profile-header" onclick="showProfileModal(); toggleProfileMenu();" style="cursor: pointer;">
+              <div class="profile-info">
+                <div class="profile-avatar-large">
+                  <i class="fa-solid fa-user"></i>
+                </div>
+                <div class="profile-details">
+                  <div class="profile-name-display" id="profile-name-display">John Doe</div>
+                  <div class="profile-email-display" id="profile-email-display">john@example.com</div>
+                  <div class="profile-role-display" id="profile-role-display">User</div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="profile-actions">
+              <a href="#" onclick="showSettingsModal()" class="profile-action">
+                <i class="fa-solid fa-cog"></i>
+                <span>Settings</span>
+              </a>
+              
+              <a href="#" onclick="showProfileModal()" class="profile-action">
+                <i class="fa-solid fa-user-edit"></i>
+                <span>Edit Profile</span>
+              </a>
+              
+              <a href="#" onclick="showNotificationsModal()" class="profile-action">
+                <i class="fa-solid fa-bell"></i>
+                <span>Notifications</span>
+              </a>
+              
+              <a href="#" onclick="showHelpModal()" class="profile-action">
+                <i class="fa-solid fa-question-circle"></i>
+                <span>Help & Support</span>
+              </a>
+              
+              <div class="profile-divider"></div>
+              
+              <button onclick="logout()" class="profile-action profile-logout">
+                <i class="fa-solid fa-sign-out-alt"></i>
+                <span>Logout</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <header class="topbar">
+    <div class="left">
+      <span id="breadcrumb" class="breadcrumb" title="No folder">No folder</span>
+    </div>
+    <div class="right">
+      <span id="campaignCountIndicator" title="Occurrences in XML">0/7</span>
+    </div>
+  </header>
+
+  <main class="layout">
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <button id="openFolderBtn" class="btn" title="Open Folder">
+          <i class="fa-solid fa-folder-open"></i> Open Folder
+        </button>
+        <button id="refreshTreeBtn" class="btn secondary" title="Refresh">
+          <i class="fa-solid fa-refresh"></i>
+        </button>
+      </div>
+      <div class="sidebar-body">
+        <div id="fileTree" class="file-tree"></div>
+      </div>
+      <div class="resize-handle" id="resizeHandle"></div>
+    </aside>
+    <section class="content">
+      <div class="controls">
+        <div class="field">
+          <label for="campaignId">Campaign ID</label>
+          <div class="control">
+            <input id="campaignId" type="text" placeholder="YYYYMMDD_nama-campaign_XXXX" />
+            <span id="campaignIdCharCount" class="muted">(0)</span>
+            <span id="campaignIdCheckmark" class="status" style="display:none"></span>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="subject">Subject</label>
+          <div class="control">
+            <input id="subject" type="text" placeholder="Subject with <%[KRHRED_Unit_XX]|%>" />
+            <span id="subjectCharCount" class="muted">(0)</span>
+            <span id="subjectCheckmark" class="status" style="display:none"></span>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="link">Link</label>
+          <div class="control">
+            <input id="link" type="text" placeholder="http://example.com/1450-anything" />
+            <span id="mismatchWarning" class="warn" style="display:none">Mismatch!</span>
+            <span id="linkCheckmark" class="status" style="display:none"></span>
+          </div>
+        </div>
+
+        <div class="buttons">
+          <button id="applyUpdateBtn" class="btn"><i class="fa-solid fa-wand-magic-sparkles"></i> Apply Update</button>
+          <button id="saveFileBtn" class="btn success" title="Save current XML"><i class="fa-solid fa-floppy-disk"></i> Save</button>
+
+          <button id="updateCampaignIdBtn" class="btn"><i class="fa-solid fa-hashtag"></i> Update Campaign ID</button>
+          <button id="updateSubjectBtn"   class="btn"><i class="fa-solid fa-envelope"></i> Update Subject</button>
+          <button id="updateLinkBtn"      class="btn"><i class="fa-solid fa-link"></i> Update Link</button>
+        </div>
+      </div>
+
+      <textarea id="editor" class="editor" aria-label="XML editor"></textarea>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-left">
+          <p class="footer-text">
+            &copy; <span id="footer-year">2025</span> eDM Helper <span class="footer-version" data-version>v1.0.0</span>. 
+            Built with <i class="fa-solid fa-heart"></i> for developers.
+          </p>
+        </div>
+        <div class="footer-right">
+          <div class="footer-links">
+            <a href="https://github.com/budifelt" target="_blank" class="footer-link">
+              <i class="fa-brands fa-github"></i>
+            </a>
+            <a href="https://instagram.com/budife.psd/" target="_blank" class="footer-link">
+              <i class="fa-brands fa-instagram"></i>
+            </a>
+            <a href="https://linkedin.com/in/budifelt/" target="_blank" class="footer-link">
+              <i class="fa-brands fa-linkedin"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <div id="overlay" class="overlay" hidden>
+    <div class="spinner" role="status" aria-label="Loading">
+      <i class="fa-solid fa-rotate fa-spin"></i>
+      <div>Loading…</div>
+    </div>
+  </div>
+
+  <!-- Save Changes Modal -->
+  <div id="saveChangesModal" class="modal" hidden>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Simpan Perubahan</h3>
+        <button class="modal-close" id="modalCloseBtn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p>Ada perubahan yang belum disimpan. Simpan perubahan ke file?</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn secondary" id="cancelModalBtn">Batal</button>
+        <button class="btn primary" id="saveChangesBtn">Simpan</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/codemirror.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/mode/xml/xml.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/addon/fold/xml-fold.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/addon/edit/matchtags.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/addon/search/searchcursor.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/addon/search/search.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/addon/search/jump-to-line.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/addon/dialog/dialog.min.js" defer></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/addon/dialog/dialog.min.css" />
+  
+<script src="js/pages/config.js" defer></script>
+<script src="js/version-config.js" defer></script>
+<script src="js/settings-modal.js" defer></script>
+<script src="js/toast-manager.js" defer></script>
+<script src="js/modal-manager.js" defer></script>
+</body>
+</html>

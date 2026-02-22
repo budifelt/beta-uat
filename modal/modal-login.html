@@ -1,0 +1,78 @@
+<!-- Login Modal -->
+<link rel="stylesheet" href="../css/modal/modal-login.css">
+<script src="../js/modal/modal-login.js"></script>
+<div id="modal-login" class="modal auth-modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 class="modal-title">
+        <i class="fa-solid fa-sign-in-alt"></i>
+        Login
+      </h2>
+      <button onclick="hideLoginModal()" class="modal-close-btn">
+        <i class="fa-solid fa-times"></i>
+      </button>
+    </div>
+    
+    <div class="modal-body">
+      <form id="login-form" class="login-form" onsubmit="handleLogin(event)">
+        <div class="login-form-group">
+          <label for="email" class="login-form-label">
+            Email atau Username
+          </label>
+          <div>
+            <i class="fa-solid fa-envelope login-input-icon"></i>
+            <input 
+              type="text" 
+              id="email" 
+              name="email" 
+              class="login-input" 
+              placeholder="Enter email atau username" 
+              required
+            >
+          </div>
+        </div>
+        
+        <div class="login-form-group">
+          <label for="password" class="login-form-label">
+            Password
+          </label>
+          <div>
+            <i class="fa-solid fa-lock login-input-icon"></i>
+            <input 
+              type="password" 
+              id="password" 
+              name="password" 
+              class="login-input" 
+              placeholder="Enter your password" 
+              required
+            >
+            <button 
+              type="button" 
+              class="password-toggle-btn"
+              onclick="togglePassword()"
+            >
+              <i class="fa-solid fa-eye" id="password-icon"></i>
+            </button>
+          </div>
+        </div>
+        
+        <div class="login-options">
+          <label class="remember-me">
+            <input type="checkbox" id="remember" name="remember">
+            <span>Remember me</span>
+          </label>
+          <a href="#" class="forgot-password">Forgot password?</a>
+        </div>
+        
+        <button type="submit" class="btn-login">
+          <i class="fa-solid fa-right-to-bracket"></i>
+          Login
+        </button>
+      </form>
+      
+      <div class="signup-prompt">
+        Don't have an account? <a href="#" onclick="event.preventDefault(); hideLoginModal(); showRegisterModal();" class="register-link">Create Account</a>
+      </div>
+    </div>
+  </div>
+</div>

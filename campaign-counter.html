@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+  
+  <!-- Meta Tags -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="eDM Helper Campaign Counter - Track your email campaign performance">
+  <meta name="keywords" content="edm, campaign, counter, analytics, marketing">
+  <meta name="author" content="eDM Helper">
+  
+  
+  <!-- CSS Structure -->
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/theme.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/modal-base.css">
+  <link rel="stylesheet" href="css/pages/campaign-counter.css">
+  
+  <title>Campaign Counter - eDM Helper</title>
+  <meta name="theme-color" content="#0f172a" />
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body>
+  <!-- Check login state immediately to prevent flash -->
+  <script>
+    // Immediately check login state to prevent UI flash
+    (function() {
+      let user = null;
+      const rawUser = localStorage.getItem('currentUser');
+      if (rawUser) {
+        try {
+          user = JSON.parse(rawUser);
+        } catch (e) {
+          user = null;
+        }
+      }
+
+      document.addEventListener('DOMContentLoaded', () => {
+        const loginBtn = document.getElementById('login-btn');
+        const profileDropdown = document.getElementById('profile-dropdown');
+        const profileName = document.getElementById('profile-name');
+        const profileNameDisplay = document.getElementById('profile-name-display');
+        const displayName = user?.name || user?.fullName || user?.fullname || user?.username || 'User';
+
+        if (user) {
+          if (loginBtn) loginBtn.style.display = 'none';
+          if (profileDropdown) profileDropdown.style.display = 'inline-block';
+          if (profileName) profileName.textContent = displayName;
+          if (profileNameDisplay) profileNameDisplay.textContent = displayName;
+        } else {
+          if (loginBtn) {
+            loginBtn.style.display = 'flex';
+            // Add pulse animation to login button
+            loginBtn.classList.add('pulse');
+            // Remove pulse after 5 seconds
+            setTimeout(() => {
+              loginBtn.classList.remove('pulse');
+            }, 5000);
+          }
+          if (profileDropdown) profileDropdown.style.display = 'none';
+        }
+      });
+    })();
+  </script>
+  
+  <header class="header">
+    <nav class="nav">
+      <!-- Home Button -->
+      <div class="nav-left">
+        <a href="index.html" class="nav-link">
+          <i class="fa-solid fa-home"></i>
+          <span>Home</span>
+        </a>
+      </div>
+      
+      <!-- Profile Section -->
+      <div class="profile-section">
+        <!-- Login Button (shown when not logged in) -->
+        <button id="login-btn" onclick="showLoginModal()" class="login-trigger-btn" style="display: none;">
+          <i class="fa-solid fa-right-to-bracket"></i>
+          <span>Login</span>
+        </button>
+        
+        <!-- Profile Dropdown (shown when logged in) -->
+        <div id="profile-dropdown" class="profile-dropdown" style="width: auto !important; min-width: 220px !important; max-width: 260px !important; display: none;">
+          <button onclick="toggleProfileMenu()" class="profile-trigger">
+            <div class="profile-avatar">
+              <i class="fa-solid fa-user"></i>
+            </div>
+            <span id="profile-name" style="flex: 1; min-width: 0; display: inline-block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">User</span>
+            <i class="fa-solid fa-chevron-down"></i>
+          </button>
+          
+          <div id="profile-menu" class="profile-menu" style="width: 220px !important; min-width: 220px !important; max-width: 260px !important;">
+            <div class="profile-header" onclick="showProfileModal(); toggleProfileMenu();" style="cursor: pointer;">
+              <div class="profile-info">
+                <div class="profile-avatar-large">
+                  <i class="fa-solid fa-user"></i>
+                </div>
+                <div class="profile-details">
+                  <div class="profile-name-display" id="profile-name-display">User</div>
+                  <div class="profile-role-display" id="profile-role-display">User</div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="profile-actions">
+              <a href="#" onclick="event.preventDefault(); showSettingsModal()" class="profile-action">
+                <i class="fa-solid fa-cog"></i>
+                <span>Settings</span>
+                <i class="fa-solid fa-chevron-right" style="margin-left: auto; font-size: 12px; opacity: 0.5;"></i>
+              </a>
+              
+              <a href="#" onclick="showEditProfileModal()" class="profile-action">
+                <i class="fa-solid fa-user-edit"></i>
+                <span>Edit Profile</span>
+                <i class="fa-solid fa-chevron-right" style="margin-left: auto; font-size: 12px; opacity: 0.5;"></i>
+              </a>
+              
+              <a href="#" onclick="showNotificationsModal()" class="profile-action">
+                <i class="fa-solid fa-bell"></i>
+                <span>Notifications</span>
+                <span class="notification-badge" style="margin-left: auto; background: var(--accent-primary); color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px; min-width: 18px; text-align: center;">3</span>
+              </a>
+              
+              <a href="#" onclick="showHelpModal()" class="profile-action">
+                <i class="fa-solid fa-question-circle"></i>
+                <span>Help & Support</span>
+                <i class="fa-solid fa-chevron-right" style="margin-left: auto; font-size: 12px; opacity: 0.5;"></i>
+              </a>
+              
+              <div class="profile-divider"></div>
+              
+              <button onclick="showLogoutModal()" class="profile-action profile-logout">
+                <i class="fa-solid fa-sign-out-alt"></i>
+                <span>Logout</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main id="main-content" class="page">
+      <div class="counter-container">
+        <h1>Campaign Counter
+          <button class="edit-icon" onclick="editCampaignID()" title="Edit manually"><i class="fa-solid fa-pen-to-square"></i></button>
+        </h1>
+        <div class="counter-value" id="counter">
+          <span id="counter-number">0001</span>
+        </div>
+        <div class="progress-bar-container">
+          <div class="progress-bar" id="progress-bar"></div>
+        </div>
+        <div class="sync-status" id="sync-status">Ready</div>
+        <div class="last-updated" id="last-updated"></div>
+        <div class="cache-status cache-status-custom" id="cache-status">
+          <i class="fa-solid fa-database"></i> Browser Cache: <span id="cache-size">0</span> items
+        </div>
+        <div class="buttons">
+          <button onclick="addCampaignID()" id="add-btn"><i class="fa-solid fa-plus"></i> Generate New Campaign ID</button>
+          <button onclick="decrementCampaignID()" id="decrement-btn"><i class="fa-solid fa-rotate-left"></i> Revert Campaign ID</button>
+        </div>
+      </div>
+
+      <div class="history-container">
+        <h2>History</h2>
+        <div id="history-list"></div>
+        <button id="load-more-btn" onclick="loadMoreHistory()" class="load-more-btn-custom">
+          Load More
+        </button>
+      </div>
+  </main>
+
+  <!-- Modal Edit Campaign ID -->
+  <div class="modal-overlay" id="edit-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Edit Campaign ID</h3>
+        <button class="modal-close-btn" onclick="closeEditModal()">
+          <i class="fa-solid fa-times"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Enter the new campaign ID number</p>
+        <div class="input-group">
+          <label for="modal-input">Campaign ID</label>
+          <input type="number" id="modal-input" min="1" placeholder="Enter campaign ID" autocomplete="off">
+          <small class="input-hint">Minimum value: 1</small>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-cancel" onclick="closeEditModal()">
+          <i class="fa-solid fa-xmark"></i> Cancel
+        </button>
+        <button class="btn-confirm" onclick="confirmEditCampaignID()">
+          <i class="fa-solid fa-check"></i> Confirm
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-left">
+          <p class="footer-text">
+            &copy; <span id="footer-year">2026</span> eDM Helper <span class="footer-version" data-version>v1.0.0</span>. 
+            Built with <i class="fa-solid fa-heart"></i> for developers.
+          </p>
+        </div>
+        <div class="footer-right">
+          <div class="footer-links">
+            <a href="https://github.com/budifelt" target="_blank" class="footer-link" title="GitHub">
+              <i class="fa-brands fa-github"></i>
+            </a>
+            <a href="https://instagram.com/budife.psd/" target="_blank" class="footer-link" title="Instagram">
+              <i class="fa-brands fa-instagram"></i>
+            </a>
+            <a href="https://linkedin.com/in/budifelt/" target="_blank" class="footer-link" title="LinkedIn">
+              <i class="fa-brands fa-linkedin"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Include Settings Modal -->
+  <div id="settings-container"></div>
+
+  <script src="js/modal-manager.js" defer></script>
+  <script src="js/nav.js" defer></script>
+  <script src="js/version-config.js" defer></script>
+  <script src="js/toast-manager.js" defer></script>
+  <script src="js/url-fetcher.js" defer></script>
+  <script src="js/pages/campaign-counter.js" defer></script>
+</body>
+</html>

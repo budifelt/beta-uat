@@ -1,0 +1,127 @@
+<!-- Notifications Modal -->
+<link rel="stylesheet" href="../css/modal/modal-notifications.css">
+<script src="../js/modal/modal-notifications.js"></script>
+<div id="modal-notifications" class="modal notifications-modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 class="modal-title">
+        <i class="fa-solid fa-bell"></i>
+        Notifications
+        <span class="notification-badge" id="notification-count">5</span>
+      </h2>
+      <div class="notifications-actions">
+        <button onclick="markAllAsRead()" class="mark-all-read-btn">
+          <i class="fa-solid fa-check-double"></i>
+          Mark all as read
+        </button>
+        <button onclick="hideNotificationsModal()" class="modal-close-btn">
+          <i class="fa-solid fa-times"></i>
+        </button>
+      </div>
+    </div>
+    
+    <div class="modal-body">
+      <!-- Notifications List -->
+      <div class="notifications-list">
+        <!-- Unread Notification -->
+        <div class="notification-item unread" data-type="system">
+          <div class="notification-header">
+            <div class="notification-icon info">
+              <i class="fa-solid fa-info-circle"></i>
+            </div>
+            <div class="notification-meta">
+              <h4 class="notification-title">System Update</h4>
+              <p class="notification-time">5 minutes ago</p>
+            </div>
+          </div>
+          <p class="notification-content">
+            eDM Helper has been updated to version 2.0.1 with new features and improvements.
+          </p>
+        </div>
+        
+        <!-- Unread Notification -->
+        <div class="notification-item unread" data-type="success">
+          <div class="notification-header">
+            <div class="notification-icon success">
+              <i class="fa-solid fa-check-circle"></i>
+            </div>
+            <div class="notification-meta">
+              <h4 class="notification-title">Campaign Completed</h4>
+              <p class="notification-time">1 hour ago</p>
+            </div>
+          </div>
+          <p class="notification-content">
+            Your "Summer Sale" campaign has been successfully sent to 1,234 recipients.
+          </p>
+        </div>
+        
+        <!-- Read Notification -->
+        <div class="notification-item" data-type="warning">
+          <div class="notification-header">
+            <div class="notification-icon warning">
+              <i class="fa-solid fa-exclamation-triangle"></i>
+            </div>
+            <div class="notification-meta">
+              <h4 class="notification-title">Storage Warning</h4>
+              <p class="notification-time">3 hours ago</p>
+            </div>
+          </div>
+          <p class="notification-content">
+            You're using 85% of your storage capacity. Consider upgrading your plan.
+          </p>
+        </div>
+        
+        <!-- Read Notification -->
+        <div class="notification-item" data-type="info">
+          <div class="notification-header">
+            <div class="notification-icon info">
+              <i class="fa-solid fa-user-plus"></i>
+            </div>
+            <div class="notification-meta">
+              <h4 class="notification-title">New Team Member</h4>
+              <p class="notification-time">Yesterday</p>
+            </div>
+          </div>
+          <p class="notification-content">
+            Jane Smith has joined your team. She now has access to all shared projects.
+          </p>
+        </div>
+        
+        <!-- Read Notification -->
+        <div class="notification-item" data-type="error">
+          <div class="notification-header">
+            <div class="notification-icon error">
+              <i class="fa-solid fa-times-circle"></i>
+            </div>
+            <div class="notification-meta">
+              <h4 class="notification-title">Failed Delivery</h4>
+              <p class="notification-time">2 days ago</p>
+            </div>
+          </div>
+          <p class="notification-content">
+            12 emails failed to deliver due to invalid addresses. Please review your contact list.
+          </p>
+        </div>
+      </div>
+      
+      <!-- Empty State (hidden by default) -->
+      <div class="notifications-empty" style="display: none;">
+        <i class="fa-solid fa-bell-slash"></i>
+        <h3>No notifications</h3>
+        <p>You're all caught up! Check back later for new updates.</p>
+      </div>
+      
+      <!-- Loading State (hidden by default) -->
+      <div class="notifications-loading" style="display: none;">
+        <i class="fa-solid fa-spinner"></i>
+        <span>Loading notifications...</span>
+      </div>
+    </div>
+    
+    <div class="modal-footer">
+      <button class="view-all-btn" onclick="viewAllNotifications()">
+        View All Notifications
+      </button>
+    </div>
+  </div>
+</div>

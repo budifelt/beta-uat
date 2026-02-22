@@ -1,0 +1,74 @@
+<!-- Logout Confirmation Modal -->
+<link rel="stylesheet" href="../css/modal/modal-logout.css">
+<script src="../js/modal/modal-logout.js"></script>
+<div id="modal-logout" class="modal">
+  <div class="modal-content">
+    <!-- Modal Header -->
+    <div class="modal-header">
+      <h2 class="modal-title">
+        <i class="fa-solid fa-sign-out-alt"></i>
+        Sign Out
+      </h2>
+      <button onclick="hideLogoutModal()" class="modal-close-btn">
+        <i class="fa-solid fa-times"></i>
+      </button>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="modal-body">
+      <div class="logout-confirmation">
+        <div class="logout-icon-wrapper">
+          <i class="fa-solid fa-sign-out-alt logout-icon"></i>
+        </div>
+        
+        <div class="logout-content">
+          <h3 class="logout-title">Are you sure you want to sign out?</h3>
+          <p class="logout-message">You will be signed out of your account on this device.</p>
+          
+          <!-- Additional Info -->
+          <div class="logout-info">
+            <div class="info-item">
+              <i class="fa-solid fa-user"></i>
+              <span id="logout-username">John Doe</span>
+            </div>
+            <div class="info-item">
+              <i class="fa-solid fa-envelope"></i>
+              <span id="logout-email">john.doe@example.com</span>
+            </div>
+            <div class="info-item">
+              <i class="fa-solid fa-clock"></i>
+              <span>Last active: 2 minutes ago</span>
+            </div>
+          </div>
+          
+          <!-- Warning Message -->
+          <div class="logout-warning">
+            <i class="fa-solid fa-exclamation-triangle"></i>
+            <span>Any unsaved work will be lost. Make sure to save your progress before signing out.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="modal-footer">
+      <div class="footer-left">
+        <label class="checkbox-label">
+          <input type="checkbox" id="remember-session">
+          <span class="checkmark"></span>
+          Remember my session for 30 days
+        </label>
+      </div>
+      <div class="footer-right">
+        <button onclick="hideLogoutModal()" class="btn btn-secondary">
+          <i class="fa-solid fa-times"></i>
+          Cancel
+        </button>
+        <button onclick="confirmLogout()" class="btn btn-danger" id="logout-btn">
+          <i class="fa-solid fa-sign-out-alt"></i>
+          Sign Out
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

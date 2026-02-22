@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+  
+  <!-- Meta Tags -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="eDM Helper - Free collection of useful tools for everyday tasks">
+  <meta name="keywords" content="tools, utilities, helper, bookmarklet, database, checker, generator">
+  <meta name="author" content="eDM Helper">
+  
+  <!-- CSS Structure -->
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/theme.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/modal-base.css">
+  <link rel="stylesheet" href="css/pages/index.css" />
+  
+  <title>eDM Helper · Free Tools Collection</title>
+  <meta name="theme-color" content="#0f172a" />
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body>
+  <!-- Check login state immediately to prevent flash -->
+  <script>
+    // Immediately check login state to prevent UI flash
+    (function() {
+      let user = null;
+      const rawUser = localStorage.getItem('currentUser');
+      if (rawUser) {
+        try {
+          user = JSON.parse(rawUser);
+        } catch (e) {
+          user = null;
+        }
+      }
+
+      document.addEventListener('DOMContentLoaded', () => {
+        const loginBtn = document.getElementById('login-btn');
+        const profileDropdown = document.getElementById('profile-dropdown');
+        const profileName = document.getElementById('profile-name');
+        const profileNameDisplay = document.getElementById('profile-name-display');
+        const displayName = user?.name || user?.fullName || user?.fullname || user?.username || 'User';
+
+        if (user) {
+          if (loginBtn) loginBtn.style.display = 'none';
+          if (profileDropdown) profileDropdown.style.display = 'inline-block';
+          if (profileName) profileName.textContent = displayName;
+          if (profileNameDisplay) profileNameDisplay.textContent = displayName;
+        } else {
+          if (loginBtn) {
+            loginBtn.style.display = 'flex';
+            // Add pulse animation to login button
+            loginBtn.classList.add('pulse');
+            // Remove pulse after 5 seconds
+            setTimeout(() => {
+              loginBtn.classList.remove('pulse');
+            }, 5000);
+          }
+          if (profileDropdown) profileDropdown.style.display = 'none';
+        }
+      });
+      
+      // Define updateUserUI function globally
+      window.updateUserUI = function() {
+        const loginBtn = document.getElementById('login-btn');
+        const profileDropdown = document.getElementById('profile-dropdown');
+        const profileName = document.getElementById('profile-name');
+        const profileNameDisplay = document.getElementById('profile-name-display');
+        
+        const rawUser = localStorage.getItem('currentUser');
+        const user = rawUser ? JSON.parse(rawUser) : null;
+        const displayName = user?.name || user?.fullName || user?.fullname || user?.username || 'User';
+
+        if (user) {
+          if (loginBtn) loginBtn.style.display = 'none';
+          if (profileDropdown) profileDropdown.style.display = 'inline-block';
+          if (profileName) profileName.textContent = displayName;
+          if (profileNameDisplay) profileNameDisplay.textContent = displayName;
+        } else {
+          if (loginBtn) {
+            loginBtn.style.display = 'flex';
+            loginBtn.classList.add('pulse');
+            setTimeout(() => {
+              loginBtn.classList.remove('pulse');
+            }, 5000);
+          }
+          if (profileDropdown) profileDropdown.style.display = 'none';
+        }
+      };
+    })();
+  </script>
+  
+  <header class="header">
+    <nav class="nav">
+      <!-- Home Button -->
+      <div class="nav-left">
+        <a href="index.html" class="nav-link">
+          <i class="fa-solid fa-home"></i>
+          <span>Home</span>
+        </a>
+      </div>
+      
+      <!-- Profile Section -->
+      <div class="profile-section">
+        <!-- Login Button (shown when not logged in) -->
+        <button id="login-btn" onclick="showLoginModal()" class="login-trigger-btn" style="display: none;">
+          <i class="fa-solid fa-right-to-bracket"></i>
+          <span>Login</span>
+        </button>
+        
+        <!-- Profile Dropdown (shown when logged in) -->
+        <div id="profile-dropdown" class="profile-dropdown" style="width: auto !important; min-width: 220px !important; max-width: 260px !important; display: none;">
+          <button onclick="toggleProfileMenu()" class="profile-trigger">
+            <div class="profile-avatar">
+              <i class="fa-solid fa-user"></i>
+            </div>
+            <span id="profile-name" style="flex: 1; min-width: 0; display: inline-block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">User</span>
+            <i class="fa-solid fa-chevron-down"></i>
+          </button>
+          
+          <div id="profile-menu" class="profile-menu hidden" style="width: 220px !important; min-width: 220px !important; max-width: 260px !important;">
+            <div class="profile-header" onclick="showProfileModal(); toggleProfileMenu();" style="cursor: pointer;">
+              <div class="profile-info">
+                <div class="profile-avatar-large">
+                  <i class="fa-solid fa-user"></i>
+                </div>
+                <div class="profile-details">
+                  <div class="profile-name-display" id="profile-name-display">User</div>
+                  <div class="profile-role-display" id="profile-role-display">User</div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="profile-actions">
+              <a href="#" onclick="event.preventDefault(); showSettingsModal()" class="profile-action">
+                <i class="fa-solid fa-cog"></i>
+                <span>Settings</span>
+                <i class="fa-solid fa-chevron-right" style="margin-left: auto; font-size: 12px; opacity: 0.5;"></i>
+              </a>
+              
+              <a href="#" onclick="showEditProfileModal()" class="profile-action">
+                <i class="fa-solid fa-user-edit"></i>
+                <span>Edit Profile</span>
+                <i class="fa-solid fa-chevron-right" style="margin-left: auto; font-size: 12px; opacity: 0.5;"></i>
+              </a>
+              
+              <a href="#" onclick="showNotificationsModal()" class="profile-action">
+                <i class="fa-solid fa-bell"></i>
+                <span>Notifications</span>
+                <span class="notification-badge" style="margin-left: auto; background: var(--accent-primary); color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px; min-width: 18px; text-align: center;">3</span>
+              </a>
+              
+              <a href="#" onclick="showHelpModal()" class="profile-action">
+                <i class="fa-solid fa-question-circle"></i>
+                <span>Help & Support</span>
+                <i class="fa-solid fa-chevron-right" style="margin-left: auto; font-size: 12px; opacity: 0.5;"></i>
+              </a>
+              
+              <div class="profile-divider"></div>
+              
+              <button onclick="showLogoutModal()" class="profile-action profile-logout">
+                <i class="fa-solid fa-sign-out-alt"></i>
+                <span>Logout</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main id="main-content">
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+          <div class="hero-text">
+            <h1 class="hero-title">eDM Helper</h1>
+            <p class="hero-subtitle">Collection of useful tools for everyday tasks</p>
+          </div>
+          <div class="hero-stats">
+            <div class="stat-item">
+              <span class="stat-number">8</span>
+              <span class="stat-label">Tools</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-number">Free</span>
+              <span class="stat-label">Forever</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-number">Simple</span>
+              <span class="stat-label">Easy to Use</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    <section class="content" aria-label="Tools">
+        <div class="tools-grid">
+          <a class="tool-link" href="bookmarklet.html">
+            <div class="tool-item">
+              <div class="tool-icon">
+                <i class="fa-solid fa-bookmark"></i>
+              </div>
+              <div class="tool-info">
+                <h3 class="tool-title">Bookmarklet</h3>
+                <p class="tool-desc">Download and manage bookmarklets</p>
+              </div>
+            </div>
+          </a>
+          
+          <a class="tool-link" href="campaign-counter.html">
+            <div class="tool-item">
+              <div class="tool-icon">
+                <i class="fa-solid fa-chart-line"></i>
+              </div>
+              <div class="tool-info">
+                <h3 class="tool-title">Campaign Counter</h3>
+                <p class="tool-desc">Track and manage campaign data</p>
+              </div>
+            </div>
+          </a>
+          
+          <a class="tool-link" href="config.html">
+            <div class="tool-item">
+              <div class="tool-icon">
+                <i class="fa-solid fa-gear"></i>
+              </div>
+              <div class="tool-info">
+                <h3 class="tool-title">Config eDM</h3>
+                <p class="tool-desc">Manage and configure your application settings</p>
+              </div>
+            </div>
+          </a>
+          
+          <a class="tool-link" href="database-checker.html">
+            <div class="tool-item">
+              <div class="tool-icon">
+                <i class="fa-solid fa-database"></i>
+              </div>
+              <div class="tool-info">
+                <h3 class="tool-title">Database Checker</h3>
+                <p class="tool-desc">Monitor and validate your database connections</p>
+              </div>
+            </div>
+          </a>
+          
+          <a class="tool-link" href="database-generator.html">
+            <div class="tool-item">
+              <div class="tool-icon">
+                <i class="fa-solid fa-database"></i>
+              </div>
+              <div class="tool-info">
+                <h3 class="tool-title">Database Generator</h3>
+                <p class="tool-desc">Generate database schemas and structures</p>
+              </div>
+            </div>
+          </a>
+          
+          <a class="tool-link" href="layout-checker.html">
+            <div class="tool-item">
+              <div class="tool-icon">
+                <i class="fa-solid fa-ruler-combined"></i>
+              </div>
+              <div class="tool-info">
+                <h3 class="tool-title">Layout Checker</h3>
+                <p class="tool-desc">Verify and test your layout configurations</p>
+              </div>
+            </div>
+          </a>
+          
+          <a class="tool-link" href="link-checker.html">
+            <div class="tool-item">
+              <div class="tool-icon">
+                <i class="fa-solid fa-link"></i>
+              </div>
+              <div class="tool-info">
+                <h3 class="tool-title">Link Live Checker</h3>
+                <p class="tool-desc">Check link already live or not?</p>
+              </div>
+            </div>
+          </a>
+          
+          <a class="tool-link" href="wfh-tracker.html">
+            <div class="tool-item">
+              <div class="tool-icon">
+                <i class="fa-solid fa-calendar"></i>
+              </div>
+              <div class="tool-info">
+                <h3 class="tool-title">WFH Tracker</h3>
+                <p class="tool-desc">Track work from home days and holidays</p>
+              </div>
+            </div>
+          </a>
+        </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-left">
+          <p class="footer-text">
+            &copy; <span id="footer-year">2025</span> eDM Helper <span class="footer-version" data-version>v1.0.0</span>. 
+            Built with <i class="fa-solid fa-heart"></i> for developers.
+          </p>
+        </div>
+        <div class="footer-right">
+          <div class="footer-links">
+            <a href="https://github.com/budifelt" target="_blank" class="footer-link">
+              <i class="fa-brands fa-github"></i>
+            </a>
+            <a href="https://instagram.com/budife.psd/" target="_blank" class="footer-link">
+              <i class="fa-brands fa-instagram"></i>
+            </a>
+            <a href="https://linkedin.com/in/budifelt/" target="_blank" class="footer-link">
+              <i class="fa-brands fa-linkedin"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Include Settings Modal -->
+  <div id="settings-container"></div>
+
+<script src="js/modal-manager.js" defer></script>
+<script src="js/pages/index.js" defer></script>
+<script src="js/version-config.js" defer></script>
+<script src="js/toast-manager.js" defer></script>
+<script src="js/url-fetcher.js" defer></script>
+</body>
+</html>

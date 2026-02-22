@@ -1,0 +1,337 @@
+/* ===================================
+   THEME - RED & WHITE
+   =================================== */
+:root {
+  /* ===================================
+     BASE PALETTE
+     =================================== */
+  --bg: #FFFFFF;
+  --surface: #FFFFFF;
+  --text: #000000;
+  --text-muted: #666666;
+  
+  /* ===================================
+     PRIMARY RED PALETTE
+     =================================== */
+  --red-50: #FFF5F3;
+  --red-100: #FED7D2;
+  --red-200: #FEB2B2;
+  --red-300: #FC8181;
+  --red-400: #F56565;
+  --red-500: #F18C8E;  /* Primary brand color */
+  --red-600: #DC2626;
+  --red-700: #B91C1C;
+  --red-800: #991B1B;
+  --red-900: #7F1D1D;
+  
+  /* ===================================
+     SEMANTIC COLORS
+     =================================== */
+  --primary: var(--red-500);
+  --primary-hover: var(--red-600);
+  --accent: var(--red-500);
+  --accent-hover: var(--red-600);
+  
+  --success: #15803D;
+  --success-hover: #166534;
+  --warning: #D97706;
+  --warning-hover: #B45309;
+  --error: var(--red-600);
+  --error-hover: var(--red-700);
+  --info: #2563EB;
+  --info-hover: #1D4ED8;
+  
+  /* ===================================
+     NEUTRAL COLORS
+     =================================== */
+  --gray-50: #F9FAFB;
+  --gray-100: #F3F4F6;
+  --gray-200: #E5E7EB;
+  --gray-300: #D1D5DB;
+  --gray-400: #9CA3AF;
+  --gray-500: #6B7280;
+  --gray-600: #4B5563;
+  --gray-700: #374151;
+  --gray-800: #1F2937;
+  --gray-900: #111827;
+  
+  /* ===================================
+     SYSTEM COLORS
+     =================================== */
+  --border: var(--gray-200);
+  --divider: var(--gray-300);
+  --hover: var(--red-50);
+  --focus: var(--primary);
+  --disabled: var(--gray-400);
+  
+  /* ===================================
+     COMPONENT COLORS
+     =================================== */
+  --btn-primary-bg: var(--primary);
+  --btn-primary-text: #FFFFFF;
+  --btn-secondary-bg: var(--gray-50);
+  --btn-secondary-text: var(--text);
+  --btn-danger-bg: var(--error);
+  --btn-danger-text: #FFFFFF;
+  
+  --link: var(--primary);
+  --link-hover: var(--primary-hover);
+  
+  /* ===================================
+     OPACITY COLORS
+     =================================== */
+  --primary-opacity-03: rgba(232, 92, 65, 0.03);
+  --primary-opacity-10: rgba(232, 92, 65, 0.1);
+  --primary-opacity-20: rgba(232, 92, 65, 0.2);
+  --primary-opacity-30: rgba(232, 92, 65, 0.3);
+  
+  --success-opacity-10: rgba(21, 128, 61, 0.1);
+  --warning-opacity-10: rgba(217, 119, 6, 0.1);
+  --error-opacity-10: rgba(220, 38, 38, 0.1);
+  --info-opacity-10: rgba(37, 99, 235, 0.1);
+  
+  /* ===================================
+     GRADIENTS
+     =================================== */
+  --gradient-primary: linear-gradient(135deg, var(--red-500) 0%, var(--red-600) 100%);
+  --gradient-accent: linear-gradient(135deg, var(--red-500) 0%, #FF6B5B 100%);
+  --gradient-success: linear-gradient(135deg, var(--success) 0%, var(--success-hover) 100%);
+  --gradient-warning: linear-gradient(135deg, var(--warning) 0%, var(--warning-hover) 100%);
+  --gradient-error: linear-gradient(135deg, var(--error) 0%, var(--error-hover) 100%);
+  --gradient-surface: linear-gradient(135deg, var(--bg) 0%, var(--red-50) 100%);
+  
+  /* ===================================
+     SHADOWS
+     =================================== */
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.15);
+  --shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.2);
+  --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.25);
+  --shadow-2xl: 0 40px 80px rgba(0, 0, 0, 0.3);
+  --shadow-inner: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+  --shadow-colored: 0 4px 12px rgba(232, 92, 65, 0.3);
+  
+  /* ===================================
+     TYPOGRAPHY
+     =================================== */
+  --font-family-base: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  --font-family-mono: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+  
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-base: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.25rem;
+  --font-size-2xl: 1.5rem;
+  --font-size-3xl: 1.875rem;
+  --font-size-4xl: 2.25rem;
+  --font-size-5xl: 3rem;
+  --font-size-6xl: 3.75rem;
+  
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+  --font-weight-black: 900;
+  
+  --line-height-tight: 1.25;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.75;
+  
+  /* ===================================
+     SPACING
+     =================================== */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
+  --space-24: 6rem;
+  --space-32: 8rem;
+  
+  /* Aliases for convenience */
+  --space-xs: var(--space-1);
+  --space-sm: var(--space-2);
+  --space-md: var(--space-4);
+  --space-lg: var(--space-6);
+  --space-xl: var(--space-8);
+  --space-2xl: var(--space-12);
+  --space-3xl: var(--space-16);
+  
+  /* ===================================
+     BORDER RADIUS
+     =================================== */
+  --radius-none: 0;
+  --radius-xs: 0.125rem;
+  --radius-sm: 0.25rem;
+  --radius-md: 0.375rem;
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.75rem;
+  --radius-2xl: 1rem;
+  --radius-3xl: 1.5rem;
+  --radius-full: 9999px;
+  
+  /* ===================================
+     TRANSITIONS
+     =================================== */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 350ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-bounce: 400ms cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  
+  /* ===================================
+     Z-INDEX
+     =================================== */
+  --z-dropdown: 1020;
+  --z-sticky: 1020;
+  --z-fixed: 1030;
+  --z-header: 1030;
+  --z-footer: 1010;
+  --z-modal-backdrop: 1040;
+  --z-modal: 1050;
+  --z-popover: 1060;
+  --z-tooltip: 1070;
+  --z-toast: 1080;
+  --z-maximum: 9999;
+  
+  /* ===================================
+     EFFECTS
+     =================================== */
+  --focus-ring: 0 0 0 2px var(--primary-opacity-20);
+  --hover-lift: -2px;
+  --hover-scale: 1.02;
+  --active-scale: 0.98;
+  --header-height: 64px;
+  --border-width: 1px;
+  
+  /* ===================================
+     LEGACY MAPPINGS (for backward compatibility)
+     =================================== */
+  --accent-primary: var(--primary);
+  --text-secondary: var(--text-muted);
+  --bg-dark: var(--gray-800);
+  --toast-success: var(--success);
+  --toast-warning: var(--warning);
+  --toast-error: var(--error);
+  --toast-info: var(--info);
+  
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-success: var(--success);
+  --color-success-hover: var(--success-hover);
+  --color-warning: var(--warning);
+  --color-warning-hover: var(--warning-hover);
+  --color-error: var(--error);
+  --color-error-hover: var(--error-hover);
+  --color-info: var(--info);
+  --color-info-hover: var(--info-hover);
+  
+  --bg-primary: var(--bg);
+  --bg-secondary: var(--surface);
+  --bg-tertiary: var(--border);
+  --bg-quaternary: var(--divider);
+  --bg-glass: rgba(255, 255, 255, 0.95);
+  --bg-overlay: var(--primary-opacity-10);
+  --bg-gradient: var(--gradient-surface);
+  --bg-gradient-alt: linear-gradient(135deg, var(--surface) 0%, var(--border) 100%);
+  
+  --text-primary: var(--text);
+  --text-secondary: var(--text-muted);
+  --text-tertiary: var(--text-muted);
+  --text-quaternary: var(--text-muted);
+  --text-inverse: #ffffff;
+  --text-disabled: var(--disabled);
+  
+  --border-color: var(--border);
+  --border-light: var(--gray-200);
+  --border-medium: var(--gray-300);
+  --border-dark: var(--gray-400);
+  --border-focus: var(--focus);
+  --border-error: var(--error);
+  --border-success: var(--success);
+  --border-warning: var(--warning);
+  
+  --gradient-mesh: var(--gradient-surface);
+  --gradient-danger-start: var(--error);
+  --gradient-danger-end: var(--error-hover);
+  --gradient-accent-light: var(--primary);
+  --gradient-surface-start: var(--bg);
+  --gradient-surface-end: var(--red-50);
+  
+  --opacity-light: rgba(0, 0, 0, 0.05);
+  --opacity-medium: rgba(0, 0, 0, 0.1);
+  --opacity-strong: rgba(0, 0, 0, 0.15);
+  
+  --accent-opacity-03: var(--primary-opacity-03);
+  --accent-opacity-10: var(--primary-opacity-10);
+  --accent-opacity-15: rgba(232, 92, 65, 0.15);
+  --accent-opacity-20: var(--primary-opacity-20);
+  --accent-opacity-30: var(--primary-opacity-30);
+  --accent-opacity-40: rgba(232, 92, 65, 0.4);
+  
+  --white-opacity-10: rgba(255, 255, 255, 0.1);
+  --white-opacity-20: rgba(255, 255, 255, 0.2);
+  --white-opacity-95: rgba(255, 255, 255, 0.95);
+}
+
+/* ===================================
+   THEME APPLICATION
+   =================================== */
+body {
+  background-color: var(--bg);
+  color: var(--text);
+}
+
+/* Glass effect */
+.glass {
+  background: var(--bg-glass);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.glass-light {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+}
+
+/* Focus styles */
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--gray-100);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--gray-300);
+  border-radius: var(--radius-md);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--gray-400);
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--gray-300) var(--gray-100);
+}

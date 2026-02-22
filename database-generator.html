@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+  
+  <!-- Meta Tags -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="eDM Helper Database Generator - Generate campaign files and data">
+  <meta name="keywords" content="edm, database, generator, campaign, tools">
+  <meta name="author" content="eDM Helper">
+  
+  <!-- CSS Structure -->
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/utilities.css">
+  <link rel="stylesheet" href="css/theme-default.css">
+  <link rel="stylesheet" href="css/ui-buttons.css">
+  <link rel="stylesheet" href="css/ui-cards.css">
+  <link rel="stylesheet" href="css/ui-modals.css">
+  <link rel="stylesheet" href="css/ui-forms.css">
+  <link rel="stylesheet" href="css/page-components.css">
+  <link rel="stylesheet" href="css/ui-improvements.css">
+  
+  <title>Database Generator - eDM Helper</title>
+  <meta name="theme-color" content="#0f172a" />
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+</head>
+<body class="page">
+  <!-- Navigation Bar -->
+  <header class="header">
+    <nav class="nav">
+      <!-- Home Button -->
+      <div class="nav-left">
+        <a href="index.html" class="nav-link">
+          <i class="fa-solid fa-home"></i>
+          <span>Home</span>
+        </a>
+      </div>
+      
+      <!-- Profile Section -->
+      <div class="profile-section">
+        <!-- Login Button (shown when not logged in) -->
+        <button id="login-btn" onclick="showLoginModal()" class="login-trigger-btn">
+          <i class="fa-solid fa-right-to-bracket"></i>
+          <span>Login</span>
+        </button>
+        
+        <!-- Profile Dropdown (shown when logged in) -->
+        <div id="profile-dropdown" class="profile-dropdown" style="width: auto !important; min-width: 220px !important; max-width: 260px !important; display: none;">
+          <button onclick="toggleProfileMenu()" class="profile-trigger">
+            <div class="profile-avatar">
+              <i class="fa-solid fa-user"></i>
+            </div>
+            <span id="profile-name" style="flex: 1; min-width: 0; display: inline-block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">John Doe</span>
+            <i class="fa-solid fa-chevron-down"></i>
+          </button>
+          
+          <div id="profile-menu" class="profile-menu hidden" style="width: 220px !important; min-width: 220px !important; max-width: 260px !important;">
+            <div class="profile-header" onclick="showProfileModal(); toggleProfileMenu();" style="cursor: pointer;">
+              <div class="profile-info">
+                <div class="profile-avatar-large">
+                  <i class="fa-solid fa-user"></i>
+                </div>
+                <div class="profile-details">
+                  <div class="profile-name-display" id="profile-name-display">John Doe</div>
+                  <div class="profile-email-display" id="profile-email-display">john@example.com</div>
+                  <div class="profile-role-display" id="profile-role-display">User</div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="profile-actions">
+              <a href="#" onclick="showSettingsModal()" class="profile-action">
+                <i class="fa-solid fa-cog"></i>
+                <span>Settings</span>
+              </a>
+              
+              <a href="#" onclick="showProfileModal()" class="profile-action">
+                <i class="fa-solid fa-user-edit"></i>
+                <span>Edit Profile</span>
+              </a>
+              
+              <a href="#" onclick="showNotificationsModal()" class="profile-action">
+                <i class="fa-solid fa-bell"></i>
+                <span>Notifications</span>
+              </a>
+              
+              <a href="#" onclick="showHelpModal()" class="profile-action">
+                <i class="fa-solid fa-question-circle"></i>
+                <span>Help & Support</span>
+              </a>
+              
+              <div class="profile-divider"></div>
+              
+              <button onclick="logout()" class="profile-action profile-logout">
+                <i class="fa-solid fa-sign-out-alt"></i>
+                <span>Logout</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main class="container">
+    <div class="form-grid">
+      <div class="form-field">
+        <label for="campaignId" class="form-label">Campaign ID</label>
+        <input id="campaignId" class="form-input" placeholder="YYYYMMDD_nama_bebas" spellcheck="false" />
+        <p class="form-hint">Contoh: <span class="font-mono">20250817_Independence-Day_1700</span></p>
+      </div>
+    </section>
+
+    <!-- PANEL: EMAIL + KRHRED -->
+    <section id="krPanel" class="panel">
+      <div class="panel-header">
+        <div class="panel-row">
+          <div class="panel-field">
+            <label for="newEmail" class="form-label">Tambah Email</label>
+            <input id="newEmail" class="form-input" placeholder="email@contoh.com"/>
+          </div>
+          <button id="addEmail" class="btn success">Tambah email</button>
+        </div>
+        <div class="panel-row">
+          <div class="panel-field">
+            <label for="newKey" class="form-label">Tambah kolom KRHRED</label>
+            <input id="newKey" class="form-input" placeholder="KRHRED_Unit_30"/>
+            <p class="form-hint">Kosongkan untuk auto: <span class="font-mono">KRHRED_Unit_N</span> berikutnya.</p>
+          </div>
+          <button id="addKey" class="btn primary">Tambah kolom</button>
+        </div>
+
+        <!-- tombol buka panel bulk -->
+        <div>
+          <button id="bulkBtn" class="btn secondary">Tempel banyak email</button>
+        </div>
+      </div>
+
+      <!-- panel bulk -->
+      <div id="bulkBox" class="bulk-box hidden">
+        <label class="form-label">Tempel banyak email (pisahkan dengan baris/koma/titik koma/spasi)</label>
+        <textarea id="bulkEmails" class="mt-1 w-full rounded-2xl bg-slate-900 border border-slate-700 px-4 py-3 h-28 resize-y focus:outline-none focus:ring-2 focus:ring-indigo-500 font-mono" placeholder="email1@a.com&#10;email2@a.com, email3@a.com; email4@a.com"></textarea>
+        <div class="flex gap-3 mt-2">
+          <button id="applyBulk" class="px-4 py-2 rounded-2xl bg-emerald-600 hover:bg-emerald-500">Tambahkan</button>
+          <button id="cancelBulk" class="px-4 py-2 rounded-2xl bg-slate-800 hover:bg-slate-700">Batal</button>
+        </div>
+        <p id="bulkInfo" class="text-xs text-slate-400 mt-2"></p>
+      </div>
+
+      <div class="text-xs text-slate-400 mb-2 flex items-center gap-3">
+        <span id="countInfo">Total: 0</span>
+        <span id="invalidInfo" class="hidden text-rose-400"></span>
+      </div>
+
+      <div class="overflow-auto">
+        <table class="min-w-full text-sm">
+          <thead>
+            <tr id="krHeadRow">
+              <th class="text-left px-3 py-2 sticky left-0 bg-slate-900/80 backdrop-blur border-b border-slate-800">Email</th>
+              <!-- dynamic head cells here -->
+            </tr>
+          </thead>
+          <tbody id="krBody"></tbody>
+        </table>
+      </div>
+
+      <div class="text-xs text-slate-400 mt-3">
+        <p>Tips: klik ikon ✕ di header kolom untuk menghapus kolom KRHRED. Klik 🗑 di baris untuk menghapus email.</p>
+      </div>
+    </section>
+
+    <div class="flex flex-wrap items-center gap-3 mb-2">
+      <button id="btnDownload" class="px-4 py-2 rounded-2xl shadow bg-indigo-600 hover:bg-indigo-500 disabled:opacity-40" disabled>
+        Download 4 file
+      </button>
+      <button id="btnSave" class="px-4 py-2 rounded-2xl shadow bg-emerald-600 hover:bg-emerald-500 disabled:opacity-40" disabled>
+        Save to folder
+      </button>
+      <span id="stateMsg" class="text-xs text-slate-400"></span>
+    </div>
+
+    <p id="error" class="text-amber-300 text-sm mb-4 hidden"></p>
+
+    <section id="previews" class="grid grid-cols-1 md:grid-cols-2 gap-4"></section>
+
+    <!-- Fallback links jika auto-download diblok -->
+    <section id="dlSection" class="mt-4 hidden">
+      <h3 class="text-sm text-slate-300 mb-2">Unduhan manual (fallback)</h3>
+      <div id="downloadsList" class="flex flex-col gap-2"></div>
+      <p class="text-xs text-slate-400 mt-2">Jika auto-download tidak berjalan, klik link di atas satu per satu.</p>
+    </section>
+
+    <footer class="mt-6 text-xs text-slate-400">
+      <p>Catatan: "Save to folder" memakai File System Access API (tersedia di Chrome/Edge desktop). Jika tidak didukung, gunakan tombol <em>Download 4 file</em> atau link fallback.</p>
+    </footer>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-left">
+          <p class="footer-text">
+            &copy; <span id="footer-year">2025</span> eDM Helper <span class="footer-version" data-version>v1.0.0</span>. 
+            Built with <i class="fa-solid fa-heart"></i> for developers.
+          </p>
+        </div>
+        <div class="footer-right">
+          <div class="footer-links">
+            <a href="https://github.com/budifelt" target="_blank" class="footer-link">
+              <i class="fa-brands fa-github"></i>
+            </a>
+            <a href="https://instagram.com/budife.psd/" target="_blank" class="footer-link">
+              <i class="fa-brands fa-instagram"></i>
+            </a>
+            <a href="https://linkedin.com/in/budifelt/" target="_blank" class="footer-link">
+              <i class="fa-brands fa-linkedin"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+<script src="js/index.js" defer></script>
+<script src="js/version-config.js" defer></script>
+<script src="js/settings-modal.js" defer></script>
+<script src="js/toast-manager.js" defer></script>
+<script src="js/modal-manager.js" defer></script>
+<script src="js/pages/database-generator.js" defer></script>
+</body>
+</html>

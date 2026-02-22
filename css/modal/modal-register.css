@@ -1,0 +1,302 @@
+/* ===================================
+   REGISTER MODAL STYLES - Flat Design
+   =================================== */
+
+/* Auth Modal Container */
+#modal-register.register-modal .modal-content {
+  max-width: 480px;
+  width: 90vw;
+  border-radius: 0;
+  overflow: hidden;
+}
+
+/* Register Modal Header */
+#modal-register.register-modal .modal-header {
+  padding: var(--space-8) var(--space-6) var(--space-6);
+  text-align: center;
+}
+
+#modal-register.register-modal .modal-title {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  margin: 0;
+}
+
+/* Register Form */
+#modal-register .register-form {
+  padding: 0 var(--space-6) var(--space-6);
+}
+
+#modal-register .register-form-group {
+  margin-bottom: var(--space-5);
+}
+
+#modal-register .register-form-label {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: #495057;
+  margin-bottom: var(--space-2);
+}
+
+#modal-register .register-form-label i {
+  color: var(--accent-primary);
+  width: 16px;
+}
+
+/* Input Groups */
+#modal-register .register-input-wrapper {
+  position: relative;
+}
+
+#modal-register .register-input-icon {
+  position: absolute;
+  left: var(--space-3);
+  top: 50%;
+  transform: translateY(-50%);
+  color: #6C757D;
+  font-size: var(--font-size-sm);
+  transition: color 0.2s ease;
+  z-index: 1;
+}
+
+#modal-register .register-input {
+  width: 100%;
+  padding: var(--space-3) var(--space-4) var(--space-3) var(--space-10);
+  border: 2px solid #E9ECEF;
+  border-radius: 0;
+  font-size: var(--font-size-base);
+  background: #F8F9FA;
+  color: #495057;
+  transition: all 0.2s ease;
+  appearance: none;
+}
+
+#modal-register .register-input:focus {
+  outline: none;
+  border-color: var(--accent-primary);
+  background: #FFFFFF;
+  box-shadow: 0 0 0 3px rgba(232, 92, 65, 0.1);
+}
+
+#modal-register .register-input:focus ~ .register-input-icon {
+  color: var(--accent-primary);
+}
+
+/* Password Toggle */
+#modal-register .password-toggle-btn {
+  position: absolute;
+  right: var(--space-3);
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #6C757D;
+  cursor: pointer;
+  padding: var(--space-1);
+  border-radius: 0;
+  transition: all 0.2s ease;
+  z-index: 2;
+}
+
+#modal-register .password-toggle-btn:hover {
+  color: var(--accent-primary);
+  background: rgba(241, 140, 142, 0.1);
+}
+
+/* Form Hint */
+#modal-register .form-hint {
+  display: block;
+  font-size: var(--font-size-xs);
+  color: #6C757D;
+  margin-top: var(--space-1);
+}
+
+/* Password Strength */
+#modal-register .password-strength {
+  margin-top: var(--space-2);
+}
+
+#modal-register .password-strength-bar {
+  width: 100%;
+  height: 4px;
+  background: #E9ECEF;
+  border-radius: 0;
+  overflow: hidden;
+}
+
+#modal-register .password-strength-fill {
+  height: 100%;
+  width: 0;
+  transition: all 0.3s ease;
+  border-radius: 0;
+}
+
+#modal-register .password-strength-fill.weak {
+  width: 33%;
+  background: #DC3545;
+}
+
+#modal-register .password-strength-fill.medium {
+  width: 66%;
+  background: #FFC107;
+}
+
+#modal-register .password-strength-fill.strong {
+  width: 100%;
+  background: #28A745;
+}
+
+#modal-register .password-strength-text {
+  font-size: var(--font-size-xs);
+  color: #6C757D;
+  margin-top: var(--space-1);
+  display: block;
+}
+
+/* Terms & Conditions */
+#modal-register .terms-section {
+  margin-bottom: var(--space-5);
+}
+
+#modal-register .terms-checkbox {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  font-size: var(--font-size-sm);
+  color: #495057;
+}
+
+#modal-register .terms-checkbox input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--accent-primary);
+  margin-top: 2px;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+#modal-register .terms-checkbox label {
+  margin: 0;
+  line-height: var(--line-height-relaxed);
+  cursor: pointer;
+}
+
+#modal-register .terms-checkbox a {
+  color: var(--accent-primary);
+  text-decoration: none;
+  font-weight: var(--font-weight-medium);
+}
+
+#modal-register .terms-checkbox a:hover {
+  color: #F18C8E;
+  text-decoration: underline;
+}
+
+/* Register Button */
+#modal-register .btn-register {
+  width: 100%;
+  padding: var(--space-4);
+  background: var(--accent-primary);
+  color: #FFFFFF;
+  border: none;
+  border-radius: 0;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  margin-top: var(--space-4);
+  transition: all 0.2s ease;
+}
+
+#modal-register .btn-register:hover {
+  background: #F18C8E;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(241, 140, 142, 0.3);
+}
+
+#modal-register .btn-register:active {
+  transform: translateY(0);
+  box-shadow: 0 4px 12px rgba(241, 140, 142, 0.3);
+}
+
+#modal-register .btn-register:disabled {
+  background: #6C757D;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Login Prompt */
+#modal-register .login-prompt {
+  text-align: center;
+  font-size: var(--font-size-sm);
+  color: #6C757D;
+}
+
+#modal-register .login-link {
+  color: #F18C8E;
+  text-decoration: none;
+  font-weight: var(--font-weight-semibold);
+  transition: all 0.2s ease;
+}
+
+#modal-register .login-link:hover {
+  color: #F18C8E;
+  text-decoration: underline;
+}
+
+/* Loading State */
+#modal-register .btn-register.loading {
+  pointer-events: none;
+  opacity: 0.8;
+}
+
+#modal-register .btn-register.loading i {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Error State */
+#modal-register .register-input.error {
+  border-color: #DC3545;
+  background: rgba(220, 53, 69, 0.05);
+}
+
+#modal-register .register-input.error:focus {
+  box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
+}
+
+/* Success State */
+#modal-register .register-input.success {
+  border-color: #F18C8E;
+  background: rgba(241, 140, 142, 0.05);
+}
+
+#modal-register .register-input.success:focus {
+  box-shadow: 0 0 0 3px rgba(241, 140, 142, 0.1);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  #modal-register.register-modal .modal-header {
+    padding: var(--space-6) var(--space-4) var(--space-4);
+  }
+  
+  #modal-register.register-modal .modal-title {
+    font-size: var(--font-size-xl);
+  }
+  
+  #modal-register .terms-checkbox {
+    align-items: flex-start;
+  }
+}

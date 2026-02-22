@@ -1,0 +1,104 @@
+/* ===================================
+   LINK CHECKER PAGE STYLES
+   =================================== */
+
+/* Status Colors */
+.status.wait {
+  color: #6C757D;
+}
+
+.status.live {
+  color: var(--accent-primary);
+}
+
+.status.err {
+  color: #DC3545;
+}
+
+/* Badge Styles */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-1) var(--space-2);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.badge-live {
+  background: rgba(241, 140, 142, 0.1);
+  color: var(--accent-primary);
+  border: 1px solid var(--accent-primary);
+}
+
+.badge-err {
+  background: rgba(220, 53, 69, 0.1);
+  color: #DC3545;
+  border: 1px solid #DC3545;
+}
+
+.badge-wait {
+  background: rgba(108, 117, 125, 0.1);
+  color: #6C757D;
+  border: 1px solid #6C757D;
+}
+
+/* Button Overrides */
+#checkBtn {
+  background: var(--accent-primary);
+  color: #FFFFFF;
+  border: none;
+}
+
+#checkBtn:hover {
+  background: #F18C8E;
+}
+
+#runBulk {
+  background: var(--accent-primary);
+  color: #FFFFFF;
+  border: none;
+}
+
+#runBulk:hover {
+  background: #F18C8E;
+}
+
+/* History Item Styles */
+.history-item .badge-live {
+  background: var(--accent-primary);
+  color: #FFFFFF;
+}
+
+.history-item .badge-err {
+  background: #DC3545;
+  color: #FFFFFF;
+}
+
+.history-item .badge-wait {
+  background: #6C757D;
+  color: #FFFFFF;
+}
+
+/* Table Status */
+#tbl td:last-child {
+  font-weight: var(--font-weight-semibold);
+}
+
+#tbl tr:has(td:contains("LIVE")) td:last-child {
+  color: var(--accent-primary);
+}
+
+#tbl tr:has(td:contains("❌")) td:last-child {
+  color: #DC3545;
+}
+
+/* Filter Input */
+#filterInput {
+  border-color: #E9ECEF;
+}
+
+#filterInput:focus {
+  border-color: var(--accent-primary);
+}

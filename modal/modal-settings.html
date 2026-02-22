@@ -1,0 +1,243 @@
+<!-- Settings Modal -->
+<link rel="stylesheet" href="../css/modal/modal-settings.css">
+<script src="../js/modal/modal-settings.js"></script>
+<div id="modal-settings" class="settings-modal">
+  <div class="settings-content">
+    <div class="modal-header">
+      <h2 class="modal-title">
+        <i class="fa-solid fa-cog"></i>
+        Settings
+      </h2>
+      <button onclick="hideSettingsModal()" class="modal-close-btn">
+        <i class="fa-solid fa-times"></i>
+      </button>
+    </div>
+    
+    <!-- Main Content Wrapper -->
+    <div class="settings-main-content">
+      <!-- Sidebar -->
+      <div class="settings-sidebar">
+        <!-- Menu Items -->
+        <div class="settings-sidebar-content">
+          <div class="settings-menu">
+            <button onclick="showSettingsSection('general')" class="settings-tab-btn active" id="tab-general" data-section="general">
+              <i class="fa-solid fa-globe"></i>
+              <span>General</span>
+            </button>
+            <button onclick="showSettingsSection('appearance')" class="settings-tab-btn" id="tab-appearance" data-section="appearance">
+              <i class="fa-solid fa-palette"></i>
+              <span>Appearance</span>
+            </button>
+            <button onclick="showSettingsSection('account')" class="settings-tab-btn" id="tab-account" data-section="account">
+              <i class="fa-solid fa-user"></i>
+              <span>Account</span>
+            </button>
+            <button onclick="showSettingsSection('notifications')" class="settings-tab-btn" id="tab-notifications" data-section="notifications">
+              <i class="fa-solid fa-bell"></i>
+              <span>Notifications</span>
+            </button>
+            <button onclick="showSettingsSection('privacy')" class="settings-tab-btn" id="tab-privacy" data-section="privacy">
+              <i class="fa-solid fa-shield-halved"></i>
+              <span>Privacy</span>
+            </button>
+            <button onclick="showSettingsSection('advanced')" class="settings-tab-btn" id="tab-advanced" data-section="advanced">
+              <i class="fa-solid fa-cog"></i>
+              <span>Advanced</span>
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Content Area -->
+      <div class="settings-content-area">
+        <!-- General Section -->
+        <div id="general-section" class="settings-section active">
+          <div class="settings-section-content">
+            <h3 class="settings-section-title">General Settings</h3>
+            
+            <div class="settings-form-group">
+              <label class="settings-label">Language</label>
+              <select class="form-input">
+                <option>English (US)</option>
+                <option>Bahasa Indonesia</option>
+                <option>中文</option>
+              </select>
+              <p class="form-help">Select your preferred language</p>
+            </div>
+            
+            <div class="settings-form-group">
+              <label class="settings-label">Timezone</label>
+              <select class="form-input">
+                <option>UTC+7 (Jakarta)</option>
+                <option>UTC+8 (Singapore)</option>
+                <option>UTC+9 (Tokyo)</option>
+              </select>
+              <p class="form-help">Set your local timezone</p>
+            </div>
+            
+            <div class="settings-form-group">
+              <label class="settings-label">Date Format</label>
+              <select class="form-input">
+                <option>MM/DD/YYYY</option>
+                <option>DD/MM/YYYY</option>
+                <option>YYYY-MM-DD</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Appearance Section -->
+        <div id="appearance-section" class="settings-section">
+          <div class="settings-section-content">
+            <h3 class="settings-section-title">Appearance</h3>
+            
+            <div class="settings-form-group">
+              <label class="settings-label">Theme</label>
+              <select class="form-input">
+                <option>Light</option>
+                <option>Dark</option>
+                <option>Auto</option>
+              </select>
+              <p class="form-help">Choose your preferred color theme</p>
+            </div>
+            
+            <div class="settings-form-group">
+              <label class="settings-label">Font Size</label>
+              <select class="form-input">
+                <option>Small</option>
+                <option selected>Medium</option>
+                <option>Large</option>
+              </select>
+            </div>
+            
+            <div class="settings-form-group">
+              <label class="settings-label">Primary Color</label>
+              <input type="color" class="form-input" value="#E85D41">
+            </div>
+          </div>
+        </div>
+        
+        <!-- Account Section -->
+        <div id="account-section" class="settings-section">
+          <div class="settings-section-content">
+            <h3 class="settings-section-title">Account Settings</h3>
+            
+            <div class="settings-form-group">
+              <label class="settings-label">Email</label>
+              <input type="email" class="form-input" value="user@example.com">
+            </div>
+            
+            <div class="settings-form-group">
+              <label class="settings-label">Username</label>
+              <input type="text" class="form-input" value="johndoe">
+            </div>
+            
+            <div class="settings-form-group">
+              <button class="btn btn-primary">Change Password</button>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Notifications Section -->
+        <div id="notifications-section" class="settings-section">
+          <div class="settings-section-content">
+            <h3 class="settings-section-title">Notification Preferences</h3>
+            
+            <div class="settings-form-group">
+              <label class="settings-label">
+                <input type="checkbox" checked>
+                Email notifications
+              </label>
+              <p class="form-help">Receive notifications via email</p>
+            </div>
+            
+            <div class="settings-form-group">
+              <label class="settings-label">
+                <input type="checkbox" checked>
+                Push notifications
+              </label>
+              <p class="form-help">Receive push notifications in your browser</p>
+            </div>
+            
+            <div class="settings-form-group">
+              <label class="settings-label">
+                <input type="checkbox">
+                SMS notifications
+              </label>
+              <p class="form-help">Receive notifications via SMS</p>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Privacy Section -->
+        <div id="privacy-section" class="settings-section">
+          <div class="settings-section-content">
+            <h3 class="settings-section-title">Privacy Settings</h3>
+            
+            <div class="settings-form-group">
+              <label class="settings-label">
+                <input type="checkbox" checked>
+                Profile visibility
+              </label>
+              <p class="form-help">Make your profile visible to other users</p>
+            </div>
+            
+            <div class="settings-form-group">
+              <label class="settings-label">
+                <input type="checkbox">
+                Show online status
+              </label>
+              <p class="form-help">Let others see when you're online</p>
+            </div>
+            
+            <div class="settings-form-group">
+              <label class="settings-label">
+                <input type="checkbox" checked>
+                Two-factor authentication
+              </label>
+              <p class="form-help">Add an extra layer of security to your account</p>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Advanced Section -->
+        <div id="advanced-section" class="settings-section">
+          <div class="settings-section-content">
+            <h3 class="settings-section-title">Advanced Settings</h3>
+            
+            <div class="settings-form-group">
+              <label class="settings-label">API Key</label>
+              <div style="display: flex; gap: var(--space-2);">
+                <input type="text" class="form-input" value="sk-xxxxxxxxxxxx" readonly>
+                <button class="btn btn-secondary">Copy</button>
+              </div>
+            </div>
+            
+            <div class="settings-form-group">
+              <label class="settings-label">
+                <input type="checkbox">
+                Debug mode
+              </label>
+              <p class="form-help">Enable debug logging for troubleshooting</p>
+            </div>
+            
+            <div class="settings-form-group">
+              <button class="btn btn-danger">Delete Account</button>
+              <p class="form-help">Permanently delete your account and all data</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="settings-footer">
+      <div class="modal-footer-left">
+        <button class="btn btn-ghost">Reset to Defaults</button>
+      </div>
+      <div class="modal-footer-right">
+        <button class="btn btn-secondary" onclick="hideSettingsModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="saveSettings()">Save Changes</button>
+      </div>
+    </div>
+  </div>
+</div>

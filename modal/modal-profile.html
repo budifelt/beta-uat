@@ -1,0 +1,132 @@
+<!-- Profile Modal -->
+<link rel="stylesheet" href="../css/modal/modal-profile.css">
+<script src="../js/modal/modal-profile.js"></script>
+<div id="modal-profile" class="modal profile-modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 class="modal-title">
+        <i class="fa-solid fa-user"></i>
+        Profile
+      </h2>
+      <button onclick="hideProfileModal()" class="modal-close-btn">
+        <i class="fa-solid fa-times"></i>
+      </button>
+    </div>
+    
+    <div class="modal-body">
+      <div class="profile-header">
+        <div class="profile-avatar">
+          <i class="fa-solid fa-user"></i>
+          <div class="profile-avatar-upload" onclick="showEditProfileModal()">
+            <i class="fa-solid fa-camera"></i>
+          </div>
+        </div>
+        <h3 class="profile-name" id="profile-fullname">John Doe</h3>
+        <p class="profile-role">Administrator</p>
+      </div>
+      
+      <div class="profile-body">
+        <!-- Information Section -->
+        <div class="profile-section">
+          <h4 class="profile-section-title">
+            <i class="fa-solid fa-info-circle"></i>
+            Information
+          </h4>
+          <div class="profile-info-grid">
+            <div class="profile-info-item">
+              <span class="profile-info-label">Email</span>
+              <span class="profile-info-value editable">john.doe@example.com</span>
+            </div>
+            <div class="profile-info-item">
+              <span class="profile-info-label">Phone</span>
+              <span class="profile-info-value editable">+62 812-3456-7890</span>
+            </div>
+            <div class="profile-info-item">
+              <span class="profile-info-label">Location</span>
+              <span class="profile-info-value editable">Jakarta, Indonesia</span>
+            </div>
+            <div class="profile-info-item">
+              <span class="profile-info-label">Department</span>
+              <span class="profile-info-value">IT Department</span>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Statistics Section -->
+        <div class="profile-section">
+          <h4 class="profile-section-title">
+            <i class="fa-solid fa-chart-bar"></i>
+            Statistics
+          </h4>
+          <div class="profile-stats">
+            <div class="profile-stat">
+              <div class="profile-stat-value">128</div>
+              <div class="profile-stat-label">Projects</div>
+            </div>
+            <div class="profile-stat">
+              <div class="profile-stat-value">1.2k</div>
+              <div class="profile-stat-label">Followers</div>
+            </div>
+            <div class="profile-stat">
+              <div class="profile-stat-value">847</div>
+              <div class="profile-stat-label">Following</div>
+            </div>
+            <div class="profile-stat">
+              <div class="profile-stat-value">92%</div>
+              <div class="profile-stat-label">Completion</div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Recent Activity Section -->
+        <div class="profile-section">
+          <h4 class="profile-section-title">
+            <i class="fa-solid fa-clock"></i>
+            Recent Activity
+          </h4>
+          <div class="recent-activity">
+            <div class="activity-item">
+              <div class="activity-icon success">
+                <i class="fa-solid fa-check"></i>
+              </div>
+              <div class="activity-content">
+                <h5 class="activity-title">Completed project setup</h5>
+                <p class="activity-time">2 hours ago</p>
+              </div>
+            </div>
+            <div class="activity-item">
+              <div class="activity-icon info">
+                <i class="fa-solid fa-upload"></i>
+              </div>
+              <div class="activity-content">
+                <h5 class="activity-title">Uploaded 3 new files</h5>
+                <p class="activity-time">5 hours ago</p>
+              </div>
+            </div>
+            <div class="activity-item">
+              <div class="activity-icon warning">
+                <i class="fa-solid fa-edit"></i>
+              </div>
+              <div class="activity-content">
+                <h5 class="activity-title">Updated profile information</h5>
+                <p class="activity-time">Yesterday</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Actions Section -->
+        <div class="profile-actions">
+          <button class="btn btn-primary" onclick="showEditProfileModal()">
+            <i class="fa-solid fa-edit"></i>
+            Edit Profile
+          </button>
+          <button class="btn btn-secondary" onclick="showChangePasswordModal()">
+            <i class="fa-solid fa-key"></i>
+            Change Password
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

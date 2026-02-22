@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+  
+  <!-- Meta Tags -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="eDM Helper Layout Checker - Test and validate your layouts">
+  <meta name="keywords" content="edm, layout, checker, validation, tools">
+  <meta name="author" content="eDM Helper">
+  
+  <!-- CSS Structure -->
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/utilities.css">
+  <link rel="stylesheet" href="css/theme-default.css">
+  <link rel="stylesheet" href="css/ui-buttons.css">
+  <link rel="stylesheet" href="css/ui-cards.css">
+  <link rel="stylesheet" href="css/ui-modals.css">
+  <link rel="stylesheet" href="css/ui-forms.css">
+  <link rel="stylesheet" href="css/page-components.css">
+  <link rel="stylesheet" href="css/ui-improvements.css">
+  
+  <title>Layout Checker - eDM Helper</title>
+  <meta name="theme-color" content="#0f172a" />
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+  <!-- CodeMirror CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/material.min.css" />
+</head>
+<body>
+  <!-- Navigation Bar -->
+  <header class="header">
+    <nav class="nav">
+      <!-- Home Button -->
+      <div class="nav-left">
+        <a href="index.html" class="nav-link">
+          <i class="fa-solid fa-home"></i>
+          <span>Home</span>
+        </a>
+      </div>
+      
+      <!-- Profile Section -->
+      <div class="profile-section">
+        <!-- Login Button (shown when not logged in) -->
+        <button id="login-btn" onclick="showLoginModal()" class="login-trigger-btn">
+          <i class="fa-solid fa-right-to-bracket"></i>
+          <span>Login</span>
+        </button>
+        
+        <!-- Profile Dropdown (shown when logged in) -->
+        <div id="profile-dropdown" class="profile-dropdown" style="width: auto !important; min-width: 220px !important; max-width: 260px !important; display: none;">
+          <button onclick="toggleProfileMenu()" class="profile-trigger">
+            <div class="profile-avatar">
+              <i class="fa-solid fa-user"></i>
+            </div>
+            <span id="profile-name" style="flex: 1; min-width: 0; display: inline-block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">John Doe</span>
+            <i class="fa-solid fa-chevron-down"></i>
+          </button>
+          
+          <div id="profile-menu" class="profile-menu hidden" style="width: 220px !important; min-width: 220px !important; max-width: 260px !important;">
+            <div class="profile-header" onclick="showProfileModal(); toggleProfileMenu();" style="cursor: pointer;">
+              <div class="profile-info">
+                <div class="profile-avatar-large">
+                  <i class="fa-solid fa-user"></i>
+                </div>
+                <div class="profile-details">
+                  <div class="profile-name-display" id="profile-name-display">John Doe</div>
+                  <div class="profile-email-display" id="profile-email-display">john@example.com</div>
+                  <div class="profile-role-display" id="profile-role-display">User</div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="profile-actions">
+              <a href="#" onclick="showSettingsModal()" class="profile-action">
+                <i class="fa-solid fa-cog"></i>
+                <span>Settings</span>
+              </a>
+              
+              <a href="#" onclick="showProfileModal()" class="profile-action">
+                <i class="fa-solid fa-user-edit"></i>
+                <span>Edit Profile</span>
+              </a>
+              
+              <a href="#" onclick="showNotificationsModal()" class="profile-action">
+                <i class="fa-solid fa-bell"></i>
+                <span>Notifications</span>
+              </a>
+              
+              <a href="#" onclick="showHelpModal()" class="profile-action">
+                <i class="fa-solid fa-question-circle"></i>
+                <span>Help & Support</span>
+              </a>
+              
+              <div class="profile-divider"></div>
+              
+              <button onclick="logout()" class="profile-action profile-logout">
+                <i class="fa-solid fa-sign-out-alt"></i>
+                <span>Logout</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+<!-- Main Content -->
+<main class="main">
+  <div class="container">
+    <h1 class="lc-hero">Layout Checker</h1>
+    <p class="lc-subtitle">Advanced HTML Layout Analysis Tool</p>
+
+<div class="lc-input-group">
+  <input type="text" id="originalUrlInput" placeholder="Enter full URL of the HTML file" class="lc-input" />
+  <button id="downloadBtn" class="lc-btn lc-btn-success hidden">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
+    </svg>
+    Download
+  </button>
+  <button id="manualPasteBtn" class="lc-btn lc-btn-info hidden">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M9 3V4H4V6H5V19A2 2 0 0 0 7 21H17A2 2 0 0 0 19 19V6H20V4H15V3H9M7 6H17V19H7V6M9 8V17H11V8H9M13 8V17H15V8H13Z"/>
+    </svg>
+    Manual Paste
+  </button>
+  <button id="textModeBtn" class="lc-btn lc-btn-warning hidden">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
+    </svg>
+    Text Mode
+  </button>
+</div>
+
+<div class="lc-main-layout">
+  <!-- Left Column: KRHRED Values -->
+  <div class="lc-sidebar">
+    <label for="krhredInput" class="lc-label">KRHRED Values:</label>
+    <textarea id="krhredInput" placeholder="Paste value from brickstreet" class="lc-textarea"></textarea>
+    <div class="lc-button-group">
+      <button id="applyKrhredBtn" class="lc-btn lc-btn-success">Apply values</button>
+      <button id="checkLayoutBtn" class="lc-btn lc-btn-primary">Check Layout</button>
+      <button id="addKrhredBtn" class="lc-btn lc-btn-info">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+        </svg>
+        Add Unit
+      </button>
+      <button id="clearAllBtn" class="lc-btn lc-btn-error">Clear All</button>
+    </div>
+  </div>
+
+  <!-- Right Column: CodeMirror + KRHRED Units -->
+  <div class="lc-content">
+    <div class="lc-content-section">
+      <!-- HTML Content (CodeMirror) -->
+      <div>
+        <label for="htmlInput" class="lc-label">HTML Content:</label>
+        <textarea id="htmlInput" placeholder="Paste your HTML content here" class="lc-textarea lc-textarea-sm"></textarea>
+      </div>
+
+      <!-- KRHRED Units Container (4x2 grid) -->
+      <div id="krhredUnitsContainer" class="lc-units-container">
+        <div class="lc-units-header">
+          <label class="lc-units-label">KRHRED Units</label>
+          <div id="inputGrid" class="lc-input-grid">
+            <!-- Row 1 -->
+            <div class="lc-input-col">
+              <input type="text" id="krhred_unit_30" name="krhred_unit_30" placeholder="30" class="lc-input-field" />
+            </div>
+            <div class="lc-input-col">
+              <input type="text" id="krhred_unit_31" name="krhred_unit_31" placeholder="31" class="lc-input-field" />
+            </div>
+            <div class="lc-input-col">
+              <input type="text" id="krhred_unit_32" name="krhred_unit_32" placeholder="32" class="lc-input-field" />
+            </div>
+            <div class="lc-input-col">
+              <input type="text" id="krhred_unit_33" name="krhred_unit_33" placeholder="33" class="lc-input-field" />
+            </div>
+            <!-- Row 2 -->
+            <div class="lc-input-col">
+              <input type="text" id="krhred_unit_34" name="krhred_unit_34" placeholder="34" class="lc-input-field" />
+            </div>
+            <div class="lc-input-col">
+              <input type="text" id="krhred_unit_35" name="krhred_unit_35" placeholder="35" class="lc-input-field" />
+            </div>
+            <div class="lc-input-col">
+              <input type="text" id="krhred_unit_36" name="krhred_unit_36" placeholder="36" class="lc-input-field" />
+            </div>
+            <div class="lc-input-col">
+              <input type="text" id="krhred_unit_37" name="krhred_unit_37" placeholder="37" class="lc-input-field" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Login Modal -->
+<div id="login-modal" class="modal-overlay">
+  <div class="login-modal">
+    <div class="login-tabs">
+      <button class="tab-btn active" id="login-tab-btn" onclick="showLoginTab()">
+        <i class="fa-solid fa-sign-in-alt"></i> Login
+      </button>
+      <button class="tab-btn" id="create-user-tab-btn" onclick="showCreateUserTab()">
+        <i class="fa-solid fa-user-plus"></i> Create User
+      </button>
+    </div>
+    
+    <!-- Login Form -->
+    <div class="tab-content active" id="login-tab">
+      <h2><i class="fa-solid fa-user-shield"></i> Login</h2>
+      
+      <form class="login-form" onsubmit="handleLogin(event)">
+        <div class="form-group">
+          <label for="login-username">
+            <i class="fa-solid fa-user"></i> Username
+          </label>
+          <input type="text" id="login-username" name="username" required 
+                 placeholder="Enter your username" autocomplete="username">
+        </div>
+        
+        <div class="form-group">
+          <label for="login-password">
+            <i class="fa-solid fa-lock"></i> Password
+          </label>
+          <input type="password" id="login-password" name="password" required 
+                 placeholder="Enter your password" autocomplete="current-password">
+        </div>
+        
+        <div class="login-buttons">
+          <button type="submit" class="login-btn-primary">
+            <i class="fa-solid fa-right-to-bracket"></i> Login
+          </button>
+          <button type="button" class="login-btn-secondary" onclick="hideLoginModal()">
+            <i class="fa-solid fa-times"></i> Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+    
+    <!-- Create User Form -->
+    <div class="tab-content" id="create-user-tab">
+      <h2><i class="fa-solid fa-user-plus"></i> Create New User</h2>
+      
+      <form class="login-form" onsubmit="handleCreateUser(event)">
+        <div class="form-group">
+          <label for="new-username">
+            <i class="fa-solid fa-user"></i> Username
+          </label>
+          <input type="text" id="new-username" name="new-username" required 
+                 placeholder="Choose a username" autocomplete="username">
+        </div>
+        
+        <div class="form-group">
+          <label for="new-password">
+            <i class="fa-solid fa-lock"></i> Password
+          </label>
+          <input type="password" id="new-password" name="new-password" required 
+                 placeholder="Choose a password" autocomplete="new-password">
+        </div>
+        
+        <div class="form-group">
+          <label for="confirm-password">
+            <i class="fa-solid fa-lock"></i> Confirm Password
+          </label>
+          <input type="password" id="confirm-password" name="confirm-password" required 
+                 placeholder="Confirm your password" autocomplete="new-password">
+          <div id="password-error" class="error-message">
+            <i class="fa-solid fa-exclamation-circle"></i> Passwords do not match
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="phone-number">
+            <i class="fa-solid fa-phone"></i> Phone Number
+          </label>
+          <input type="tel" id="phone-number" name="phone-number" required 
+                 placeholder="+62xxx-xxxx-xxxx, 08xxx-xxxx, or 087882884296" pattern="^(\+62|62|08)[0-9]{8,12}$">
+        </div>
+        
+        <div class="form-group">
+          <label for="full-name">
+            <i class="fa-solid fa-id-card"></i> Full Name
+          </label>
+          <input type="text" id="full-name" name="full-name" required 
+                 placeholder="Enter your full name">
+        </div>
+        
+        <div class="login-buttons">
+          <button type="submit" class="login-btn-primary">
+            <i class="fa-solid fa-user-plus"></i> Create User
+          </button>
+          <button type="button" class="login-btn-secondary" onclick="hideLoginModal()">
+            <i class="fa-solid fa-times"></i> Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Settings Modal with Sidebar -->
+<div id="settings-modal" class="settings-modal">
+  <div class="settings-content">
+    <!-- Sidebar -->
+    <div class="settings-sidebar">
+      <div class="settings-header">
+        <h3 class="settings-title">
+          <i class="fa-solid fa-sliders"></i>Settings
+        </h3>
+        
+        <!-- Menu Items -->
+        <div class="settings-menu">
+          <button onclick="showSettingsSection('general')" class="settings-tab-btn active" id="tab-general">
+            <i class="fa-solid fa-globe"></i> Umum
+          </button>
+          <button onclick="showSettingsSection('appearance')" class="settings-tab-btn" id="tab-appearance">
+            <i class="fa-solid fa-palette"></i> Tampilan
+          </button>
+          <button onclick="showSettingsSection('account')" class="settings-tab-btn" id="tab-account">
+            <i class="fa-solid fa-user"></i> Akun
+          </button>
+          <button onclick="showSettingsSection('notifications')" class="settings-tab-btn" id="tab-notifications">
+            <i class="fa-solid fa-bell"></i> Notifikasi
+          </button>
+          <button onclick="showSettingsSection('privacy')" class="settings-tab-btn" id="tab-privacy">
+            <i class="fa-solid fa-shield-halved"></i> Privasi
+          </button>
+          <button onclick="showSettingsSection('advanced')" class="settings-tab-btn" id="tab-advanced">
+            <i class="fa-solid fa-cog"></i> Lanjutan
+          </button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Content Area -->
+    <div class="settings-content-area">
+      <!-- Header -->
+      <div class="settings-section-header">
+        <h3 id="settings-title" class="settings-title-text">Pengaturan Umum</h3>
+        <button onclick="hideSettingsModal()" class="settings-close-btn">
+          <i class="fa-solid fa-times"></i>
+        </button>
+      </div>
+      
+      <!-- General Section -->
+      <div id="general-content" class="settings-section active">
+        <div class="settings-section-content">
+          <h4 class="settings-section-title">Language & Region</h4>
+          
+          <div class="settings-form-group">
+            <label class="settings-label">Bahasa</label>
+            <select id="language-select" class="settings-select">
+              <option value="id">🇮🇩 Bahasa Indonesia</option>
+              <option value="en">🇺🇸 English</option>
+              <option value="es">🇪🇸 Español</option>
+            </select>
+          </div>
+          
+          <div class="settings-form-group">
+            <label class="settings-label">Format Waktu</label>
+            <select id="time-format-select" class="settings-select">
+              <option value="24h">24 Jam</option>
+              <option value="12h">12 Jam (AM/PM)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Appearance Section -->
+      <div id="appearance-content" class="settings-section">
+        <div class="settings-section-content">
+          <h4 class="settings-section-title">Tampilan</h4>
+          
+          <div class="settings-form-group">
+            <label class="settings-label">Theme</label>
+            <select id="theme-select" class="settings-select">
+              <option value="light">☀️ Light</option>
+              <option value="dark">🌙 Dark</option>
+              <option value="auto">🎭 Auto</option>
+            </select>
+          </div>
+          
+          <div class="settings-form-group">
+            <label class="settings-label">Ukuran Font</label>
+            <select id="font-size-select" class="settings-select">
+              <option value="small">Kecil</option>
+              <option value="medium">Sedang</option>
+              <option value="large">Besar</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Account Section -->
+      <div id="account-content" class="settings-section">
+        <div class="settings-section-content">
+          <h4 class="settings-section-title">Account Settings</h4>
+          
+          <div class="settings-form-group">
+            <label class="settings-label">Profile Picture</label>
+            <input type="file" id="profile-picture-input" accept="image/*" class="settings-select">
+          </div>
+          
+          <div class="settings-form-group">
+            <label class="settings-label">Username</label>
+            <input type="text" id="profile-username-input" class="settings-select" placeholder="Enter username">
+          </div>
+          
+          <div class="settings-form-group">
+            <label class="settings-label">Display Name</label>
+            <input type="text" id="profile-displayname-input" class="settings-select" placeholder="Enter display name">
+          </div>
+        </div>
+      </div>
+      
+      <!-- Other Sections (Placeholders) -->
+      <div id="notifications-content" class="settings-section">
+        <div class="settings-section-content">
+          <h4 class="settings-section-title">Notification Settings</h4>
+          <p>Notification settings coming soon...</p>
+        </div>
+      </div>
+      
+      <div id="privacy-content" class="settings-section">
+        <div class="settings-section-content">
+          <h4 class="settings-section-title">Privacy Settings</h4>
+          <p>Privacy settings coming soon...</p>
+        </div>
+      </div>
+      
+      <div id="advanced-content" class="settings-section">
+        <div class="settings-section-content">
+          <h4 class="settings-section-title">Advanced Settings</h4>
+          <p>Advanced settings coming soon...</p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Sticky Footer -->
+    <div class="settings-footer">
+      <button onclick="saveSettings()" class="settings-save-btn">
+        <i class="fa-solid fa-save"></i> Simpan Perubahan
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Confirmation Dialog -->
+<div id="confirmModal" class="confirm-modal">
+  <div class="confirm-content">
+    <h3 class="confirm-title">Confirm Action</h3>
+    <p id="confirmMessage" class="confirm-message"></p>
+    <div class="confirm-buttons">
+      <button id="confirmCancel" class="confirm-btn-cancel">Cancel</button>
+      <button id="confirmOk" class="confirm-btn-ok">Clear All</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast Notification Container -->
+<div id="toastContainer" class="toast-container"></div>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-content">
+      <div class="footer-left">
+        <p class="footer-text">
+          &copy; <span id="footer-year">2025</span> eDM Helper <span class="footer-version" data-version>v1.0.0</span>. 
+          Built with <i class="fa-solid fa-heart"></i> for developers.
+        </p>
+      </div>
+      <div class="footer-right">
+        <div class="footer-links">
+          <a href="https://github.com/budifelt" target="_blank" class="footer-link">
+            <i class="fa-brands fa-github"></i>
+          </a>
+          <a href="https://instagram.com/budife.psd/" target="_blank" class="footer-link">
+            <i class="fa-brands fa-instagram"></i>
+          </a>
+          <a href="https://linkedin.com/in/budifelt/" target="_blank" class="footer-link">
+            <i class="fa-brands fa-linkedin"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- CodeMirror JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/xml/xml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/javascript/javascript.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/css/css.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/htmlmixed/htmlmixed.min.js"></script>
+
+<script src="js/index.js" defer></script>
+<script src="js/version-config.js" defer></script>
+<script src="js/settings-modal.js" defer></script>
+<script src="js/toast-manager.js" defer></script>
+<script src="js/modal-manager.js" defer></script>
+<script src="js/pages/layout-checker.js" defer></script>
+</body>
+</html>
