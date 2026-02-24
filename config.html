@@ -17,23 +17,23 @@
   <!-- CSS Structure -->
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/layout.css">
-  <link rel="stylesheet" href="css/utilities.css">
-  <link rel="stylesheet" href="css/theme-default.css">
-  <link rel="stylesheet" href="css/ui-buttons.css">
-  <link rel="stylesheet" href="css/ui-cards.css">
-  <link rel="stylesheet" href="css/ui-modals.css">
-  <link rel="stylesheet" href="css/ui-forms.css">
-  <link rel="stylesheet" href="css/page-components.css">
-  <link rel="stylesheet" href="css/ui-improvements.css">
+  <link rel="stylesheet" href="css/theme.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/modal-base.css">
+  <link rel="stylesheet" href="css/pages/config.css">
   
   <title>Config eDM - eDM Helper</title>
   <meta name="theme-color" content="#0f172a" />
-  <!-- Font Awesome -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <!-- Font Awesome - Non-blocking load -->
+  <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"></noscript>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/codemirror.min.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/theme/monokai.min.css" />
 </head>
 <body>
+  <!-- Initial State Script -->
+  <script src="js/initial-state.js"></script>
+  
   <!-- Navigation Bar -->
   <header class="header">
     <nav class="nav">
@@ -48,7 +48,7 @@
       <!-- Profile Section -->
       <div class="profile-section">
         <!-- Login Button (shown when not logged in) -->
-        <button id="login-btn" onclick="showLoginModal()" class="login-trigger-btn">
+        <button id="login-btn" onclick="showLoginModal()" class="login-trigger-btn" style="display: none;" disabled>
           <i class="fa-solid fa-right-to-bracket"></i>
           <span>Login</span>
         </button>
@@ -59,7 +59,7 @@
             <div class="profile-avatar">
               <i class="fa-solid fa-user"></i>
             </div>
-            <span id="profile-name" style="flex: 1; min-width: 0; display: inline-block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">John Doe</span>
+            <span id="profile-name" style="flex: 1; min-width: 0; display: inline-block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">User</span>
             <i class="fa-solid fa-chevron-down"></i>
           </button>
           
@@ -70,37 +70,41 @@
                   <i class="fa-solid fa-user"></i>
                 </div>
                 <div class="profile-details">
-                  <div class="profile-name-display" id="profile-name-display">John Doe</div>
-                  <div class="profile-email-display" id="profile-email-display">john@example.com</div>
+                  <div class="profile-name-display" id="profile-name-display">User</div>
+                  <div class="profile-email-display" id="profile-email-display" style="font-size: 12px; opacity: 0.8;">user@example.com</div>
                   <div class="profile-role-display" id="profile-role-display">User</div>
                 </div>
               </div>
             </div>
             
             <div class="profile-actions">
-              <a href="#" onclick="showSettingsModal()" class="profile-action">
+              <a href="#" onclick="event.preventDefault(); showSettingsModal()" class="profile-action">
                 <i class="fa-solid fa-cog"></i>
                 <span>Settings</span>
+                <i class="fa-solid fa-chevron-right" style="margin-left: auto; font-size: 12px; opacity: 0.5;"></i>
               </a>
               
-              <a href="#" onclick="showProfileModal()" class="profile-action">
+              <a href="#" onclick="showEditProfileModal()" class="profile-action">
                 <i class="fa-solid fa-user-edit"></i>
                 <span>Edit Profile</span>
+                <i class="fa-solid fa-chevron-right" style="margin-left: auto; font-size: 12px; opacity: 0.5;"></i>
               </a>
               
               <a href="#" onclick="showNotificationsModal()" class="profile-action">
                 <i class="fa-solid fa-bell"></i>
                 <span>Notifications</span>
+                <span class="notification-badge" style="margin-left: auto; background: var(--accent-primary); color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px; min-width: 18px; text-align: center;">3</span>
               </a>
               
               <a href="#" onclick="showHelpModal()" class="profile-action">
                 <i class="fa-solid fa-question-circle"></i>
                 <span>Help & Support</span>
+                <i class="fa-solid fa-chevron-right" style="margin-left: auto; font-size: 12px; opacity: 0.5;"></i>
               </a>
               
               <div class="profile-divider"></div>
               
-              <button onclick="logout()" class="profile-action profile-logout">
+              <button onclick="showLogoutModal()" class="profile-action profile-logout">
                 <i class="fa-solid fa-sign-out-alt"></i>
                 <span>Logout</span>
               </button>
@@ -111,18 +115,10 @@
     </nav>
   </header>
 
-  <header class="topbar">
-    <div class="left">
-      <span id="breadcrumb" class="breadcrumb" title="No folder">No folder</span>
-    </div>
-    <div class="right">
-      <span id="campaignCountIndicator" title="Occurrences in XML">0/7</span>
-    </div>
-  </header>
-
   <main class="layout">
-    <aside class="sidebar">
-      <div class="sidebar-header">
+  <div class="container">
+    <aside class="sidebar flex flex-col">
+      <div class="sidebar-header flex">
         <button id="openFolderBtn" class="btn" title="Open Folder">
           <i class="fa-solid fa-folder-open"></i> Open Folder
         </button>
@@ -130,52 +126,72 @@
           <i class="fa-solid fa-refresh"></i>
         </button>
       </div>
-      <div class="sidebar-body">
+      <div class="sidebar-body flex-1">
         <div id="fileTree" class="file-tree"></div>
       </div>
       <div class="resize-handle" id="resizeHandle"></div>
     </aside>
-    <section class="content">
+    <section class="content flex-1">
+      <div class="content-header">
+        <div class="breadcrumb" id="breadcrumb">No folder</div>
+      </div>
+      
       <div class="controls">
-        <div class="field">
-          <label for="campaignId">Campaign ID</label>
+        <div class="field campaign-id-field">
+          <label for="campaignId">
+            Campaign ID
+            <span class="warning-tooltip">Tanggal campaign sudah lewat dari hari ini</span>
+            <span class="validation-tooltip">Format tidak valid</span>
+            <span class="mismatch-tooltip">Campaign ID dan Link tidak match</span>
+          </label>
           <div class="control">
-            <input id="campaignId" type="text" placeholder="YYYYMMDD_nama-campaign_XXXX" />
-            <span id="campaignIdCharCount" class="muted">(0)</span>
-            <span id="campaignIdCheckmark" class="status" style="display:none"></span>
+            <div class="input-wrapper campaign-id-field">
+              <input id="campaignId" type="text" placeholder="YYYYMMDD_nama-campaign_XXXX" />
+              <span id="campaignIdCharCount" class="char-count">0</span>
+              <span id="campaignIdCheckmark" class="checkmark" style="display:none"><i class="fa-solid fa-check"></i></span>
+            </div>
           </div>
         </div>
 
         <div class="field">
           <label for="subject">Subject</label>
           <div class="control">
-            <input id="subject" type="text" placeholder="Subject with <%[KRHRED_Unit_XX]|%>" />
-            <span id="subjectCharCount" class="muted">(0)</span>
-            <span id="subjectCheckmark" class="status" style="display:none"></span>
+            <div class="input-wrapper subject-field">
+              <input id="subject" type="text" placeholder="Subject with <%[KRHRED_Unit_XX]|%>" />
+              <span id="subjectCharCount" class="char-count">0</span>
+              <span id="subjectCheckmark" class="checkmark" style="display:none"><i class="fa-solid fa-check"></i></span>
+            </div>
           </div>
         </div>
 
-        <div class="field">
-          <label for="link">Link</label>
+        <div class="field link-field">
+          <label for="link">
+            Link
+            <span class="mismatch-tooltip">Campaign ID dan Link tidak match!</span>
+          </label>
           <div class="control">
-            <input id="link" type="text" placeholder="http://example.com/1450-anything" />
-            <span id="mismatchWarning" class="warn" style="display:none">Mismatch!</span>
-            <span id="linkCheckmark" class="status" style="display:none"></span>
+            <div class="input-wrapper link-field">
+              <input id="link" type="text" placeholder="http://example.com/1450-anything" />
+              <span id="linkCharCount" class="char-count">0</span>
+              <span id="mismatchWarning" class="warn" style="display:none">!</span>
+              <span id="linkCheckmark" class="checkmark" style="display:none"><i class="fa-solid fa-check"></i></span>
+            </div>
           </div>
         </div>
 
         <div class="buttons">
           <button id="applyUpdateBtn" class="btn"><i class="fa-solid fa-wand-magic-sparkles"></i> Apply Update</button>
-          <button id="saveFileBtn" class="btn success" title="Save current XML"><i class="fa-solid fa-floppy-disk"></i> Save</button>
-
-          <button id="updateCampaignIdBtn" class="btn"><i class="fa-solid fa-hashtag"></i> Update Campaign ID</button>
-          <button id="updateSubjectBtn"   class="btn"><i class="fa-solid fa-envelope"></i> Update Subject</button>
-          <button id="updateLinkBtn"      class="btn"><i class="fa-solid fa-link"></i> Update Link</button>
+          <button id="saveFileBtn" class="btn" title="Save File">
+            <i class="fa-solid fa-save"></i> Save
+          </button>
         </div>
       </div>
 
-      <textarea id="editor" class="editor" aria-label="XML editor"></textarea>
+      <div class="editor-container">
+        <textarea id="editor" class="editor" aria-label="XML editor"></textarea>
+      </div>
     </section>
+  </div>
   </main>
 
   <!-- Footer -->
@@ -238,11 +254,18 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/addon/search/jump-to-line.min.js" defer></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/addon/dialog/dialog.min.js" defer></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/addon/dialog/dialog.min.css" />
+
+  <!-- Include Settings Modal -->
+  <div id="settings-container"></div>
+
+  <!-- Core Scripts (Load First) -->
+  <script src="js/modal-manager.js" defer></script>
+  <script src="js/toast-manager.js" defer></script>
+  <script src="js/version-config.js" defer></script>
+  <script src="js/nav.js" defer></script>
+  <script src="js/url-fetcher.js" defer></script>
   
-<script src="js/pages/config.js" defer></script>
-<script src="js/version-config.js" defer></script>
-<script src="js/settings-modal.js" defer></script>
-<script src="js/toast-manager.js" defer></script>
-<script src="js/modal-manager.js" defer></script>
+  <!-- Page Scripts (Load Last) -->
+  <script src="js/pages/config.js" defer></script>
 </body>
 </html>

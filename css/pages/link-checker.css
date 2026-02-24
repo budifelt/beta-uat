@@ -4,7 +4,7 @@
 
 /* Status Colors */
 .status.wait {
-  color: #6C757D;
+  color: var(--text-muted);
 }
 
 .status.live {
@@ -12,7 +12,7 @@
 }
 
 .status.err {
-  color: #DC3545;
+  color: var(--error);
 }
 
 /* Badge Styles */
@@ -34,51 +34,51 @@
 
 .badge-err {
   background: rgba(220, 53, 69, 0.1);
-  color: #DC3545;
-  border: 1px solid #DC3545;
+  color: var(--error);
+  border: 1px solid var(--error);
 }
 
 .badge-wait {
   background: rgba(108, 117, 125, 0.1);
-  color: #6C757D;
-  border: 1px solid #6C757D;
+  color: var(--text-muted);
+  border: 1px solid var(--text-muted);
 }
 
 /* Button Overrides */
 #checkBtn {
   background: var(--accent-primary);
-  color: #FFFFFF;
+  color: var(--text-inverse);
   border: none;
 }
 
 #checkBtn:hover {
-  background: #F18C8E;
+  background: var(--accent-primary);
 }
 
 #runBulk {
   background: var(--accent-primary);
-  color: #FFFFFF;
+  color: var(--text-inverse);
   border: none;
 }
 
 #runBulk:hover {
-  background: #F18C8E;
+  background: var(--accent-primary);
 }
 
 /* History Item Styles */
 .history-item .badge-live {
   background: var(--accent-primary);
-  color: #FFFFFF;
+  color: var(--text-inverse);
 }
 
 .history-item .badge-err {
-  background: #DC3545;
-  color: #FFFFFF;
+  background: var(--error);
+  color: var(--text-inverse);
 }
 
 .history-item .badge-wait {
-  background: #6C757D;
-  color: #FFFFFF;
+  background: var(--text-muted);
+  color: var(--text-inverse);
 }
 
 /* Table Status */
@@ -91,12 +91,12 @@
 }
 
 #tbl tr:has(td:contains("❌")) td:last-child {
-  color: #DC3545;
+  color: var(--error);
 }
 
 /* Filter Input */
 #filterInput {
-  border-color: #E9ECEF;
+  border-color: var(--border);
 }
 
 #filterInput:focus {

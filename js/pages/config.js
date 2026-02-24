@@ -12,7 +12,6 @@ function loadXmlFromText(xmlText, { suppressAlert = false } = {}) {
     xmlDoc = null; 
     initializeFields(); 
     updateEditor(); 
-    gateSubjectButton(); 
     return;
   }
   
@@ -25,14 +24,12 @@ function loadXmlFromText(xmlText, { suppressAlert = false } = {}) {
     xmlDoc = null; 
     initializeFields(); 
     if (elements.editor) elements.editor.setValue(''); 
-    gateSubjectButton(); 
     return;
   }
   
   xmlDoc = parsed; 
   initializeFields(); 
   updateEditor(); 
-  gateSubjectButton();
 
   // Reset indicator to default state when loading new file
   setCampaignIndicatorState('default');
@@ -46,6 +43,8 @@ function initializeFields() {
     if (elements.linkInput) elements.linkInput.value = '';
     updateCampaignCountIndicator('');
     currentCampaignId = ''; // Reset current campaign ID
+    // Update character counts to 0 when no XML
+    updateAllCharCounts();
     return;
   }
   
@@ -76,6 +75,52 @@ function initializeFields() {
   const messageBody = xmlDoc.querySelector('MessageBody');
   const link = messageBody ? messageBody.getAttribute('content') : '';
   if (elements.linkInput) elements.linkInput.value = link;
+  
+  // Update character counts after loading values
+  updateAllCharCounts();
+  
+  // Validate and show tooltips after loading XML
+  if (xmlCampaignId) {
+    // Validate Campaign ID format
+    const formatValidation = validateCampaignIdFormat(xmlCampaignId);
+    const fieldContainer = document.querySelector('.field.campaign-id-field');
+    
+    if (!formatValidation.valid) {
+      if (elements.campaignIdInput) {
+        elements.campaignIdInput.classList.add('error');
+        elements.campaignIdInput.title = formatValidation.error;
+      }
+      if (fieldContainer) {
+        fieldContainer.classList.add('validation-error');
+        const tooltip = document.querySelector('.field.campaign-id-field .validation-tooltip');
+        if (tooltip) {
+          tooltip.textContent = formatValidation.error;
+        }
+      }
+    } else if (formatValidation.isPastDate) {
+      const campaignDateStr = formatValidation.campaignDate.toLocaleDateString('id-ID', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+      if (elements.campaignIdInput) {
+        elements.campaignIdInput.title = `Peringatan: Tanggal campaign (${campaignDateStr}) sudah lewat dari hari ini`;
+      }
+      if (fieldContainer) {
+        fieldContainer.classList.add('past-date-warning');
+        const tooltip = document.querySelector('.field.campaign-id-field .warning-tooltip');
+        if (tooltip) {
+          tooltip.textContent = `Campaign tanggal ${campaignDateStr} sudah lewat!`;
+        }
+      }
+    }
+    
+    // Validate Campaign ID and Link pair
+    if (link) {
+      liveValidatePair();
+    }
+  }
 }
 
 // ---- State & element refs ----
@@ -89,11 +134,8 @@ const elements = {
   saveFileBtn: document.getElementById('saveFileBtn'),
   editor: null, // Will be initialized as CodeMirror
   campaignIdInput: document.getElementById('campaignId'),
-  updateCampaignIdBtn: document.getElementById('updateCampaignIdBtn'),
   subjectInput: document.getElementById('subject'),
-  updateSubjectBtn: document.getElementById('updateSubjectBtn'),
   linkInput: document.getElementById('link'),
-  updateLinkBtn: document.getElementById('updateLinkBtn'),
   campaignCountIndicator: document.getElementById('campaignCountIndicator'),
   breadcrumb: document.getElementById('breadcrumb'),
   overlay: document.getElementById('overlay'),
@@ -151,15 +193,34 @@ function setStatusIcon(id, status) {
   }
   // Use requestAnimationFrame for smooth updates
   requestAnimationFrame(() => {
-    icon.className = (status === 'error')
-    ? 'fa-solid fa-circle-xmark'
-    : 'fa-solid fa-circle-check';
-    el.style.display = 'inline';
+    if (el.classList.contains('checkmark')) {
+      // For inline checkmarks
+      icon.className = 'fa-solid fa-check';
+      el.classList.add('show');
+      // Add class to wrapper for padding adjustment
+      const wrapper = el.closest('.input-wrapper');
+      if (wrapper) wrapper.classList.add('checkmark-visible');
+    } else {
+      // For status indicators
+      icon.className = (status === 'error')
+      ? 'fa-solid fa-circle-xmark'
+      : 'fa-solid fa-circle-check';
+      el.style.display = 'inline';
+    }
   });
 }
 function clearStatusIcon(id) {
   const el = document.getElementById(id);
-  if (el) el.style.display = 'none';
+  if (el) {
+    if (el.classList.contains('checkmark')) {
+      el.classList.remove('show');
+      // Remove class from wrapper
+      const wrapper = el.closest('.input-wrapper');
+      if (wrapper) wrapper.classList.remove('checkmark-visible');
+    } else {
+      el.style.display = 'none';
+    }
+  }
 }
 
 /* Campaign vs Link validator (4-digit prefer, then 3-digit) */
@@ -251,12 +312,22 @@ function clearAllUI(opts = { clearStorage: false }) {
       }
     });
     
+    // Clear tooltip classes
+    const campaignIdField = document.querySelector('.field.campaign-id-field');
+    const linkField = document.querySelector('.field.link-field');
+    if (campaignIdField) {
+      campaignIdField.classList.remove('validation-error', 'past-date-warning', 'mismatch-error');
+    }
+    if (linkField) {
+      linkField.classList.remove('mismatch-error');
+    }
+    
     updateCampaignCountIndicator('');
     
-    const charCounts = ['campaignIdCharCount', 'subjectCharCount'];
+    const charCounts = ['campaignIdCharCount', 'subjectCharCount', 'linkCharCount'];
     charCounts.forEach(id => {
       const el = document.getElementById(id);
-      if (el) el.textContent = '(0)';
+      if (el) el.textContent = '0';
     });
     
     ['campaignIdCheckmark','subjectCheckmark','linkCheckmark'].forEach(clearStatusIcon);
@@ -266,10 +337,6 @@ function clearAllUI(opts = { clearStorage: false }) {
       elements.saveFileBtn.style.backgroundColor = '';
     }
     
-    if (elements.updateSubjectBtn) {
-      elements.updateSubjectBtn.disabled = true;
-    }
-    
     if (opts.clearStorage) {
       localStorage.removeItem('config_state');
     }
@@ -277,16 +344,6 @@ function clearAllUI(opts = { clearStorage: false }) {
 }
 
 /* Save / Load XML - Show modal first before saving */
-elements.saveFileBtn.addEventListener('click', async () => {
-  // Check if file is opened before showing modal
-  if (!window.fileHandle) {
-    showNotification("Belum ada file yang dibuka. Silakan buka file terlebih dahulu.", 'error');
-    return;
-  }
-  
-  // Show save confirmation modal instead of saving directly
-  showSaveChangesModal();
-});
 
 // Actual save function called by modal
 async function performSave() {
@@ -309,9 +366,16 @@ async function performSave() {
   }
 
   // Performance: Disable button and show loading state
-  elements.saveFileBtn.disabled = true;
-  const originalText = elements.saveFileBtn.textContent;
-  elements.saveFileBtn.textContent = 'Saving...';
+  const saveBtn = document.getElementById('saveFileBtn');
+  let originalText = 'Save';
+  let originalIcon = null;
+  
+  if (saveBtn) {
+    originalText = saveBtn.textContent;
+    originalIcon = saveBtn.querySelector('i')?.className;
+    saveBtn.disabled = true;
+    saveBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
+  }
 
   try {
     const parser = new DOMParser();
@@ -330,8 +394,17 @@ async function performSave() {
     await writable.close();
 
     // Success feedback
-    elements.saveFileBtn.style.borderColor = 'var(--success)';
-    elements.saveFileBtn.style.backgroundColor = 'var(--success)';
+    if (saveBtn) {
+      saveBtn.style.borderColor = 'var(--success)';
+      saveBtn.style.backgroundColor = 'var(--success)';
+      // Reset button after 2 seconds
+      setTimeout(() => {
+        saveBtn.disabled = false;
+        saveBtn.innerHTML = `<i class="${originalIcon || 'fa-solid fa-save'}"></i> ${originalText}`;
+        saveBtn.style.borderColor = '';
+        saveBtn.style.backgroundColor = '';
+      }, 2000);
+    }
     showNotification('File saved successfully!', 'success');
 
     // Reset unsaved changes tracking after successful save
@@ -342,10 +415,11 @@ async function performSave() {
 
   } catch (err) {
     showNotification("Error saving file: " + err.message, 'error');
-  } finally {
-    // Always restore button state
-    elements.saveFileBtn.disabled = false;
-    elements.saveFileBtn.textContent = originalText;
+    // Reset button on error
+    if (saveBtn) {
+      saveBtn.disabled = false;
+      saveBtn.innerHTML = `<i class="${originalIcon || 'fa-solid fa-save'}"></i> ${originalText}`;
+    }
   }
 }
 
@@ -458,81 +532,129 @@ const debounce = (func, wait) => {
 };
 
 // Track last shown past date warning to avoid spam
-let lastShownPastDateWarning = null;
+// Removed this line: let lastShownPastDateWarning = null;
 
 // Performance: Optimized input event listeners
 const debouncedSaveState = debounce(saveState, 300);
 const debouncedUpdateCampaignCount = debounce(updateCampaignCountIndicator, 100);
-const debouncedPastDateWarning = debounce((campaignId, campaignDate) => {
-  const pastDateWarning = `Peringatan: Tanggal campaign (${campaignDate.toLocaleDateString('id-ID')}) sudah lewat dari hari ini`;
-  showNotification(pastDateWarning, 'info');
-  lastShownPastDateWarning = campaignId;
-}, 2000); // Show warning max once every 2 seconds
 
 // Single event listener for campaignIdInput
 if (elements.campaignIdInput) {
   elements.campaignIdInput.addEventListener('input', () => {
     const campaignId = elements.campaignIdInput.value.trim();
-    
-    // Update campaign count indicator
-    debouncedUpdateCampaignCount(campaignId);
-    
-    // Live validation with link
-    liveValidatePair();
-    
-    // Check for spaces and empty
-    const raw = elements.campaignIdInput.value;
-    const hasSpace = /\s/.test(raw);
-    const isEmpty = raw.trim() === '';
-    
+    const hasSpace = /\s/.test(campaignId);
+    const isEmpty = campaignId.trim() === '';
+
     // Format validation
     const formatValidation = validateCampaignIdFormat(campaignId);
+    
+    // Enhanced character count
+    const cc = document.getElementById('campaignIdCharCount');
+    
+    if (cc) {
+      const length = campaignId.length;
+      cc.textContent = length;
+    }
     
     if (hasSpace || isEmpty || (campaignId && !formatValidation.valid)) {
       elements.campaignIdInput.classList.add('error');
       // Show format error if applicable
       if (campaignId && !formatValidation.valid && formatValidation.error) {
         elements.campaignIdInput.title = formatValidation.error;
+        
+        // Add tooltip for validation error
+        const fieldContainer = document.querySelector('.field.campaign-id-field');
+        const tooltip = document.querySelector('.field.campaign-id-field .validation-tooltip');
+        if (fieldContainer) {
+          fieldContainer.classList.add('validation-error');
+        }
+        if (tooltip) {
+          tooltip.textContent = formatValidation.error;
+        }
+      } else if (hasSpace) {
+        elements.campaignIdInput.title = 'Campaign ID tidak boleh mengandung spasi';
+        
+        const fieldContainer = document.querySelector('.field.campaign-id-field');
+        const tooltip = document.querySelector('.field.campaign-id-field .validation-tooltip');
+        if (fieldContainer) {
+          fieldContainer.classList.add('validation-error');
+        }
+        if (tooltip) {
+          tooltip.textContent = 'Campaign ID tidak boleh mengandung spasi';
+        }
       }
     } else {
       elements.campaignIdInput.classList.remove('error');
       elements.campaignIdInput.title = '';
       
+      // Remove validation error tooltip
+      const fieldContainer = document.querySelector('.field.campaign-id-field');
+      if (fieldContainer) {
+        fieldContainer.classList.remove('validation-error');
+      }
+
       // Show past date warning (but allow input)
       if (campaignId && formatValidation.valid && formatValidation.isPastDate) {
-        const pastDateWarning = `Peringatan: Tanggal campaign (${formatValidation.campaignDate.toLocaleDateString('id-ID')}) sudah lewat dari hari ini`;
+        const campaignDateStr = formatValidation.campaignDate.toLocaleDateString('id-ID', {
+          weekday: 'long',
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
+        });
+        const pastDateWarning = `Peringatan: Tanggal campaign (${campaignDateStr}) sudah lewat dari hari ini`;
         elements.campaignIdInput.title = pastDateWarning;
         
-        // Only show notification if this is a different campaign ID than last shown
-        if (lastShownPastDateWarning !== campaignId) {
-          debouncedPastDateWarning(campaignId, formatValidation.campaignDate);
+        // Update tooltip text
+        const tooltip = document.querySelector('.field.campaign-id-field .warning-tooltip');
+        const inputWrapper = document.querySelector('.input-wrapper.campaign-id-field');
+        
+        if (tooltip) {
+          tooltip.textContent = `Campaign tanggal ${campaignDateStr} sudah lewat!`;
+          console.log('Tooltip updated:', tooltip.textContent);
+        }
+        
+        // Add visual warning indicator to field container
+        if (fieldContainer) {
+          fieldContainer.classList.add('past-date-warning');
+          console.log('Added past-date-warning to field container');
+        }
+        if (inputWrapper) {
+          inputWrapper.classList.add('past-date-warning');
+        }
+      } else {
+        // Remove visual warning indicator if not past date
+        const inputWrapper = document.querySelector('.input-wrapper.campaign-id-field');
+        if (fieldContainer) {
+          fieldContainer.classList.remove('past-date-warning');
+        }
+        if (inputWrapper) {
+          inputWrapper.classList.remove('past-date-warning');
         }
       }
     }
-    
+
     clearStatusIcon('campaignIdCheckmark');
     saveState();
-    
+
     // Show link checkmark when valid
     showLinkCheckmarkWhenValid();
+    liveValidatePair();
   });
-}
 
-/* ============================
-   SUBJECT gate (no icon by default) - Fixed with null checks
-   ============================ */
-function gateSubjectButton() {
-  const raw = elements.subjectInput ? elements.subjectInput.value : '';
-  const noXml = !xmlDoc;
-  const empty = raw.trim() === '';
+  // Add focus effects
+  elements.campaignIdInput.addEventListener('focus', () => {
+    const wrapper = document.querySelector('.input-wrapper.campaign-id-field');
+    if (wrapper) {
+      wrapper.classList.add('focused');
+    }
+  });
 
-  // Jangan tampilkan ikon apapun saat mengetik
-  clearStatusIcon('subjectCheckmark');
-
-  // Disable button kalau belum ada XML atau kosong
-  if (elements.updateSubjectBtn) {
-    elements.updateSubjectBtn.disabled = noXml || empty;
-  }
+  elements.campaignIdInput.addEventListener('blur', () => {
+    const wrapper = document.querySelector('.input-wrapper.campaign-id-field');
+    if (wrapper) {
+      wrapper.classList.remove('focused');
+    }
+  });
 }
 
 // Add saveState event listeners
@@ -685,11 +807,55 @@ function liveValidatePair() {
     elements.linkInput.style.borderColor = '';
   }
   if (mismatchWarning) mismatchWarning.style.display = 'none';
+  
+  // Remove mismatch-error class from both fields
+  const campaignIdFieldContainer = document.querySelector('.field.campaign-id-field');
+  const linkFieldContainer = document.querySelector('.field.link-field');
+  if (campaignIdFieldContainer) {
+    campaignIdFieldContainer.classList.remove('mismatch-error');
+  }
+  if (linkFieldContainer) {
+    linkFieldContainer.classList.remove('mismatch-error');
+  }
 
   if (cid && lnk && !res.ok) {
-    if (mismatchWarning) mismatchWarning.style.display = 'inline';
-    if (elements.campaignIdInput) elements.campaignIdInput.classList.add('error');
-    if (elements.linkInput) elements.linkInput.classList.add('error');
+    if (mismatchWarning) {
+      mismatchWarning.style.display = 'inline';
+      mismatchWarning.textContent = '';
+      mismatchWarning.title = `Mismatch!\nCampaign ID ends with: ${res.expected}\nLink ends with: ${res.found}`;
+    }
+    if (elements.campaignIdInput) {
+      elements.campaignIdInput.classList.add('error');
+      elements.campaignIdInput.title = `Mismatch!\nCampaign ID ends with: ${res.expected}\nLink ends with: ${res.found}`;
+    }
+    if (elements.linkInput) {
+      elements.linkInput.classList.add('error');
+      elements.linkInput.title = `Mismatch!\nCampaign ID ends with: ${res.expected}\nLink ends with: ${res.found}`;
+    }
+    
+    // Add mismatch-error class and update tooltip for both fields
+    if (campaignIdFieldContainer) {
+      campaignIdFieldContainer.classList.add('mismatch-error');
+      const tooltip = document.querySelector('.field.campaign-id-field .mismatch-tooltip');
+      if (tooltip) {
+        tooltip.textContent = `Campaign ID berakhir: ${res.expected}, Link berakhir: ${res.found}`;
+      }
+    }
+    if (linkFieldContainer) {
+      linkFieldContainer.classList.add('mismatch-error');
+      const tooltip = document.querySelector('.field.link-field .mismatch-tooltip');
+      if (tooltip) {
+        tooltip.textContent = `Campaign ID berakhir: ${res.expected}, Link berakhir: ${res.found}`;
+      }
+    }
+  } else if (cid && lnk && res.ok) {
+    // Show success tooltip
+    if (elements.campaignIdInput) {
+      elements.campaignIdInput.title = 'Campaign ID and Link match!';
+    }
+    if (elements.linkInput) {
+      elements.linkInput.title = 'Campaign ID and Link match!';
+    }
   }
 }
 
@@ -698,8 +864,27 @@ if (elements.subjectInput) {
     // Sembunyikan ikon ketika user mengubah input
     clearStatusIcon('subjectCheckmark');
     const cc = document.getElementById('subjectCharCount');
-    if (cc) cc.textContent = `(${(elements.subjectInput.value || '').length})`;
-    gateSubjectButton();
+    const wrapper = document.querySelector('.input-wrapper.subject-field');
+    
+    if (cc) {
+      const length = (elements.subjectInput.value || '').length;
+      cc.textContent = length;
+    }
+  });
+  
+  // Add focus effects
+  elements.subjectInput.addEventListener('focus', () => {
+    const wrapper = document.querySelector('.input-wrapper.subject-field');
+    if (wrapper) {
+      wrapper.classList.add('focused');
+    }
+  });
+  
+  elements.subjectInput.addEventListener('blur', () => {
+    const wrapper = document.querySelector('.input-wrapper.subject-field');
+    if (wrapper) {
+      wrapper.classList.remove('focused');
+    }
   });
 }
 
@@ -707,197 +892,40 @@ if (elements.linkInput) {
   elements.linkInput.addEventListener('input', () => {
     liveValidatePair();
     clearStatusIcon('linkCheckmark');
-  });
-  
-  // Show link checkmark when valid
-  elements.linkInput.addEventListener('input', showLinkCheckmarkWhenValid);
-}
-
-// Add saveState event listeners
-if (elements.campaignIdInput) elements.campaignIdInput.addEventListener('input', saveState);
-if (elements.subjectInput) elements.subjectInput.addEventListener('input', saveState);
-if (elements.linkInput) elements.linkInput.addEventListener('input', saveState);
-window.addEventListener('beforeunload', saveState);
-
-// Show linkCheckmark when Campaign ID is valid and has content
-function showLinkCheckmarkWhenValid() {
-  const cid = elements.campaignIdInput ? elements.campaignIdInput.value.trim() : '';
-  const lnk = elements.linkInput ? elements.linkInput.value.trim() : '';
-  
-  if (cid && lnk) {
-    const res = validateCampaignLinkPair(cid, lnk);
-    if (res.ok) {
-      setStatusIcon('linkCheckmark', 'ok');
-    } else {
-      clearStatusIcon('linkCheckmark');
-    }
-  }
-}
-
-/* UPDATE CAMPAIGN ID */
-if (elements.updateCampaignIdBtn) {
-  elements.updateCampaignIdBtn.addEventListener('click', () => {
-    if (!xmlDoc) { showNotification("Tidak ada XML yang dimuat. Silakan buka file terlebih dahulu.", 'error'); return; }
+    showLinkCheckmarkWhenValid();
     
-    const campaignIdValue = elements.campaignIdInput ? elements.campaignIdInput.value.trim() : '';
-    if (!campaignIdValue) {
-      showNotification("Campaign ID cannot be empty.", 'error');
-      if (elements.campaignIdInput) elements.campaignIdInput.classList.add('error');
-      clearStatusIcon('campaignIdCheckmark');
-      return;
+    // Update character count
+    const cc = document.getElementById('linkCharCount');
+    if (cc) {
+      const length = elements.linkInput.value.length;
+      cc.textContent = length;
     }
     
-    // Check for spaces
-    const hasSpace = /\s/.test(campaignIdValue);
-    if (hasSpace) {
-      showNotification("Campaign ID cannot contain spaces.", 'error');
-      if (elements.campaignIdInput) elements.campaignIdInput.classList.add('error');
-      clearStatusIcon('campaignIdCheckmark');
-      return;
-    }
-    
-    // Validate format
-    const formatValidation = validateCampaignIdFormat(campaignIdValue);
-    if (!formatValidation.valid) {
-      showNotification(formatValidation.error, 'error');
-      if (elements.campaignIdInput) elements.campaignIdInput.classList.add('error');
-      clearStatusIcon('campaignIdCheckmark');
-      return;
-    }
-    
-    // Show past date warning (but allow update)
-    if (formatValidation.isPastDate) {
-      const pastDateWarning = `Peringatan: Tanggal campaign (${formatValidation.campaignDate.toLocaleDateString('id-ID')}) sudah lewat dari hari ini`;
-      showNotification(pastDateWarning, 'info');
-    }
-    
-    // Update AudienceModel
-    const audienceModel = xmlDoc.querySelector('AudienceModel');
-    if (audienceModel) {
-      audienceModel.setAttribute('name', campaignIdValue);
-    }
-    
-    // Update Campaign
-    const campaign = xmlDoc.querySelector('Campaign');
-    if (campaign) {
-      campaign.setAttribute('name', campaignIdValue);
-      campaign.setAttribute('audience', campaignIdValue);
-    }
-    
-    // Update Interaction elements
-    xmlDoc.querySelectorAll('Interaction').forEach(el => {
-      if (el.getAttribute('name') === currentCampaignId) {
-        el.setAttribute('name', campaignIdValue);
-      }
-      if (el.getAttribute('message') === currentCampaignId) {
-        el.setAttribute('message', campaignIdValue);
-      }
-    });
-    
-    // Update MessageContent elements
-    xmlDoc.querySelectorAll('MessageContent').forEach(el => {
-      if (el.getAttribute('name') === currentCampaignId) {
-        el.setAttribute('name', campaignIdValue);
-      }
-    });
-    
-    // Update FilterValue elements
-    xmlDoc.querySelectorAll('FilterValue').forEach(el => {
-      if (el.getAttribute('value') === currentCampaignId) {
-        el.setAttribute('value', campaignIdValue);
-      }
-    });
-    
-    // Update currentCampaignId variable
-    currentCampaignId = campaignIdValue;
-    
-    // Show success feedback
-    if (elements.campaignIdInput) {
-      elements.campaignIdInput.classList.remove('error');
-      setStatusIcon('campaignIdCheckmark', 'ok');
-    }
-    
-    updateEditor();
-    showNotification('Campaign ID updated successfully!', 'success');
-    
-    // Set indicator to applied state
-    setCampaignIndicatorState('applied');
-  });
-}
-
-/* UPDATE SUBJECT (ikon muncul saat ditekan) */
-if (elements.updateSubjectBtn) {
-  elements.updateSubjectBtn.addEventListener('click', () => {
-    if (!xmlDoc) { showNotification("Tidak ada XML yang dimuat. Silakan buka file terlebih dahulu.", 'error'); return; }
-    const messageContent = xmlDoc.querySelector('MessageContent');
-    if (!messageContent) { showNotification("MessageContent not found in XML.", 'error'); return; }
-
-    // Ambil & rapikan input
-    let s = (elements.subjectInput ? elements.subjectInput.value : '').replace(/\s{2,}/g, ' ').trim();
-
-    // Normalisasi KRHRED
-    const result = normalizeKrhredTokens(s);
-    const normalized = (result.text || '').trim();
-    const missingDetected = result.missingDetected;
-
-    if (missingDetected || normalized === '') {
-      // Invalid â†’ X merah, tidak masuk ke XML
-      if (elements.subjectInput) elements.subjectInput.classList.add('error');
-      setStatusIcon('subjectCheckmark', 'error');
-      elements.updateSubjectBtn.disabled = false; // tetap bisa coba lagi
-      return;
-    }
-
-    // Valid â†’ commit ke XML & centang hijau
-    s = normalized;
-    if (elements.subjectInput) elements.subjectInput.value = s;
-
-    const charCountSpan = document.getElementById('subjectCharCount'); 
-    if (charCountSpan) charCountSpan.textContent = `(${s.length})`;
-
-    if (messageContent) messageContent.setAttribute('subject', s);
-
-    if (elements.subjectInput) elements.subjectInput.classList.remove('error');
-    setStatusIcon('subjectCheckmark', 'ok');
-    elements.updateSubjectBtn.disabled = true; // disable setelah sukses
-  });
-}
-
-/* UPDATE LINK - Fixed with null checks and proper scoping */
-if (elements.updateLinkBtn) {
-  elements.updateLinkBtn.addEventListener('click', () => {
-    if (!xmlDoc) { showNotification("Tidak ada XML yang dimuat. Silakan buka file terlebih dahulu.", 'error'); return; }
-    const messageBody = xmlDoc.querySelector('MessageBody');
-    if (!messageBody) return;
-
-    let linkValue = elements.linkInput ? elements.linkInput.value.trim() : '';
-    const urlPattern = /^(http:\/\/|https:\/\/).+/i;
-    if (!urlPattern.test(linkValue)) {
-      showNotification('Please enter a valid link starting with http:// or https://', 'error');
-      if (elements.linkInput) elements.linkInput.classList.add('error');
-      clearStatusIcon('linkCheckmark');
-      return;
-    }
-    if (linkValue.startsWith('https://')) linkValue = 'http://' + linkValue.substring(8);
-
-    const cid = elements.campaignIdInput ? elements.campaignIdInput.value.trim() : '';
-    if (cid) {
-      const res = validateCampaignLinkPair(cid, linkValue);
-      const mismatchWarning = document.getElementById('mismatchWarning');
-      if (!res.ok) {
-        if (mismatchWarning) mismatchWarning.style.display = 'inline';
-        if (elements.campaignIdInput) elements.campaignIdInput.classList.add('error');
-        if (elements.linkInput) elements.linkInput.classList.add('error');
+    // Update checkmark visibility
+    const wrapper = document.querySelector('.input-wrapper.link-field');
+    if (wrapper) {
+      const length = elements.linkInput.value.length;
+      if (length > 0) {
+        wrapper.classList.add('checkmark-visible');
       } else {
-        if (mismatchWarning) mismatchWarning.style.display = 'none';
-        if (elements.campaignIdInput) elements.campaignIdInput.classList.remove('error');
-        if (elements.linkInput) elements.linkInput.classList.remove('error');
+        wrapper.classList.remove('checkmark-visible');
       }
     }
-
-    if (messageBody) messageBody.setAttribute('content', linkValue);
-    setStatusIcon('linkCheckmark', 'ok');
-    updateEditor();
+  });
+  
+  // Add focus effects
+  elements.linkInput.addEventListener('focus', () => {
+    const wrapper = document.querySelector('.input-wrapper.link-field');
+    if (wrapper) {
+      wrapper.classList.add('focused');
+    }
+  });
+  
+  elements.linkInput.addEventListener('blur', () => {
+    const wrapper = document.querySelector('.input-wrapper.link-field');
+    if (wrapper) {
+      wrapper.classList.remove('focused');
+    }
   });
 }
 
@@ -944,7 +972,6 @@ function saveState() {
 function loadState() {
   const saved = localStorage.getItem('config_state');
   if (!saved) { 
-    if (elements.updateSubjectBtn) gateSubjectButton(); 
     if (typeof decorateButtons === 'function') decorateButtons(); 
     return; 
   }
@@ -956,42 +983,242 @@ function loadState() {
       elements.subjectInput.value = state.subject || '';
       elements.linkInput.value = state.link || '';
       updateCampaignCountIndicator(elements.campaignIdInput.value);
+      
+      // Update character counts on load
+      updateAllCharCounts();
+      
+      // Validate and show tooltips after loading state
+      const campaignId = state.campaignId || '';
+      const link = state.link || '';
+      
+      if (campaignId) {
+        // Validate Campaign ID format
+        const formatValidation = validateCampaignIdFormat(campaignId);
+        const fieldContainer = document.querySelector('.field.campaign-id-field');
+        
+        if (!formatValidation.valid) {
+          if (elements.campaignIdInput) {
+            elements.campaignIdInput.classList.add('error');
+            elements.campaignIdInput.title = formatValidation.error;
+          }
+          if (fieldContainer) {
+            fieldContainer.classList.add('validation-error');
+            const tooltip = document.querySelector('.field.campaign-id-field .validation-tooltip');
+            if (tooltip) {
+              tooltip.textContent = formatValidation.error;
+            }
+          }
+        } else if (formatValidation.isPastDate) {
+          const campaignDateStr = formatValidation.campaignDate.toLocaleDateString('id-ID', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+          });
+          if (elements.campaignIdInput) {
+            elements.campaignIdInput.title = `Peringatan: Tanggal campaign (${campaignDateStr}) sudah lewat dari hari ini`;
+          }
+          if (fieldContainer) {
+            fieldContainer.classList.add('past-date-warning');
+            const tooltip = document.querySelector('.field.campaign-id-field .warning-tooltip');
+            if (tooltip) {
+              tooltip.textContent = `Campaign tanggal ${campaignDateStr} sudah lewat!`;
+            }
+          }
+        }
+        
+        // Validate Campaign ID and Link pair
+        if (link) {
+          liveValidatePair();
+        }
+      }
     }
-    // Remove folder state persistence to always start fresh
-    // if (state.folderOpened) markFileListNeedsReopen();
   } catch (e) {
     showNotification('Error loading state', 'error');
   } finally {
-    if (elements.updateSubjectBtn) gateSubjectButton();
     if (typeof decorateButtons === 'function') decorateButtons(); // ensure emojis added
   }
 }
-if (elements.campaignIdInput) elements.campaignIdInput.addEventListener('input', saveState);
-if (elements.subjectInput) elements.subjectInput.addEventListener('input', saveState);
-if (elements.linkInput) elements.linkInput.addEventListener('input', saveState);
-window.addEventListener('beforeunload', saveState);
+
+// Function to update all character counts
+function updateAllCharCounts() {
+  // Update Campaign ID count
+  const campaignIdCC = document.getElementById('campaignIdCharCount');
+  if (campaignIdCC && elements.campaignIdInput) {
+    const length = elements.campaignIdInput.value.length;
+    campaignIdCC.textContent = length;
+  }
+  
+  // Update Subject count
+  const subjectCC = document.getElementById('subjectCharCount');
+  if (subjectCC && elements.subjectInput) {
+    const length = elements.subjectInput.value.length;
+    subjectCC.textContent = length;
+  }
+  
+  // Update Link count
+  const linkCC = document.getElementById('linkCharCount');
+  if (linkCC && elements.linkInput) {
+    const length = elements.linkInput.value.length;
+    linkCC.textContent = length;
+  }
+}
 
 // === Apply Update combo button ===
 (function(){
   const applyUpdateBtn = document.getElementById('applyUpdateBtn');
   if (applyUpdateBtn) {
-    applyUpdateBtn.addEventListener('click', () => {
+    applyUpdateBtn.addEventListener('click', async () => {
       // Check if XML is loaded before applying updates
       if (!xmlDoc) {
         showNotification("Tidak ada XML yang dimuat. Silakan buka file terlebih dahulu.", 'error');
         return;
       }
       
-      // Call the existing individual updaters to preserve logic
-      const a = document.getElementById('updateCampaignIdBtn');
-      const b = document.getElementById('updateSubjectBtn');
-      const c = document.getElementById('updateLinkBtn');
-      if (a) a.click();
-      if (b) b.click();
-      if (c) c.click();
-
-      // Set indicator to applied state
-      setCampaignIndicatorState('applied');
+      // Disable button and show loading state
+      applyUpdateBtn.disabled = true;
+      const originalContent = applyUpdateBtn.innerHTML;
+      applyUpdateBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Applying...';
+      
+      let allValid = true;
+      let updateCount = 0;
+      let hasChanges = false;
+      
+      // Get current values from XML
+      let currentCampaignId = xmlDoc.querySelector('AudienceModel')?.getAttribute('name') || '';
+      let currentSubject = xmlDoc.querySelector('MessageContent')?.getAttribute('subject') || '';
+      let currentLink = xmlDoc.querySelector('MessageBody')?.getAttribute('content') || '';
+      
+      // Get input values
+      let campaignIdValue = elements.campaignIdInput ? elements.campaignIdInput.value.trim() : '';
+      let subjectValue = elements.subjectInput ? elements.subjectInput.value.trim() : '';
+      let linkValue = elements.linkInput ? elements.linkInput.value.trim() : '';
+      
+      // Variable to track the campaign ID for updates
+      let campaignIdForUpdate = currentCampaignId;
+      
+      // Check if Campaign ID has changes
+      if (campaignIdValue && campaignIdValue !== currentCampaignId) {
+        hasChanges = true;
+        const hasSpace = /\s/.test(campaignIdValue);
+        const formatValidation = validateCampaignIdFormat(campaignIdValue);
+        
+        if (!hasSpace && formatValidation.valid) {
+          // Update AudienceModel
+          const audienceModel = xmlDoc.querySelector('AudienceModel');
+          if (audienceModel) audienceModel.setAttribute('name', campaignIdValue);
+          
+          // Update Campaign
+          const campaign = xmlDoc.querySelector('Campaign');
+          if (campaign) {
+            campaign.setAttribute('name', campaignIdValue);
+            campaign.setAttribute('audience', campaignIdValue);
+          }
+          
+          // Update Interaction elements
+          xmlDoc.querySelectorAll('Interaction').forEach(el => {
+            if (el.getAttribute('name') === campaignIdForUpdate) {
+              el.setAttribute('name', campaignIdValue);
+            }
+            if (el.getAttribute('message') === campaignIdForUpdate) {
+              el.setAttribute('message', campaignIdValue);
+            }
+          });
+          
+          // Update MessageContent elements
+          xmlDoc.querySelectorAll('MessageContent').forEach(el => {
+            if (el.getAttribute('name') === campaignIdForUpdate) {
+              el.setAttribute('name', campaignIdValue);
+            }
+          });
+          
+          // Update FilterValue elements
+          xmlDoc.querySelectorAll('FilterValue').forEach(el => {
+            if (el.getAttribute('value') === campaignIdForUpdate) {
+              el.setAttribute('value', campaignIdValue);
+            }
+          });
+          
+          campaignIdForUpdate = campaignIdValue;
+          setStatusIcon('campaignIdCheckmark', 'ok');
+          updateCount++;
+        } else {
+          allValid = false;
+          if (elements.campaignIdInput) elements.campaignIdInput.classList.add('error');
+        }
+      }
+      
+      // Check if Subject has changes
+      if (subjectValue && subjectValue !== currentSubject) {
+        hasChanges = true;
+        const result = normalizeKrhredTokens(subjectValue);
+        const normalized = (result.text || '').trim();
+        
+        if (!result.missingDetected && normalized !== '') {
+          const messageContent = xmlDoc.querySelector('MessageContent');
+          if (messageContent) {
+            messageContent.setAttribute('subject', normalized);
+            if (elements.subjectInput) elements.subjectInput.value = normalized;
+            setStatusIcon('subjectCheckmark', 'ok');
+            updateCount++;
+          }
+        } else {
+          allValid = false;
+          if (elements.subjectInput) elements.subjectInput.classList.add('error');
+          setStatusIcon('subjectCheckmark', 'error');
+        }
+      }
+      
+      // Check if Link has changes
+      if (linkValue && linkValue !== currentLink) {
+        hasChanges = true;
+        const urlPattern = /^(http:\/\/|https:\/\/).+/i;
+        if (urlPattern.test(linkValue)) {
+          let finalLink = linkValue;
+          if (finalLink.startsWith('https://')) finalLink = 'http://' + finalLink.substring(8);
+          
+          const messageBody = xmlDoc.querySelector('MessageBody');
+          if (messageBody) {
+            messageBody.setAttribute('content', finalLink);
+            setStatusIcon('linkCheckmark', 'ok');
+            updateCount++;
+          }
+        } else {
+          allValid = false;
+          if (elements.linkInput) elements.linkInput.classList.add('error');
+        }
+      }
+      
+      // Update editor first, then show notification only if there were changes
+      if (hasChanges) {
+        if (updateCount > 0) {
+          // Update xmlDoc and editor first
+          updateEditor();
+          
+          // Update the xmlContent in saveState to reflect changes
+          saveState();
+          
+          // Re-initialize fields to sync with updated XML
+          initializeFields();
+          
+          // Show notification after XML is updated
+          showNotification(`Successfully applied ${updateCount} update(s)!`, 'success');
+          setCampaignIndicatorState('applied');
+          
+          // Update character counts after applying changes
+          updateAllCharCounts();
+        } else {
+          showNotification('No valid updates to apply', 'info');
+        }
+      } else {
+        showNotification('No changes detected', 'info');
+      }
+      
+      // Re-enable button and restore original content
+      setTimeout(() => {
+        applyUpdateBtn.disabled = false;
+        applyUpdateBtn.innerHTML = originalContent;
+      }, 500);
     });
   }
 })();
@@ -1100,6 +1327,11 @@ function initializeModalHandlers() {
         return;
       }
       
+      // Disable save button during save
+      saveBtn.disabled = true;
+      const originalText = saveBtn.textContent;
+      saveBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Menyimpan...';
+      
       hideSaveChangesModal(); // Hide modal immediately
 
       // Trigger save
@@ -1109,10 +1341,11 @@ function initializeModalHandlers() {
         showNotification("Error saving file: " + error.message, 'error');
       }
 
-      // Mark as saved after a short delay to ensure save completes
+      // Re-enable save button and reset text after a delay
       setTimeout(() => {
-        initializeOriginalValues();
-      }, 100);
+        saveBtn.disabled = false;
+        saveBtn.innerHTML = originalText;
+      }, 500);
     });
   }
 }
@@ -1159,6 +1392,21 @@ window.addEventListener('load', () => {
   initializeModalHandlers();
   initializeFileTree();
 
+  // Add save button event listener after DOM is loaded
+  const saveFileBtn = document.getElementById('saveFileBtn');
+  if (saveFileBtn) {
+    saveFileBtn.addEventListener('click', async () => {
+      // Check if file is opened before showing modal
+      if (!window.fileHandle) {
+        showNotification("Belum ada file yang dibuka. Silakan buka file terlebih dahulu.", 'error');
+        return;
+      }
+      
+      // Show save confirmation modal instead of saving directly
+      showSaveChangesModal();
+    });
+  }
+
   // Clear content if no folder is active
   if (typeof currentDirHandle === 'undefined' || currentDirHandle === null) {
     clearContentWhenNoFolder();
@@ -1172,6 +1420,9 @@ function clearContentWhenNoFolder() {
   if (elements.subjectInput) elements.subjectInput.value = '';
   if (elements.linkInput) elements.linkInput.value = '';
   if (elements.editor) elements.editor.setValue('');
+  
+  // Update character counts to 0
+  updateAllCharCounts();
   
   // Clear XML document
   xmlDoc = null;
@@ -1192,6 +1443,11 @@ function initializeFileTree() {
   const refreshTreeBtn = document.getElementById('refreshTreeBtn');
   const resizeHandle = document.getElementById('resizeHandle');
   const fileTree = document.getElementById('fileTree');
+  
+  // Show empty state initially
+  if (fileTree && !fileTree.hasChildNodes()) {
+    fileTree.innerHTML = '<div class="file-tree-empty">No folder opened. Click "Open Folder" to begin.</div>';
+  }
   
   if (openFolderBtn) {
     openFolderBtn.addEventListener('click', openFolder);
@@ -1426,6 +1682,12 @@ function createTreeItem(name, type, handle, isRoot = false) {
   label.className = 'label';
   label.textContent = name;
 
+  // Add file extension as data attribute for styling
+  if (type === 'file') {
+    const ext = name.split('.').pop().toLowerCase();
+    item.setAttribute('data-ext', ext);
+  }
+
   item.appendChild(label);
 
   // Only root folder gets expanded by default
@@ -1473,8 +1735,6 @@ async function selectFile(fileItem, fileHandle) {
     // Update breadcrumb with file name - reset to folder + file instead of concatenating
     const folderName = elements.breadcrumb ? elements.breadcrumb.textContent.split('\\')[0] : 'No folder';
     updateBreadcrumb(`${folderName}\\${file.name}`);
-
-    showNotification(`File "${file.name}" loaded`, 'success');
 
   } catch (error) {
     console.error('Error loading file:', error);

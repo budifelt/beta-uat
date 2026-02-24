@@ -5,7 +5,7 @@
 /* ===================================
    PAGE CONTAINER
    =================================== */
-.bookmarklet-container {
+.container {
   max-width: 1200px;
   margin: 0 auto;
   padding: var(--space-8) var(--space-5);
@@ -14,7 +14,7 @@
 /* ===================================
    PAGE HEADER
    =================================== */
-.bookmarklet-container h1 {
+.container h1 {
   font-size: var(--font-size-5xl);
   font-weight: var(--font-weight-black);
   color: var(--text);
@@ -35,7 +35,7 @@
    INSTRUCTIONS SECTION
    =================================== */
 .instructions {
-  background: #FFFFFF;
+  background: var(--surface);
   border: 2px solid var(--accent-primary);
   padding: var(--space-8);
   margin-bottom: var(--space-12);
@@ -74,8 +74,8 @@
 }
 
 .browser-notes {
-  background: #F8F9FA;
-  border: 2px solid #E9ECEF;
+  background: var(--bg-secondary);
+  border: 2px solid var(--border);
   padding: var(--space-4);
   margin-top: var(--space-4);
 }
@@ -120,15 +120,13 @@
 /* ===================================
    PAGE LAYOUT IMPROVEMENTS
    =================================== */
-.bookmarklet-page {
-  background: #FFFFFF;
+
+.bookmarklet-section {
+  background: var(--surface);
   min-height: 100vh;
 }
 
-.bookmarklet-container {
-  position: relative;
-  z-index: 1;
-}
+/* Container styles moved to line 8 to avoid duplication */
 
 /* ===================================
    BOOKMARKLETS GRID
@@ -158,8 +156,8 @@
 }
 
 .bookmarklets-grid.list-view .bookmarklet-header i {
-  width: 40px;
-  height: 40px;
+  width: var(--space-10);
+  height: var(--space-10);
   font-size: var(--font-size-base);
 }
 
@@ -183,15 +181,16 @@
    BOOKMARKLET CARD
    =================================== */
 .bookmarklet-card {
-  background: #FFFFFF;
-  border: 2px solid #E9ECEF;
+  background: var(--surface);
+  border: 2px solid var(--border);
   padding: var(--space-6);
-  transition: all var(--transition-fast);
+  /* Simplified transition - only border-color */
+  transition: border-color var(--transition-fast);
 }
 
 .bookmarklet-card:hover {
   border-color: var(--accent-primary);
-  transform: translateY(-2px);
+  /* Removed transform to reduce repaints */
 }
 
 .bookmarklet-header {
@@ -202,10 +201,10 @@
 }
 
 .bookmarklet-header i {
-  width: 48px;
-  height: 48px;
+  width: var(--space-12);
+  height: var(--space-12);
   background: var(--accent-primary);
-  color: #FFFFFF;
+  color: var(--text-inverse);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -239,23 +238,24 @@
   width: 100%;
   padding: var(--space-3) var(--space-5);
   background: var(--accent-primary);
-  color: #FFFFFF;
+  color: var(--text-inverse);
   border: 2px solid var(--accent-primary);
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-semibold);
   text-decoration: none;
   cursor: move;
-  transition: all var(--transition-fast);
+  /* Simplified transition - only background and color */
+  transition: background var(--transition-fast), color var(--transition-fast);
   user-select: none;
 }
 
 .bookmarklet-btn:hover {
-  background: #FFFFFF;
+  background: var(--surface);
   color: var(--accent-primary);
 }
 
 .bookmarklet-btn:active {
-  transform: translateY(0);
+  border-color: var(--accent-hover);
 }
 
 .bookmarklet-btn i {
@@ -286,11 +286,11 @@
 }
 
 .bookmarklet-category-icon {
-  width: 40px;
-  height: 40px;
+  width: var(--space-10);
+  height: var(--space-10);
   background: var(--accent-primary);
-  color: #FFFFFF;
-  border-radius: var(--radius-lg);
+  color: var(--text-inverse);
+  border-radius: 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -303,7 +303,7 @@
 .bookmarklet-filter {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: var(--radius-xl);
+  border-radius: 0;
   padding: var(--space-4);
   margin-bottom: var(--space-8);
   display: flex;
@@ -315,16 +315,17 @@
   flex: 1;
   padding: var(--space-3) var(--space-4);
   border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
+  border-radius: 0;
   font-size: var(--font-size-base);
   background: var(--bg);
-  transition: all var(--transition-fast);
+  /* Simplified transition - only border-color */
+  transition: border-color var(--transition-fast);
 }
 
 .bookmarklet-search:focus {
   outline: none;
   border-color: var(--accent-primary);
-  box-shadow: 0 0 0 3px rgba(232, 92, 65, 0.1);
+  /* Removed box-shadow to reduce GPU load */
 }
 
 .bookmarklet-filter-btn {
@@ -332,11 +333,12 @@
   background: var(--btn-secondary-bg);
   color: var(--btn-secondary-text);
   border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
+  border-radius: 0;
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-medium);
   cursor: pointer;
-  transition: all var(--transition-fast);
+  /* Simplified transition - only background and border-color */
+  transition: background var(--transition-fast), border-color var(--transition-fast);
   display: flex;
   align-items: center;
   gap: var(--space-2);
@@ -348,12 +350,12 @@
 }
 
 /* ===================================
-   ANIMATIONS
+   ANIMATIONS - Optimized for performance
    =================================== */
 @keyframes fadeInUp {
   from {
     opacity: 0;
-    transform: translateY(30px);
+    transform: translateY(20px);
   }
   to {
     opacity: 1;
@@ -361,33 +363,54 @@
   }
 }
 
+/* Reduced animation for better performance */
 .bookmarklet-card {
-  animation: fadeInUp 0.5s ease-out backwards;
+  animation: fadeInUp 0.3s ease-out backwards;
 }
 
-.bookmarklet-card:nth-child(1) { animation-delay: 0.1s; }
+/* Remove staggered delays to reduce animation load */
+/* .bookmarklet-card:nth-child(1) { animation-delay: 0.1s; }
 .bookmarklet-card:nth-child(2) { animation-delay: 0.2s; }
 .bookmarklet-card:nth-child(3) { animation-delay: 0.3s; }
 .bookmarklet-card:nth-child(4) { animation-delay: 0.4s; }
 .bookmarklet-card:nth-child(5) { animation-delay: 0.5s; }
-.bookmarklet-card:nth-child(6) { animation-delay: 0.6s; }
+.bookmarklet-card:nth-child(6) { animation-delay: 0.6s; } */
+
+/* Respect user's motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .bookmarklet-card {
+    animation: none;
+  }
+  
+  .bookmarklet-card:hover {
+    transform: none;
+  }
+  
+  .bookmarklet-btn:hover {
+    transform: none;
+  }
+  
+  .copy-btn:hover {
+    transform: none;
+  }
+}
 
 /* ===================================
    SCRIPT CONTAINER
    =================================== */
 .script-container {
   margin-top: var(--space-4);
-  border-radius: var(--radius-lg);
+  border-radius: 0;
   overflow: hidden;
   border: 1px solid var(--border);
 }
 
 .script-container textarea {
   width: 100%;
-  min-height: 200px;
+  min-height: var(--space-50);
   padding: var(--space-4);
   background: var(--gray-900);
-  color: #10B981;
+  color: var(--success);
   font-family: var(--font-family-mono, 'Courier New', monospace);
   font-size: var(--font-size-sm);
   border: none;
@@ -407,18 +430,19 @@
   gap: var(--space-2);
   padding: var(--space-2) var(--space-4);
   background: var(--accent-primary);
-  color: #FFFFFF;
+  color: var(--text-inverse);
   border: none;
-  border-radius: var(--radius-lg);
+  border-radius: 0;
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-medium);
   cursor: pointer;
-  transition: all var(--transition-fast);
+  /* Simplified transition - only background */
+  transition: background var(--transition-fast);
 }
 
 .copy-btn:hover {
   background: var(--accent-hover);
-  transform: translateY(-1px);
+  /* Removed transform to reduce repaints */
 }
 
 .copy-btn.copied {
@@ -429,11 +453,11 @@
    RESPONSIVE DESIGN
    =================================== */
 @media (max-width: 768px) {
-  .bookmarklet-container {
+  .container {
     padding: var(--space-6) var(--space-4);
   }
   
-  .bookmarklet-container h1 {
+  .container h1 {
     font-size: var(--font-size-4xl);
   }
   
@@ -459,8 +483,8 @@
   }
   
   .bookmarklet-header i {
-    width: 40px;
-    height: 40px;
+    width: var(--space-10);
+    height: var(--space-10);
     font-size: var(--font-size-base);
   }
   
@@ -470,7 +494,7 @@
 }
 
 @media (max-width: 480px) {
-  .bookmarklet-container h1 {
+  .container h1 {
     font-size: var(--font-size-3xl);
   }
   
@@ -508,12 +532,11 @@
 .shortcut-item kbd {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
+  border-radius: 0;
   padding: var(--space-1) var(--space-2);
   font-family: var(--font-family-mono, monospace);
   font-size: var(--font-size-xs);
   color: var(--text);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 /* ===================================
@@ -571,12 +594,12 @@
   
   .bookmarklet-card {
     break-inside: avoid;
-    border: 1px solid #000;
+    border: 1px solid var(--text);
     margin-bottom: 1rem;
   }
   
-  .bookmarklet-container h1 {
-    color: #000;
-    -webkit-text-fill-color: #000;
+  .container h1 {
+    color: var(--text);
+    -webkit-text-fill-color: var(--text);
   }
 }

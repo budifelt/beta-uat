@@ -243,34 +243,22 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize bookmarklet tools
     window.bookmarkletTools = new BookmarkletTools();
     
-    // Add hover effect for bookmarklet buttons
-    const bookmarkletBtns = document.querySelectorAll('.bookmarklet-btn, .tool-btn');
-    
-    bookmarkletBtns.forEach(btn => {
-        btn.addEventListener('mouseenter', function() {
-            this.style.transform = 'scale(1.05)';
-        });
-        
-        btn.addEventListener('mouseleave', function() {
-            this.style.transform = 'scale(1)';
-        });
-        
-        // Prevent default drag behavior
-        btn.addEventListener('dragstart', function(e) {
-            // Allow default drag behavior for bookmarklets
-        });
-    });
-    
     // Track bookmarklet usage analytics
     const trackBookmarkletClick = (toolName) => {
         console.log(`Bookmarklet tool clicked: ${toolName}`);
     };
     
     // Add click tracking to bookmarklet buttons
+    const bookmarkletBtns = document.querySelectorAll('.bookmarklet-btn, .tool-btn');
     bookmarkletBtns.forEach(btn => {
         btn.addEventListener('click', function() {
             const toolName = this.getAttribute('data-tool') || this.closest('.bookmarklet-card, .tool-card')?.querySelector('h3')?.textContent || 'Unknown';
             trackBookmarkletClick(toolName);
+        });
+        
+        // Prevent default drag behavior
+        btn.addEventListener('dragstart', function(e) {
+            // Allow default drag behavior for bookmarklets
         });
     });
 });

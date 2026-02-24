@@ -24,73 +24,13 @@
   
   <title>eDM Helper · Free Tools Collection</title>
   <meta name="theme-color" content="#0f172a" />
-  <!-- Font Awesome -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <!-- Font Awesome - Non-blocking load -->
+  <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"></noscript>
 </head>
 <body>
-  <!-- Check login state immediately to prevent flash -->
-  <script>
-    // Immediately check login state to prevent UI flash
-    (function() {
-      let user = null;
-      const rawUser = localStorage.getItem('currentUser');
-      if (rawUser) {
-        try {
-          user = JSON.parse(rawUser);
-        } catch (e) {
-          user = null;
-        }
-      }
-
-      document.addEventListener('DOMContentLoaded', () => {
-        const loginBtn = document.getElementById('login-btn');
-        const profileDropdown = document.getElementById('profile-dropdown');
-        const profileName = document.getElementById('profile-name');
-        const profileNameDisplay = document.getElementById('profile-name-display');
-        const displayName = user?.name || user?.fullName || user?.fullname || user?.username || 'User';
-
-        if (user) {
-          if (loginBtn) loginBtn.style.display = 'none';
-          if (profileDropdown) profileDropdown.style.display = 'inline-block';
-          if (profileName) profileName.textContent = displayName;
-          if (profileNameDisplay) profileNameDisplay.textContent = displayName;
-        } else {
-          if (loginBtn) {
-            loginBtn.style.display = 'flex';
-          }
-          if (profileDropdown) profileDropdown.style.display = 'none';
-        }
-      });
-      
-      // Define updateUserUI function globally
-      window.updateUserUI = function() {
-        const loginBtn = document.getElementById('login-btn');
-        const profileDropdown = document.getElementById('profile-dropdown');
-        const profileName = document.getElementById('profile-name');
-        const profileNameDisplay = document.getElementById('profile-name-display');
-        
-        const rawUser = localStorage.getItem('currentUser');
-        const user = rawUser ? JSON.parse(rawUser) : null;
-        const displayName = user?.name || user?.fullName || user?.fullname || user?.username || 'User';
-
-        if (user) {
-          if (loginBtn) loginBtn.style.display = 'none';
-          if (profileDropdown) profileDropdown.style.display = 'inline-block';
-          if (profileName) profileName.textContent = displayName;
-          if (profileNameDisplay) profileNameDisplay.textContent = displayName;
-        } else {
-          if (loginBtn) {
-            loginBtn.style.display = 'flex';
-            loginBtn.classList.add('pulse');
-            setTimeout(() => {
-              loginBtn.classList.remove('pulse');
-            }, 5000);
-          }
-          if (profileDropdown) profileDropdown.style.display = 'none';
-        }
-      };
-    })();
-  </script>
+  <!-- Initial State Script -->
+  <script src="js/initial-state.js"></script>
   
   <header class="header">
     <nav class="nav">
@@ -105,7 +45,7 @@
       <!-- Profile Section -->
       <div class="profile-section">
         <!-- Login Button (shown when not logged in) -->
-        <button id="login-btn" onclick="showLoginModal()" class="login-trigger-btn" style="display: none;">
+        <button id="login-btn" onclick="showLoginModal()" class="login-trigger-btn" style="display: none;" disabled>
           <i class="fa-solid fa-right-to-bracket"></i>
           <span>Login</span>
         </button>

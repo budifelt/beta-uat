@@ -11,7 +11,7 @@
   justify-content: center;
   background: var(--primary);
   box-sizing: border-box;
-  gap: 20px;
+  gap: var(--space-3);
   overflow: hidden;
 }
 
@@ -19,7 +19,7 @@
 .counter-container {
   background: var(--surface);
   border: 2px solid var(--primary);
-  padding: 32px;
+  padding: var(--space-8);
   max-width: 450px;
   width: 100%;
   position: relative;
@@ -28,11 +28,11 @@
 
 /* Counter title */
 .counter-container h1 {
-  font-size: 12px;
+  font-size: var(--font-size-xs);
   font-weight: 600;
   color: var(--primary);
   text-transform: uppercase;
-  letter-spacing: 2px;
+  letter-spacing: 0.13em;
   margin-bottom: 32px;
   display: flex;
   align-items: center;
@@ -42,7 +42,7 @@
 
 .edit-icon {
   opacity: 0.3;
-  transition: opacity 0.2s ease;
+  /* Removed transition to reduce repaints */
   cursor: pointer;
   color: var(--primary);
 }
@@ -53,15 +53,15 @@
 
 /* Counter display */
 .counter-value {
-  margin: 32px 0;
+  margin: var(--space-8) 0;
   position: relative;
 }
 
 #counter-number {
-  font-size: 96px;
+  font-size: var(--font-size-9xl);
   font-weight: 300;
   color: var(--text);
-  letter-spacing: -8px;
+  letter-spacing: -0.08em;
   line-height: 0.9;
   font-variant-numeric: tabular-nums;
   display: block;
@@ -72,7 +72,7 @@
 .progress-bar-container {
   height: 2px;
   background: var(--gray-200);
-  margin: 32px 0;
+  margin: var(--space-8) 0;
   overflow: hidden;
 }
 
@@ -80,36 +80,38 @@
   height: 100%;
   background: var(--primary);
   width: 0%;
-  transition: width 0.5s ease;
+  /* Reduced transition duration for better performance */
+  transition: width 0.2s ease;
 }
 
 /* Status indicators */
 .sync-status,
 .last-updated,
 .cache-status {
-  font-size: 10px;
+  font-size: var(--font-size-2xs);
   color: var(--text-muted);
   text-transform: uppercase;
-  letter-spacing: 1px;
-  margin-top: 12px;
+  letter-spacing: 0.06em;
+  margin-top: var(--space-3);
   text-align: center;
 }
 
 /* Button group */
 .buttons {
   display: flex;
-  gap: 16px;
+  gap: var(--space-4);
   margin-top: 32px;
 }
 
 .buttons button {
   flex: 1;
-  padding: 14px 20px;
-  font-size: 12px;
+  padding: var(--space-3) var(--space-5);
+  font-size: var(--font-size-xs);
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 1px;
-  transition: all 0.2s ease;
+  letter-spacing: 0.06em;
+  /* Simplified transition - only background and color */
+  transition: background 0.2s ease, color 0.2s ease;
   cursor: pointer;
   border: 2px solid var(--primary);
   background: var(--surface);
@@ -136,7 +138,7 @@
 .history-container {
   background: var(--surface);
   border: 2px solid var(--primary);
-  padding: 24px 32px;
+  padding: var(--space-6) var(--space-8);
   max-width: 450px;
   width: 100%;
   flex: 1;
@@ -147,11 +149,11 @@
 }
 
 .history-container h2 {
-  font-size: 12px;
+  font-size: var(--font-size-xs);
   font-weight: 600;
   color: var(--primary);
   text-transform: uppercase;
-  letter-spacing: 2px;
+  letter-spacing: 0.13em;
   margin-bottom: 16px;
 }
 
@@ -166,20 +168,21 @@
   background: var(--gray-50);
   border: 1px solid var(--gray-200);
   border-left: 3px solid var(--primary);
-  padding: 12px 16px;
-  margin-bottom: 8px;
-  transition: all 0.2s ease;
+  padding: var(--space-3) var(--space-4);
+  margin-bottom: var(--space-2);
+  /* Simplified transition - only background */
+  transition: background 0.2s ease;
 }
 
 .history-item:hover {
   background: var(--gray-100);
-  transform: translateX(4px);
+  /* Removed transform to reduce repaints */
 }
 
 .history-item i {
   color: var(--primary);
   font-size: 14px;
-  margin-right: 12px;
+  margin-right: var(--space-3);
 }
 
 .history-item strong {
@@ -188,10 +191,10 @@
 }
 
 .history-item time {
-  font-size: 10px;
+  font-size: var(--font-size-2xs);
   color: var(--text-muted);
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.03em;
 }
 
 /* Load more button */
@@ -199,15 +202,16 @@
   background: var(--surface);
   border: 2px solid var(--primary);
   color: var(--primary);
-  padding: 14px;
-  font-size: 11px;
+  padding: var(--space-3);
+  font-size: var(--font-size-2xs);
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 0.06em;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
+  /* Simplified transition - only background and color */
+  transition: background 0.2s ease, color 0.2s ease;
   width: 100%;
-  margin-top: 16px;
+  margin-top: var(--space-4);
 }
 
 .load-more-btn-custom:hover {
@@ -243,7 +247,7 @@
 }
 
 .modal-header {
-  padding: 24px;
+  padding: var(--space-6);
   border-bottom: 2px solid var(--gray-200);
   display: flex;
   align-items: center;
@@ -251,12 +255,12 @@
 }
 
 .modal-header h3 {
-  font-size: 12px;
+  font-size: var(--font-size-xs);
   font-weight: 600;
   color: var(--primary);
   margin: 0;
   text-transform: uppercase;
-  letter-spacing: 2px;
+  letter-spacing: 0.13em;
 }
 
 .modal-close-btn {
@@ -264,8 +268,8 @@
   border: none;
   color: var(--text-muted);
   cursor: pointer;
-  font-size: 16px;
-  padding: 4px;
+  font-size: var(--font-size-base);
+  padding: var(--space-1);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -276,29 +280,29 @@
 }
 
 .modal-body {
-  padding: 24px;
+  padding: var(--space-6);
 }
 
 .modal-body p {
-  font-size: 12px;
+  font-size: var(--font-size-xs);
   color: var(--text-muted);
   margin-bottom: 20px;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.03em;
 }
 
 .input-group {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--space-2);
 }
 
 .input-group label {
-  font-size: 11px;
+  font-size: var(--font-size-2xs);
   font-weight: 600;
   color: var(--text);
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 0.06em;
 }
 
 .input-group input {
@@ -314,14 +318,14 @@
 }
 
 .input-hint {
-  font-size: 10px;
+  font-size: var(--font-size-2xs);
   color: var(--text-muted);
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.03em;
 }
 
 .modal-footer {
-  padding: 20px 24px;
+  padding: var(--space-5) var(--space-6);
   border-top: 2px solid var(--gray-200);
   display: flex;
   gap: 12px;
@@ -329,18 +333,18 @@
 }
 
 .modal-footer button {
-  padding: 12px 24px;
+  padding: var(--space-3) var(--space-6);
   border: 2px solid var(--primary);
   background: var(--surface);
   color: var(--primary);
   font-weight: 600;
-  font-size: 11px;
+  font-size: var(--font-size-2xs);
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 0.06em;
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--space-1);
 }
 
 .modal-footer button:hover {
@@ -349,7 +353,7 @@
 }
 
 .modal-footer button i {
-  font-size: 12px;
+  font-size: var(--font-size-xs);
 }
 
 .btn-confirm {
@@ -365,7 +369,7 @@
 /* Responsive design */
 @media (max-width: 768px) {
   .page {
-    gap: 20px;
+    gap: var(--space-3);
   }
   
   .counter-container,
@@ -376,8 +380,8 @@
   }
   
   #counter-number {
-    font-size: 72px;
-    letter-spacing: -4px;
+    font-size: var(--font-size-8xl);
+    letter-spacing: -0.04em;
   }
   
   .buttons {
@@ -386,6 +390,53 @@
   
   .modal {
     padding: 32px 24px;
+  }
+}
+
+/* ===================================
+   PERFORMANCE OPTIMIZATIONS
+   =================================== */
+
+/* Respect user's motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .edit-icon,
+  .progress-bar,
+  .buttons button,
+  .history-item,
+  .load-more-btn-custom {
+    transition: none;
+  }
+  
+  .history-item:hover {
+    transform: none;
+  }
+}
+
+/* Optimize for low-end devices */
+.counter-value,
+.progress-bar,
+.history-item {
+  will-change: auto; /* Remove will-change to reduce GPU load */
+}
+
+/* Reduce box-shadow rendering */
+.modal-overlay {
+  box-shadow: none;
+}
+
+/* Optimize animations */
+@media (max-width: 768px) {
+  /* Disable animations on mobile for better performance */
+  .edit-icon,
+  .progress-bar,
+  .buttons button,
+  .history-item,
+  .load-more-btn-custom {
+    transition: none;
+  }
+  
+  .history-item:hover {
+    transform: none;
   }
 }
 

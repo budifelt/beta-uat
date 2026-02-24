@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Check LocalStorage</title>
+</head>
+<body>
+    <h1>LocalStorage Contents</h1>
+    <pre id="output"></pre>
+    
+    <script>
+        const output = document.getElementById('output');
+        const state = localStorage.getItem('config_state');
+        
+        if (state) {
+            const parsed = JSON.parse(state);
+            output.textContent = JSON.stringify(parsed, null, 2);
+            
+            console.log('Campaign ID length:', parsed.campaignId?.length || 0);
+            console.log('Subject length:', parsed.subject?.length || 0);
+            console.log('Link length:', parsed.link?.length || 0);
+        } else {
+            output.textContent = 'No saved state found';
+        }
+    </script>
+</body>
+</html>

@@ -1,33 +1,36 @@
 // ===================================
-// INDEX PAGE JAVASCRIPT
+// INDEX PAGE JAVASCRIPT - Optimized for performance
 // Only handles the main page body content (tool cards)
 // ===================================
 
 // Note: Login state is handled by nav.js
 
-// Sort tool-cards by title (A→Z)
+// Sort tool-cards by title (A→Z) - Optimized
 (function(){
-  const grid = document.querySelector('.grid');
-  if (!grid) return;
+  // Use requestAnimationFrame to prevent blocking
+  requestAnimationFrame(() => {
+    const grid = document.querySelector('.grid');
+    if (!grid) return;
 
-  const cards = Array.from(grid.querySelectorAll('a.tool-card'));
-  if (cards.length === 0) return;
+    const cards = Array.from(grid.querySelectorAll('a.tool-card'));
+    if (cards.length === 0) return;
 
-  cards.sort((a, b) => {
-    const ta = a.querySelector('.tool-title')?.textContent?.trim() ?? '';
-    const tb = b.querySelector('.tool-title')?.textContent?.trim() ?? '';
-    return ta.localeCompare(tb, undefined, { sensitivity: 'base' });
+    cards.sort((a, b) => {
+      const ta = a.querySelector('.tool-title')?.textContent?.trim() ?? '';
+      const tb = b.querySelector('.tool-title')?.textContent?.trim() ?? '';
+      return ta.localeCompare(tb, undefined, { sensitivity: 'base' });
+    });
+
+    // Re-append in sorted order
+    cards.forEach(card => grid.appendChild(card));
   });
-
-  // Re-append in sorted order
-  cards.forEach(card => grid.appendChild(card));
 })();
 
-// Card click without animation
+// Card click without animation - Optimized
 document.querySelectorAll('a.tool-card').forEach(card=>{
   card.addEventListener('click', e=>{
     // Allow normal link behavior
-  });
+  }, { passive: true }); // Add passive listener for better scroll performance
 });
 
 // ---- Form Handlers for index.html ----

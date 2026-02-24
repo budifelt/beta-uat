@@ -426,7 +426,6 @@ main {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: var(--space-3) var(--space-5);
   height: var(--header-height);
   max-width: 1200px;
   margin: 0 auto;
@@ -636,10 +635,6 @@ main {
     padding: 0 var(--space-4);
   }
   
-  .nav {
-    padding: var(--space-3) var(--space-4);
-  }
-  
   .footer-content {
     flex-direction: column;
     gap: var(--space-4);
@@ -784,7 +779,9 @@ main {
 }
 
 .profile-section {
-  padding: var(--space-1);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
 }
 
 .profile-header {

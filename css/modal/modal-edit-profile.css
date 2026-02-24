@@ -167,7 +167,7 @@
   width: 44px;
   height: 24px;
   background: #E9ECEF;
-  border-radius: 12px;
+  border-radius: 0;
   position: relative;
 }
 
@@ -179,7 +179,7 @@
   width: 20px;
   height: 20px;
   background: #FFFFFF;
-  border-radius: 10px;
+  border-radius: 0;
 }
 
 .toggle-input:checked + .toggle-switch {

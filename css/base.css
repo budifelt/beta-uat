@@ -77,6 +77,10 @@ input, textarea, select, button {
   font-family: inherit;
   font-size: inherit;
   line-height: inherit;
+  border-radius: 0;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
 }
 
 button {
@@ -84,6 +88,12 @@ button {
   border: none;
   background: none;
   font-family: inherit;
+  border-radius: 0;
+}
+
+/* Remove default browser styling */
+* {
+  border-radius: 0 !important;
 }
 
 img {

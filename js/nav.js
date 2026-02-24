@@ -152,11 +152,6 @@ function showLoginState() {
   
   if (loginBtn) {
     loginBtn.style.display = 'flex';
-    // Add pulse animation
-    loginBtn.classList.add('pulse');
-    setTimeout(() => {
-      loginBtn.classList.remove('pulse');
-    }, 5000);
   }
   if (profileDropdown) {
     profileDropdown.classList.add('hidden');

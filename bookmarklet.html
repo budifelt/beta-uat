@@ -24,79 +24,13 @@
   
   <title>Bookmarklet - eDM Helper</title>
   <meta name="theme-color" content="#0f172a" />
-  <!-- Font Awesome -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <!-- Font Awesome - Non-blocking load -->
+  <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"></noscript>
 </head>
 <body>
-  <!-- Check login state immediately to prevent flash -->
-  <script>
-    // Immediately check login state to prevent UI flash
-    (function() {
-      let user = null;
-      const rawUser = localStorage.getItem('currentUser');
-      if (rawUser) {
-        try {
-          user = JSON.parse(rawUser);
-        } catch (e) {
-          user = null;
-        }
-      }
-
-      document.addEventListener('DOMContentLoaded', () => {
-        const loginBtn = document.getElementById('login-btn');
-        const profileDropdown = document.getElementById('profile-dropdown');
-        const profileName = document.getElementById('profile-name');
-        const profileNameDisplay = document.getElementById('profile-name-display');
-        const displayName = user?.name || user?.fullName || user?.fullname || user?.username || 'User';
-
-        if (user) {
-          if (loginBtn) loginBtn.style.display = 'none';
-          if (profileDropdown) profileDropdown.style.display = 'inline-block';
-          if (profileName) profileName.textContent = displayName;
-          if (profileNameDisplay) profileNameDisplay.textContent = displayName;
-        } else {
-          if (loginBtn) {
-            loginBtn.style.display = 'flex';
-            // Add pulse animation to login button
-            loginBtn.classList.add('pulse');
-            // Remove pulse after 5 seconds
-            setTimeout(() => {
-              loginBtn.classList.remove('pulse');
-            }, 5000);
-          }
-          if (profileDropdown) profileDropdown.style.display = 'none';
-        }
-      });
-      
-      // Define updateUserUI function globally
-      window.updateUserUI = function() {
-        const loginBtn = document.getElementById('login-btn');
-        const profileDropdown = document.getElementById('profile-dropdown');
-        const profileName = document.getElementById('profile-name');
-        const profileNameDisplay = document.getElementById('profile-name-display');
-        
-        const rawUser = localStorage.getItem('currentUser');
-        const user = rawUser ? JSON.parse(rawUser) : null;
-        const displayName = user?.name || user?.fullName || user?.fullname || user?.username || 'User';
-
-        if (user) {
-          if (loginBtn) loginBtn.style.display = 'none';
-          if (profileDropdown) profileDropdown.style.display = 'inline-block';
-          if (profileName) profileName.textContent = displayName;
-          if (profileNameDisplay) profileNameDisplay.textContent = displayName;
-        } else {
-          if (loginBtn) {
-            loginBtn.style.display = 'flex';
-            loginBtn.classList.add('pulse');
-            setTimeout(() => {
-              loginBtn.classList.remove('pulse');
-            }, 5000);
-          }
-          if (profileDropdown) profileDropdown.style.display = 'none';
-        }
-      };
-    })();
-  </script>
+  <!-- Initial State Script -->
+  <script src="js/initial-state.js"></script>
   
   <header class="header">
     <nav class="nav">
@@ -111,7 +45,7 @@
       <!-- Profile Section -->
       <div class="profile-section">
         <!-- Login Button (shown when not logged in) -->
-        <button id="login-btn" onclick="showLoginModal()" class="login-trigger-btn">
+        <button id="login-btn" onclick="showLoginModal()" class="login-trigger-btn" style="display: none;" disabled>
           <i class="fa-solid fa-right-to-bracket"></i>
           <span>Login</span>
         </button>
@@ -122,26 +56,26 @@
             <div class="profile-avatar">
               <i class="fa-solid fa-user"></i>
             </div>
-            <span id="profile-name" style="flex: 1; min-width: 0; display: inline-block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">John Doe</span>
+            <span id="profile-name" style="flex: 1; min-width: 0; display: inline-block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">User</span>
             <i class="fa-solid fa-chevron-down"></i>
           </button>
           
-          <div id="profile-menu" class="profile-menu" style="width: 220px !important; min-width: 220px !important; max-width: 260px !important;">
+          <div id="profile-menu" class="profile-menu hidden" style="width: 220px !important; min-width: 220px !important; max-width: 260px !important;">
             <div class="profile-header" onclick="showProfileModal(); toggleProfileMenu();" style="cursor: pointer;">
               <div class="profile-info">
                 <div class="profile-avatar-large">
                   <i class="fa-solid fa-user"></i>
                 </div>
                 <div class="profile-details">
-                  <div class="profile-name-display" id="profile-name-display">John Doe</div>
-                  <div class="profile-email-display" id="profile-email-display">john@example.com</div>
+                  <div class="profile-name-display" id="profile-name-display">User</div>
+                  <div class="profile-email-display" id="profile-email-display" style="font-size: 12px; opacity: 0.8;">user@example.com</div>
                   <div class="profile-role-display" id="profile-role-display">User</div>
                 </div>
               </div>
             </div>
             
             <div class="profile-actions">
-              <a href="#" onclick="showSettingsModal()" class="profile-action">
+              <a href="#" onclick="event.preventDefault(); showSettingsModal()" class="profile-action">
                 <i class="fa-solid fa-cog"></i>
                 <span>Settings</span>
                 <i class="fa-solid fa-chevron-right" style="margin-left: auto; font-size: 12px; opacity: 0.5;"></i>
@@ -178,8 +112,9 @@
     </nav>
   </header>
 
-  <main id="main-content" class="page bookmarklet-page">
-    <div class="bookmarklet-container">
+  <main id="main-content">
+    <section class="bookmarklet-section">
+      <div class="container">
         <h1>eDM Helper Bookmarklets</h1>
         <p class="subtitle">Kumpulan bookmarklet berguna untuk daily work Anda</p>
         
@@ -383,7 +318,8 @@
                 <li>Test bookmarklets di development environment terlebih dahulu</li>
             </ul>
         </div>
-    </div>
+      </div>
+    </section>
   </main>
 
   <!-- Footer -->
@@ -421,120 +357,6 @@
 <script src="js/version-config.js" defer></script>
 <script src="js/toast-manager.js" defer></script>
 <script src="js/pages/bookmarklet.js" defer></script>
-<script>
-// Copy manual script to clipboard
-function copyManualScript() {
-    const textarea = document.getElementById('manual-script');
-    const btn = document.getElementById('copy-script-btn');
-    const originalHTML = btn.innerHTML;
-    
-    if (navigator.clipboard && window.isSecureContext) {
-        navigator.clipboard.writeText(textarea.value)
-            .then(() => {
-                btn.innerHTML = '<i class="fa-solid fa-check"></i><span>Copied!</span>';
-                btn.classList.add('copied');
-                setTimeout(() => {
-                    btn.innerHTML = originalHTML;
-                    btn.classList.remove('copied');
-                }, 2000);
-            })
-            .catch(() => fallbackCopy(textarea.value));
-    } else {
-        fallbackCopy(textarea.value);
-    }
-    
-    function fallbackCopy(text) {
-        const ta = document.createElement('textarea');
-        ta.value = text;
-        ta.style.position = 'fixed';
-        ta.style.left = '-9999px';
-        document.body.appendChild(ta);
-        ta.focus();
-        ta.select();
-        try {
-            document.execCommand('copy');
-            btn.innerHTML = '<i class="fa-solid fa-check"></i><span>Copied!</span>';
-            btn.classList.add('copied');
-            setTimeout(() => {
-                btn.innerHTML = originalHTML;
-                btn.classList.remove('copied');
-            }, 2000);
-        } catch (err) {
-            console.error('Failed to copy:', err);
-            prompt('Copy manually:', text);
-        }
-        document.body.removeChild(ta);
-    }
-}
-
-// Search and Filter Functionality
-function clearSearch() {
-    document.getElementById('bookmarkletSearch').value = '';
-    filterBookmarklets();
-}
-
-function filterBookmarklets() {
-    const searchTerm = document.getElementById('bookmarkletSearch').value.toLowerCase();
-    const bookmarkletCards = document.querySelectorAll('.bookmarklet-card');
-    const noResults = document.getElementById('noResults');
-    let visibleCount = 0;
-    
-    bookmarkletCards.forEach(card => {
-        const title = card.querySelector('h3').textContent.toLowerCase();
-        const description = card.querySelector('p').textContent.toLowerCase();
-        
-        if (title.includes(searchTerm) || description.includes(searchTerm)) {
-            card.style.display = 'block';
-            card.style.animation = 'fadeInUp 0.5s ease-out';
-            visibleCount++;
-        } else {
-            card.style.display = 'none';
-        }
-    });
-    
-    // Show/hide no results message
-    if (visibleCount === 0 && searchTerm !== '') {
-        noResults.classList.add('show');
-    } else {
-        noResults.classList.remove('show');
-    }
-}
-
-// Toggle view between grid and list
-function toggleView() {
-    const grid = document.querySelector('.bookmarklets-grid');
-    const btn = event.currentTarget;
-    
-    if (grid.classList.contains('grid-view')) {
-        grid.classList.remove('grid-view');
-        grid.classList.add('list-view');
-        btn.innerHTML = '<i class="fa-solid fa-list"></i> List';
-    } else {
-        grid.classList.remove('list-view');
-        grid.classList.add('grid-view');
-        btn.innerHTML = '<i class="fa-solid fa-grip"></i> Grid';
-    }
-}
-
-// Add search input event listener
-document.addEventListener('DOMContentLoaded', function() {
-    const searchInput = document.getElementById('bookmarkletSearch');
-    if (searchInput) {
-        searchInput.addEventListener('input', filterBookmarklets);
-    }
-    
-    const bookmarkletBtns = document.querySelectorAll('.bookmarklet-btn');
-    
-    bookmarkletBtns.forEach(btn => {
-        btn.addEventListener('mouseenter', function() {
-            this.style.transform = 'scale(1.05)';
-        });
-        
-        btn.addEventListener('mouseleave', function() {
-            this.style.transform = 'scale(1)';
-        });
-    });
-});
-</script>
+<script src="js/bookmarklet-utils.js" defer></script>
 </body>
 </html>

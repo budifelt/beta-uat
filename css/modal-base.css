@@ -38,8 +38,8 @@
 .modal-content,
 .settings-content {
   background: #FFFFFF;
-  width: 600px;
-  max-width: 90%;
+  width: 90%;
+  max-width: 600px;
   max-height: 90vh;
   display: flex;
   flex-direction: column;

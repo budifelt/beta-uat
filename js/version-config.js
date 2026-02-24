@@ -26,7 +26,7 @@ const VERSION_CONFIG = {
 
 // Auto-update version system
 // ⚠️ UBAH BAGIAN INI UNTUK KONTROL AUTO-UPDATE ⚠️
-let AUTO_UPDATE_ENABLED = true;                 // ← GANTI JIKA INI MATIKAN AUTO-UPDATE (true/false)
+let AUTO_UPDATE_ENABLED = false;                 // ← GANTI JIKA INI MATIKAN AUTO-UPDATE (true/false)
 let AUTO_UPDATE_INTERVAL = 60000;              // ← GANTI INTERVAL AUTO-UPDATE (ms) - 60000 = 1 menit
 
 // Auto-increment version function

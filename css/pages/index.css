@@ -43,7 +43,7 @@ main#main-content {
 .hero-title {
   font-size: var(--font-size-6xl);
   font-weight: var(--font-weight-black);
-  color: #FFFFFF;
+  color: var(--text-inverse);
   margin: 0 0 var(--space-4);
   letter-spacing: -0.03em;
   line-height: var(--line-height-tight);
@@ -51,7 +51,7 @@ main#main-content {
 
 .hero-subtitle {
   font-size: var(--font-size-xl);
-  color: #FFFFFF;
+  color: var(--text-inverse);
   margin: 0 0 var(--space-8);
   font-weight: var(--font-weight-medium);
   line-height: var(--line-height-relaxed);
@@ -69,8 +69,8 @@ main#main-content {
   align-items: center;
   text-align: center;
   padding: var(--space-4);
-  background: #FFFFFF;
-  border: 2px solid #FFFFFF;
+  background: var(--surface);
+  border: 2px solid var(--surface);
 }
 
 .stat-number {
@@ -82,7 +82,7 @@ main#main-content {
 
 .stat-label {
   font-size: var(--font-size-sm);
-  color: #000000;
+  color: var(--text);
   font-weight: var(--font-weight-medium);
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -101,13 +101,13 @@ main#main-content {
 .section-title-simple {
   font-size: var(--font-size-3xl);
   font-weight: var(--font-weight-bold);
-  color: #FFFFFF;
+  color: var(--text-inverse);
   margin: 0 0 var(--space-2);
 }
 
 .section-subtitle-simple {
   font-size: var(--font-size-base);
-  color: #FFFFFF;
+  color: var(--text-inverse);
   opacity: 0.9;
   margin: 0;
 }
@@ -163,49 +163,52 @@ main#main-content {
   max-width: 1200px;
 }
 
-/* Tool Items */
+/* Tool Items - Optimized for performance */
 .tool-link {
   text-decoration: none;
   color: inherit;
   display: block;
-  transition: all var(--transition-fast);
+  /* Simplified transition - only background */
+  transition: background var(--transition-fast);
   height: 100%;
 }
 
 .tool-item {
-  background: #FFFFFF;
-  border: 2px solid #E9ECEF;
+  background: var(--surface);
+  border: 2px solid var(--border);
   padding: var(--space-6);
   display: flex;
   align-items: center;
   gap: var(--space-5);
   height: 100%;
-  transition: all var(--transition-fast);
+  /* Simplified transition - only border-color */
+  transition: border-color var(--transition-fast);
 }
 
 .tool-item:hover {
-  background: #FFFFFF;
+  background: var(--surface);
   border-color: var(--accent-primary);
-  transform: translateY(-2px);
+  /* Removed transform to reduce repaints */
 }
 
 .tool-item:hover .tool-icon {
   background: var(--accent-primary);
-  color: #FFFFFF;
+  color: var(--text-inverse);
 }
 
 .tool-icon {
-  width: 56px;
-  height: 56px;
+  width: var(--space-14);
+  height: var(--space-14);
   background: rgba(241, 140, 142, 0.1);
   border: 2px solid var(--accent-primary);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 24px;
+  font-size: var(--font-size-2xl);
   color: var(--accent-primary);
   flex-shrink: 0;
-  transition: all var(--transition-fast);
+  /* Simplified transition - only background and color */
+  transition: background var(--transition-fast), color var(--transition-fast);
 }
 
 .tool-info {
@@ -215,10 +218,10 @@ main#main-content {
 }
 
 .tool-title {
-  font-size: 18px;
+  font-size: var(--font-size-lg);
   font-weight: 600;
-  color: #212529;
-  margin: 0 0 4px;
+  color: var(--text);
+  margin: 0 0 var(--space-1);
   line-height: 1.3;
   transition: color var(--transition-fast);
 }
@@ -228,15 +231,39 @@ main#main-content {
 }
 
 .tool-desc {
-  font-size: 14px;
-  color: #6C757D;
+  font-size: var(--font-size-sm);
+  color: var(--text-muted);
   margin: 0;
   line-height: 1.4;
   transition: color var(--transition-fast);
 }
 
 .tool-item:hover .tool-desc {
-  color: #495057;
+  color: var(--text-secondary);
+}
+
+/* ===================================
+   PERFORMANCE OPTIMIZATIONS
+   =================================== */
+
+/* Respect user's motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .tool-link,
+  .tool-item,
+  .tool-icon,
+  .tool-title,
+  .tool-desc {
+    transition: none;
+  }
+  
+  .tool-item:hover {
+    transform: none;
+  }
+}
+
+/* Optimize for low-end devices */
+.tool-item {
+  will-change: auto; /* Remove will-change to reduce GPU load */
 }
 
 /* ===================================

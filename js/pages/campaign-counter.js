@@ -1,126 +1,62 @@
-// Campaign Counter - Dummy Implementation
+// Campaign Counter - Optimized Implementation
 let campaignCounterId = 1;
 let history = [];
 
-// Initialize on page load
+// Initialize on page load - Optimized
 document.addEventListener('DOMContentLoaded', function() {
-  // Load from localStorage if available
-  const saved = localStorage.getItem('campaignCounter');
-  if (saved) {
-    const data = JSON.parse(saved);
-    campaignCounterId = data.campaignCounterId || 1;
-    history = data.history || [];
-  }
-  
-  updateDisplay();
-  updateHistory();
-  
-  // Check if user was remembered
-  const rememberedUser = localStorage.getItem('rememberedUser');
-  console.log('Page load - rememberedUser:', rememberedUser);
-  
-  if (rememberedUser) {
-    const loginBtn = document.getElementById('login-btn');
-    const profileDropdown = document.getElementById('profile-dropdown');
-    const profileName = document.getElementById('profile-name');
-    const profileNameDisplay = document.getElementById('profile-name-display');
-    const profileSection = document.querySelector('.profile-section');
+  // Use requestAnimationFrame for non-blocking initialization
+  requestAnimationFrame(() => {
+    // Load from localStorage if available
+    const saved = localStorage.getItem('campaignCounter');
+    if (saved) {
+      const data = JSON.parse(saved);
+      campaignCounterId = data.campaignCounterId || 1;
+      history = data.history || [];
+    }
     
-    console.log('Page load elements:', {
-      loginBtn: !!loginBtn,
-      profileDropdown: !!profileDropdown,
-      profileName: !!profileName,
-      profileNameDisplay: !!profileNameDisplay,
-      profileSection: !!profileSection,
-      viewportWidth: window.innerWidth,
-      viewportHeight: window.innerHeight
-    });
+    updateDisplay();
+    updateHistory();
     
-    if (profileSection) {
-      // Force visible styles
-      profileSection.style.setProperty('display', 'flex', 'important');
-      profileSection.style.setProperty('visibility', 'visible', 'important');
-      profileSection.style.setProperty('opacity', '1', 'important');
+    // Simplified user check - removed excessive logging
+    const rememberedUser = localStorage.getItem('rememberedUser');
+    if (rememberedUser) {
+      const loginBtn = document.getElementById('login-btn');
+      const profileDropdown = document.getElementById('profile-dropdown');
+      const profileName = document.getElementById('profile-name');
+      const profileNameDisplay = document.getElementById('profile-name-display');
       
-      console.log('Profile section computed style:', {
-        display: getComputedStyle(profileSection).display,
-        visibility: getComputedStyle(profileSection).visibility,
-        opacity: getComputedStyle(profileSection).opacity,
-        width: getComputedStyle(profileSection).width,
-        height: getComputedStyle(profileSection).height
-      });
-      
-      // Add MutationObserver to track changes
-      const observer = new MutationObserver((mutations) => {
-        mutations.forEach((mutation) => {
-          if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
-            console.log('Profile section style changed:', profileSection.style.cssText);
-          }
-          if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
-            console.log('Profile section class changed:', profileSection.className);
-          }
-        });
-      });
-      
-      observer.observe(profileSection, {
-        attributes: true,
-        attributeFilter: ['style', 'class']
-      });
-    }
-    
-    if (loginBtn) {
-      loginBtn.style.display = 'none';
-      console.log('Page load - Login button hidden');
-    }
-    
-    if (profileDropdown) {
-      profileDropdown.classList.add('show-profile');
-      console.log('Page load - Profile dropdown shown with show-profile class');
-      console.log('Page load - Profile classes:', profileDropdown.className);
-      console.log('Page load - Profile computed style:', getComputedStyle(profileDropdown).display);
-      
-      // Monitor profile dropdown for 5 seconds after load
-      let checks = 0;
-      const monitorInterval = setInterval(() => {
-        checks++;
-        const computedStyle = getComputedStyle(profileDropdown);
-        if (computedStyle.display === 'none') {
-          console.warn(`Profile dropdown hidden at check ${checks}!`);
-        }
-        if (checks >= 10) clearInterval(monitorInterval);
-      }, 500);
-    }
-    
-    if (profileName) {
-      profileName.textContent = rememberedUser.split('@')[0];
-      console.log('Page load - Profile name set to:', rememberedUser.split('@')[0]);
-    }
-    
-    if (profileNameDisplay) {
-      profileNameDisplay.textContent = rememberedUser.split('@')[0];
-      console.log('Page load - Profile name display set to:', rememberedUser.split('@')[0]);
-    }
-  }
-  
-  // Modal close on escape key
-  document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') {
-      closeEditModal();
-      closeLogoutModal();
-      hideSettingsModal();
+      if (loginBtn) loginBtn.style.display = 'none';
+      if (profileDropdown) {
+        profileDropdown.classList.add('show-profile');
+      }
+      if (profileName) {
+        profileName.textContent = rememberedUser.split('@')[0];
+      }
+      if (profileNameDisplay) {
+        profileNameDisplay.textContent = rememberedUser.split('@')[0];
+      }
     }
   });
-
-  // Modal close on outside click
-  const editModal = document.getElementById('edit-modal');
-  if (editModal) {
-    editModal.addEventListener('click', function(e) {
-      if (e.target === this) {
-        closeEditModal();
-      }
-    });
-  }
 });
+
+// Modal close on escape key - Optimized with passive listener
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    closeEditModal();
+    closeLogoutModal();
+    hideSettingsModal();
+  }
+}, { passive: true });
+
+// Modal close on outside click - Optimized
+const editModal = document.getElementById('edit-modal');
+if (editModal) {
+  editModal.addEventListener('click', function(e) {
+    if (e.target === this) {
+      closeEditModal();
+    }
+  }, { passive: true });
+}
 
 // Generate new Campaign ID (+1)
 function addCampaignID() {
@@ -158,44 +94,42 @@ function closeEditModal() {
   document.getElementById('edit-modal').classList.remove('active');
 }
 
+// Confirm edit Campaign ID
 function confirmEditCampaignID() {
   const input = document.getElementById('modal-input');
   const newValue = parseInt(input.value);
+  const oldValue = campaignCounterId;
   
   if (newValue && newValue > 0) {
-    const oldValue = campaignCounterId;
     campaignCounterId = newValue;
     saveToLocalStorage();
-    addToHistory('Manual Edit', campaignCounterId);
+    addToHistory('Edited', campaignCounterId);
     updateDisplay();
     closeEditModal();
     window.toastSuccess(`Campaign ID changed from ${oldValue} to ${campaignCounterId}`);
   } else {
-    window.toastError('Please enter a valid number');
+    window.toastError('Please enter a valid number greater than 0');
   }
 }
 
 // Update display
 function updateDisplay() {
   const counterElement = document.getElementById('counter-number');
-  
   if (counterElement) {
     counterElement.textContent = String(campaignCounterId).padStart(4, '0');
   }
   
-  // Update progress bar (example: max 9999)
+  // Update progress bar
   const progressBar = document.getElementById('progress-bar');
-  const progress = (campaignCounterId / 9999) * 100;
-  progressBar.style.width = progress + '%';
+  if (progressBar) {
+    const progress = (campaignCounterId % 100) / 100 * 100;
+    progressBar.style.width = progress + '%';
+  }
   
   // Update last updated
   const lastUpdated = document.getElementById('last-updated');
   const now = new Date();
   lastUpdated.textContent = `Last updated: ${now.toLocaleTimeString()}`;
-  
-  // Update cache status
-  const cacheSize = document.getElementById('cache-size');
-  cacheSize.textContent = history.length;
 }
 
 // Add to history
@@ -360,36 +294,6 @@ function debugProfileVisibility() {
   }
   
   console.groupEnd();
-}
-
-  if (profileDropdown) {
-    profileDropdown.classList.add('show-profile');
-    console.log('Profile dropdown classes after adding show-profile:', profileDropdown.className);
-    console.log('Has show-profile class:', profileDropdown.classList.contains('show-profile'));
-    
-    // Debug after a short delay to ensure styles are applied
-    setTimeout(debugProfileVisibility, 100);
-    
-    console.log('Profile dropdown shown with show-profile class');
-  }
-  
-  // Update profile name
-  const profileName = document.getElementById('profile-name');
-  const profileNameDisplay = document.getElementById('profile-name-display');
-  if (profileName) {
-    profileName.textContent = email.split('@')[0];
-    console.log('Profile name updated to:', email.split('@')[0]);
-  }
-  if (profileNameDisplay) {
-    profileNameDisplay.textContent = email.split('@')[0];
-    console.log('Profile name display updated to:', email.split('@')[0]);
-  }
-  
-  // Save to localStorage if remember is checked
-  if (remember) {
-    localStorage.setItem('rememberedUser', email);
-    console.log('User saved to localStorage');
-  }
 }
 
 // Note: togglePassword, handleLogin, and other auth functions are now handled by nav.js and modal-login.js
