@@ -140,13 +140,13 @@
         <div class="field campaign-id-field">
           <label for="campaignId">
             Campaign ID
-            <span class="warning-tooltip">Tanggal campaign sudah lewat dari hari ini</span>
-            <span class="validation-tooltip">Format tidak valid</span>
-            <span class="mismatch-tooltip">Campaign ID dan Link tidak match</span>
           </label>
           <div class="control">
             <div class="input-wrapper campaign-id-field">
               <input id="campaignId" type="text" placeholder="YYYYMMDD_nama-campaign_XXXX" />
+              <span id="campaignIdWarningTooltip" class="warning-tooltip">Campaign tanggal sudah lewat dari hari ini</span>
+              <span id="campaignIdValidationTooltip" class="validation-tooltip">Format harus: YYYYMMDD_NAMA-CAMPAIGN_XXXX</span>
+              <span id="campaignIdMismatchTooltip" class="mismatch-tooltip">Campaign ID dan Link tidak match</span>
               <span id="campaignIdCharCount" class="char-count">0</span>
               <span id="campaignIdCheckmark" class="checkmark" style="display:none"><i class="fa-solid fa-check"></i></span>
             </div>
@@ -167,7 +167,7 @@
         <div class="field link-field">
           <label for="link">
             Link
-            <span class="mismatch-tooltip">Campaign ID dan Link tidak match!</span>
+            <span id="linkMismatchTooltip" class="mismatch-tooltip">Campaign ID dan Link tidak match</span>
           </label>
           <div class="control">
             <div class="input-wrapper link-field">

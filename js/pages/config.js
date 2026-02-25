@@ -105,13 +105,25 @@ function initializeFields() {
         day: 'numeric'
       });
       if (elements.campaignIdInput) {
-        elements.campaignIdInput.title = `Peringatan: Tanggal campaign (${campaignDateStr}) sudah lewat dari hari ini`;
+        elements.campaignIdInput.title = 'reminder: tanggal sudah jatuh tempo';
       }
       if (fieldContainer) {
         fieldContainer.classList.add('past-date-warning');
         const tooltip = document.querySelector('.field.campaign-id-field .warning-tooltip');
         if (tooltip) {
-          tooltip.textContent = `Campaign tanggal ${campaignDateStr} sudah lewat!`;
+          tooltip.textContent = 'reminder: tanggal sudah jatuh tempo';
+        }
+      }
+    } else if (formatValidation.isToday) {
+      if (elements.campaignIdInput) {
+        elements.campaignIdInput.title = TOOLTIP_MESSAGES.warning.today;
+      }
+      if (fieldContainer) {
+        fieldContainer.classList.add('past-date-warning');
+        fieldContainer.classList.add('today-warning'); // Add green class for today
+        const tooltip = document.querySelector('.field.campaign-id-field .warning-tooltip');
+        if (tooltip) {
+          tooltip.textContent = TOOLTIP_MESSAGES.warning.today;
         }
       }
     }
@@ -194,14 +206,11 @@ function setStatusIcon(id, status) {
   // Use requestAnimationFrame for smooth updates
   requestAnimationFrame(() => {
     if (el.classList.contains('checkmark')) {
-      // For inline checkmarks
       icon.className = 'fa-solid fa-check';
       el.classList.add('show');
-      // Add class to wrapper for padding adjustment
       const wrapper = el.closest('.input-wrapper');
       if (wrapper) wrapper.classList.add('checkmark-visible');
     } else {
-      // For status indicators
       icon.className = (status === 'error')
       ? 'fa-solid fa-circle-xmark'
       : 'fa-solid fa-circle-check';
@@ -314,10 +323,10 @@ function clearAllUI(opts = { clearStorage: false }) {
     
     // Clear tooltip classes
     const campaignIdField = document.querySelector('.field.campaign-id-field');
-    const linkField = document.querySelector('.field.link-field');
     if (campaignIdField) {
-      campaignIdField.classList.remove('validation-error', 'past-date-warning', 'mismatch-error');
+      campaignIdField.classList.remove('validation-error', 'past-date-warning', 'mismatch-error', 'today-warning');
     }
+    const linkField = document.querySelector('.field.link-field');
     if (linkField) {
       linkField.classList.remove('mismatch-error');
     }
@@ -412,7 +421,6 @@ async function performSave() {
 
     // Set indicator to saved state
     setCampaignIndicatorState('saved');
-
   } catch (err) {
     showNotification("Error saving file: " + err.message, 'error');
     // Reset button on error
@@ -431,6 +439,89 @@ const TOAST_SPACING = 10;
 
 // Track current campaign ID for updates
 let currentCampaignId = '';
+
+// Centralized tooltip messages for consistency
+const TOOLTIP_MESSAGES = {
+  validation: {
+    format: 'Format harus: YYYYMMDD_NAMA-CAMPAIGN_XXXX',
+    space: 'Campaign ID tidak boleh mengandung spasi',
+    date: 'Tanggal tidak valid (YYYYMMDD)',
+    past: 'reminder: tanggal sudah jatuh tempo'
+  },
+  warning: {
+    today: 'Campaign tanggal hari ini',
+    past: 'Campaign tanggal sudah lewat dari hari ini'
+  },
+  mismatch: {
+    campaign: 'Campaign ID dan Link tidak match',
+    link: 'Campaign ID dan Link tidak match',
+    details: (expected, found) => `Campaign ID berakhir: ${expected}\nLink berakhir: ${found}`
+  }
+};
+
+// Tooltip cache for performance
+const tooltipCache = {
+  campaignId: {
+    warning: null,
+    validation: null,
+    mismatch: null
+  },
+  link: {
+    mismatch: null
+  }
+};
+
+// Initialize tooltip cache
+function initializeTooltipCache() {
+  tooltipCache.campaignId.warning = document.getElementById('campaignIdWarningTooltip');
+  tooltipCache.campaignId.validation = document.getElementById('campaignIdValidationTooltip');
+  tooltipCache.campaignId.mismatch = document.getElementById('campaignIdMismatchTooltip');
+  tooltipCache.link.mismatch = document.getElementById('linkMismatchTooltip');
+  
+  // Debug: Check for duplicate tooltips
+  const warningTooltips = document.querySelectorAll('.warning-tooltip');
+  const validationTooltips = document.querySelectorAll('.validation-tooltip');
+  const mismatchTooltips = document.querySelectorAll('.mismatch-tooltip');
+  
+  console.log('=== TOOLTIP DUPLICATE CHECK ===');
+  console.log('Warning tooltips found:', warningTooltips.length);
+  warningTooltips.forEach((t, i) => console.log(`  Warning ${i}:`, t.id, t.textContent));
+  console.log('Validation tooltips found:', validationTooltips.length);
+  validationTooltips.forEach((t, i) => console.log(`  Validation ${i}:`, t.id, t.textContent));
+  console.log('Mismatch tooltips found:', mismatchTooltips.length);
+  mismatchTooltips.forEach((t, i) => console.log(`  Mismatch ${i}:`, t.id, t.textContent));
+  
+  // Debug logging
+  console.log('Tooltip cache initialized:', {
+    warning: tooltipCache.campaignId.warning,
+    validation: tooltipCache.campaignId.validation,
+    mismatch: tooltipCache.campaignId.mismatch,
+    linkMismatch: tooltipCache.link.mismatch
+  });
+}
+
+// Optimized tooltip management
+function showTooltip(type, field, message) {
+  const tooltip = tooltipCache[field][type];
+  if (tooltip) {
+    tooltip.textContent = message;
+    tooltip.style.opacity = '1';
+  }
+}
+
+function hideTooltip(type, field) {
+  const tooltip = tooltipCache[field][type];
+  if (tooltip) {
+    tooltip.style.opacity = '0';
+    tooltip.textContent = '';
+  }
+}
+
+function hideAllTooltips(field) {
+  Object.keys(tooltipCache[field]).forEach(type => {
+    hideTooltip(type, field);
+  });
+}
 
 function showNotification(message, type = 'info') {
   // Limit maximum stacked toasts
@@ -545,8 +636,14 @@ if (elements.campaignIdInput) {
     const hasSpace = /\s/.test(campaignId);
     const isEmpty = campaignId.trim() === '';
 
+    // Debug logging
+    console.log('Input changed:', campaignId);
+    console.log('Has space:', hasSpace);
+    console.log('Is empty:', isEmpty);
+
     // Format validation
     const formatValidation = validateCampaignIdFormat(campaignId);
+    console.log('Format validation result:', formatValidation);
     
     // Enhanced character count
     const cc = document.getElementById('campaignIdCharCount');
@@ -557,79 +654,150 @@ if (elements.campaignIdInput) {
     }
     
     if (hasSpace || isEmpty || (campaignId && !formatValidation.valid)) {
+      console.log('Setting error state');
       elements.campaignIdInput.classList.add('error');
       // Show format error if applicable
       if (campaignId && !formatValidation.valid && formatValidation.error) {
         elements.campaignIdInput.title = formatValidation.error;
         
         // Add tooltip for validation error
-        const fieldContainer = document.querySelector('.field.campaign-id-field');
-        const tooltip = document.querySelector('.field.campaign-id-field .validation-tooltip');
+        let fieldContainer = document.querySelector('.field.campaign-id-field');
+        let tooltip = document.querySelector('.field.campaign-id-field .validation-tooltip');
         if (fieldContainer) {
           fieldContainer.classList.add('validation-error');
         }
         if (tooltip) {
           tooltip.textContent = formatValidation.error;
         }
+        // Manage tooltip collision
+        manageTooltipCollision(fieldContainer);
       } else if (hasSpace) {
-        elements.campaignIdInput.title = 'Campaign ID tidak boleh mengandung spasi';
+        elements.campaignIdInput.title = TOOLTIP_MESSAGES.validation.space;
         
-        const fieldContainer = document.querySelector('.field.campaign-id-field');
-        const tooltip = document.querySelector('.field.campaign-id-field .validation-tooltip');
+        fieldContainer = document.querySelector('.field.campaign-id-field');
+        tooltip = document.querySelector('.field.campaign-id-field .validation-tooltip');
         if (fieldContainer) {
           fieldContainer.classList.add('validation-error');
         }
         if (tooltip) {
-          tooltip.textContent = 'Campaign ID tidak boleh mengandung spasi';
+          tooltip.textContent = TOOLTIP_MESSAGES.validation.space;
         }
       }
     } else {
+      console.log('Removing error state - input is valid');
       elements.campaignIdInput.classList.remove('error');
       elements.campaignIdInput.title = '';
       
       // Remove validation error tooltip
-      const fieldContainer = document.querySelector('.field.campaign-id-field');
+      let fieldContainer = document.querySelector('.field.campaign-id-field');
       if (fieldContainer) {
         fieldContainer.classList.remove('validation-error');
+        fieldContainer.classList.remove('past-date-warning');
+        fieldContainer.classList.remove('today-warning'); // Also remove today-warning
+        fieldContainer.classList.remove('mismatch-error'); // Also remove mismatch
+        
+        // Clear ALL tooltip text
+        const validationTooltip = fieldContainer.querySelector('.validation-tooltip');
+        const warningTooltip = fieldContainer.querySelector('.warning-tooltip');
+        const mismatchTooltip = fieldContainer.querySelector('.mismatch-tooltip');
+        
+        if (validationTooltip) {
+          validationTooltip.textContent = '';
+          validationTooltip.style.opacity = '0';
+        }
+        if (warningTooltip) {
+          warningTooltip.textContent = '';
+          warningTooltip.style.opacity = '0';
+        }
+        if (mismatchTooltip) {
+          mismatchTooltip.textContent = '';
+          mismatchTooltip.style.opacity = '0';
+        }
       }
 
-      // Show past date warning (but allow input)
-      if (campaignId && formatValidation.valid && formatValidation.isPastDate) {
-        const campaignDateStr = formatValidation.campaignDate.toLocaleDateString('id-ID', {
-          weekday: 'long',
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric'
-        });
-        const pastDateWarning = `Peringatan: Tanggal campaign (${campaignDateStr}) sudah lewat dari hari ini`;
-        elements.campaignIdInput.title = pastDateWarning;
+      // Show warning if date is today, past date, OR future date
+      if (campaignId && formatValidation.valid && (formatValidation.isToday || formatValidation.isPastDate || formatValidation.isFutureDate)) {
+        console.log('Showing warning for date:', formatValidation.isToday ? 'today' : formatValidation.isPastDate ? 'past date' : 'future date');
+        console.log('Field container classes before adding:', fieldContainer ? fieldContainer.className : 'null');
         
-        // Update tooltip text
-        const tooltip = document.querySelector('.field.campaign-id-field .warning-tooltip');
-        const inputWrapper = document.querySelector('.input-wrapper.campaign-id-field');
-        
-        if (tooltip) {
-          tooltip.textContent = `Campaign tanggal ${campaignDateStr} sudah lewat!`;
-          console.log('Tooltip updated:', tooltip.textContent);
+        // Set appropriate message and title
+        let warningMessage;
+        if (formatValidation.isToday) {
+          warningMessage = TOOLTIP_MESSAGES.warning.today;
+        } else if (formatValidation.isPastDate) {
+          warningMessage = 'reminder: tanggal sudah jatuh tempo';
+        } else {
+          warningMessage = 'info: campaign masa depan';
         }
         
-        // Add visual warning indicator to field container
+        elements.campaignIdInput.title = warningMessage;
+        
+        // Update warning tooltip - ONLY show warning, hide others
+        let tooltip = tooltipCache.campaignId.warning || document.querySelector('.field.campaign-id-field .warning-tooltip');
+        let inputWrapper = document.querySelector('.input-wrapper.campaign-id-field');
+        
+        // Hide other tooltips first
+        const validationTooltip = document.querySelector('.field.campaign-id-field .validation-tooltip');
+        const mismatchTooltip = document.querySelector('.field.campaign-id-field .mismatch-tooltip');
+        if (validationTooltip) {
+          validationTooltip.style.opacity = '0';
+        }
+        if (mismatchTooltip) {
+          mismatchTooltip.style.opacity = '0';
+        }
+        
+        console.log('Warning tooltip element:', tooltip);
+        console.log('Warning tooltip text before:', tooltip ? tooltip.textContent : 'null');
+        
+        if (tooltip) {
+          tooltip.textContent = warningMessage;
+          tooltip.style.opacity = '1'; // Explicitly show
+          console.log('Warning tooltip text after:', tooltip.textContent);
+        }
+        
+        // Add visual warning indicator
         if (fieldContainer) {
           fieldContainer.classList.add('past-date-warning');
-          console.log('Added past-date-warning to field container');
+          // Add specific class for today's date to make it green
+          if (formatValidation.isToday) {
+            fieldContainer.classList.add('today-warning');
+          } else {
+            fieldContainer.classList.remove('today-warning');
+          }
+          // Add specific class for future date
+          if (formatValidation.isFutureDate) {
+            fieldContainer.classList.add('future-date-warning');
+          } else {
+            fieldContainer.classList.remove('future-date-warning');
+          }
+          console.log('Field container classes after adding:', fieldContainer.className);
         }
         if (inputWrapper) {
           inputWrapper.classList.add('past-date-warning');
         }
+        // Manage tooltip collision
+        console.log('Calling manageTooltipCollision with fieldContainer:', fieldContainer);
+        manageTooltipCollision(fieldContainer);
+        console.log('manageTooltipCollision completed');
       } else {
-        // Remove visual warning indicator if not past date
-        const inputWrapper = document.querySelector('.input-wrapper.campaign-id-field');
+        console.log('Removing warning indicator');
+        // Remove visual warning indicator if not today, past, or future date
+        inputWrapper = document.querySelector('.input-wrapper.campaign-id-field');
         if (fieldContainer) {
           fieldContainer.classList.remove('past-date-warning');
+          fieldContainer.classList.remove('today-warning'); // Also remove today-warning class
+          fieldContainer.classList.remove('future-date-warning'); // Also remove future-date-warning class
         }
         if (inputWrapper) {
           inputWrapper.classList.remove('past-date-warning');
         }
+        
+        // Clear ALL tooltips
+        const allTooltips = document.querySelectorAll('.field.campaign-id-field .validation-tooltip, .field.campaign-id-field .warning-tooltip, .field.campaign-id-field .mismatch-tooltip');
+        allTooltips.forEach(t => {
+          t.textContent = '';
+          t.style.opacity = '0';
+        });
       }
     }
 
@@ -658,7 +826,6 @@ if (elements.campaignIdInput) {
 }
 
 // Add saveState event listeners
-if (elements.campaignIdInput) elements.campaignIdInput.addEventListener('input', saveState);
 if (elements.subjectInput) elements.subjectInput.addEventListener('input', saveState);
 if (elements.linkInput) elements.linkInput.addEventListener('input', saveState);
 window.addEventListener('beforeunload', saveState);
@@ -682,16 +849,20 @@ function showLinkCheckmarkWhenValid() {
 function validateCampaignIdFormat(campaignId) {
   if (!campaignId || campaignId.trim() === '') return { valid: false, error: '' };
   
-  // Regex for YYYYMMDD_nama-campaign_XXXX format
+  // Regex for YYYYMMDD_NAMA-CAMPAIGN_XXXX format
   // YYYYMMDD_ = 8 digits + underscore
-  // nama-campaign = anything (non-empty)
+  // NAMA-CAMPAIGN = letters, numbers, hyphens, underscores (at least 1 char)
   // _XXXX = underscore + 4 digits
-  const formatRegex = /^\d{8}_.+_\d{4}$/;
+  const formatRegex = /^\d{8}_[A-Za-z0-9\-_]+_\d{4}$/;
+  
+  // Debug regex
+  console.log('Testing regex for:', campaignId);
+  console.log('Regex test result:', formatRegex.test(campaignId));
   
   if (!formatRegex.test(campaignId)) {
     return { 
       valid: false, 
-      error: 'Format harus: YYYYMMDD_nama-campaign_XXXX' 
+      error: 'Format harus: YYYYMMDD_NAMA-CAMPAIGN_XXXX' 
     };
   }
   
@@ -708,22 +879,58 @@ function validateCampaignIdFormat(campaignId) {
     };
   }
   
-  // Check if date is in the past
+  // Check if date is before today (past date) or after today (future date)
   const campaignDate = new Date(year, month - 1, day);
   const today = new Date();
-  today.setHours(0, 0, 0, 0); // Set to start of day for comparison
   
-  const isPastDate = campaignDate < today;
+  // Normalize both dates to midnight to avoid timezone issues
+  const campaignDateNormalized = new Date(campaignDate.getFullYear(), campaignDate.getMonth(), campaignDate.getDate());
+  const todayNormalized = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+  
+  const isPastDate = campaignDateNormalized < todayNormalized;
+  const isToday = campaignDateNormalized.getTime() === todayNormalized.getTime();
+  const isFutureDate = campaignDateNormalized > todayNormalized;
+  
+  // Debug logging
+  console.log('Campaign ID:', campaignId);
+  console.log('Campaign Date:', campaignDateNormalized.toDateString());
+  console.log('Today:', todayNormalized.toDateString());
+  console.log('Is Past Date:', isPastDate);
+  console.log('Is Today:', isToday);
+  console.log('Is Future Date:', isFutureDate);
+  
+  // Past dates and future dates both show warnings
+  if (isPastDate) {
+    return { 
+      valid: true,  
+      error: '',
+      isPastDate: true,  
+      isToday: isToday,
+      isFutureDate: false,
+      campaignDate: campaignDate
+    };
+  }
+  
+  if (isFutureDate) {
+    return { 
+      valid: true,  
+      error: '',
+      isPastDate: false,  
+      isToday: false,
+      isFutureDate: true,
+      campaignDate: campaignDate
+    };
+  }
   
   return { 
     valid: true, 
     error: '',
-    isPastDate: isPastDate,
+    isToday: isToday,
     campaignDate: campaignDate
   };
 }
 
-/* Live validation CampaignID â†" Link - Optimized */
+/* Live validation CampaignID → Link - Optimized */
 function extractCountByCampaignId(campaignId) {
   if (!xmlDoc || !campaignId || campaignId.trim() === '') return 0;
   let count = 0;
@@ -838,16 +1045,20 @@ function liveValidatePair() {
       campaignIdFieldContainer.classList.add('mismatch-error');
       const tooltip = document.querySelector('.field.campaign-id-field .mismatch-tooltip');
       if (tooltip) {
-        tooltip.textContent = `Campaign ID berakhir: ${res.expected}, Link berakhir: ${res.found}`;
+        tooltip.textContent = `Campaign ID berakhir: ${res.expected}
+Link berakhir: ${res.found}`;
       }
     }
     if (linkFieldContainer) {
       linkFieldContainer.classList.add('mismatch-error');
       const tooltip = document.querySelector('.field.link-field .mismatch-tooltip');
       if (tooltip) {
-        tooltip.textContent = `Campaign ID berakhir: ${res.expected}, Link berakhir: ${res.found}`;
+        tooltip.textContent = `Campaign ID berakhir: ${res.expected}
+Link berakhir: ${res.found}`;
       }
     }
+    // Manage tooltip collision
+    manageTooltipCollision(campaignIdFieldContainer);
   } else if (cid && lnk && res.ok) {
     // Show success tooltip
     if (elements.campaignIdInput) {
@@ -1025,12 +1236,45 @@ function loadState() {
               tooltip.textContent = `Campaign tanggal ${campaignDateStr} sudah lewat!`;
             }
           }
+        } else if (formatValidation.isFutureDate) {
+          const campaignDateStr = formatValidation.campaignDate.toLocaleDateString('id-ID', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+          });
+          if (elements.campaignIdInput) {
+            elements.campaignIdInput.title = `Info: Tanggal campaign (${campaignDateStr}) akan datang`;
+          }
+          if (fieldContainer) {
+            fieldContainer.classList.add('past-date-warning');
+            fieldContainer.classList.add('future-date-warning');
+            const tooltip = document.querySelector('.field.campaign-id-field .warning-tooltip');
+            if (tooltip) {
+              tooltip.textContent = `Campaign tanggal ${campaignDateStr} akan datang`;
+            }
+          }
+        } else if (formatValidation.isToday) {
+          if (elements.campaignIdInput) {
+            elements.campaignIdInput.title = TOOLTIP_MESSAGES.warning.today;
+          }
+          if (fieldContainer) {
+            fieldContainer.classList.add('past-date-warning');
+            fieldContainer.classList.add('today-warning');
+            const tooltip = document.querySelector('.field.campaign-id-field .warning-tooltip');
+            if (tooltip) {
+              tooltip.textContent = TOOLTIP_MESSAGES.warning.today;
+            }
+          }
         }
         
         // Validate Campaign ID and Link pair
         if (link) {
           liveValidatePair();
         }
+        
+        // Manage tooltip collision after all validations
+        manageTooltipCollision(fieldContainer);
       }
     }
   } catch (e) {
@@ -1064,6 +1308,79 @@ function updateAllCharCounts() {
   }
 }
 
+// === Tooltip Collision Management ===
+function manageTooltipCollision(fieldContainer) {
+  console.log('=== manageTooltipCollision START ===');
+  if (!fieldContainer) {
+    console.log('No fieldContainer, returning');
+    return;
+  }
+  
+  // Get all tooltips in the field
+  const validationTooltip = fieldContainer.querySelector('.validation-tooltip');
+  const warningTooltip = fieldContainer.querySelector('.warning-tooltip');
+  const mismatchTooltip = fieldContainer.querySelector('.mismatch-tooltip');
+  
+  console.log('Tooltips found:', {
+    validation: validationTooltip ? validationTooltip.textContent : 'null',
+    warning: warningTooltip ? warningTooltip.textContent : 'null',
+    mismatch: mismatchTooltip ? mismatchTooltip.textContent : 'null'
+  });
+  
+  // Check which tooltips are visible
+  const hasValidation = fieldContainer.classList.contains('validation-error');
+  const hasWarning = fieldContainer.classList.contains('past-date-warning');
+  const hasMismatch = fieldContainer.classList.contains('mismatch-error');
+  
+  console.log('Field classes:', fieldContainer.className);
+  console.log('Has states:', { hasValidation, hasWarning, hasMismatch });
+  
+  // Priority: 1. Validation Error (highest) - if present, hide ALL others
+  if (hasValidation) {
+    console.log('HAS VALIDATION - showing validation, hiding others');
+    // Show validation, completely hide others
+    if (validationTooltip) validationTooltip.style.opacity = '1';
+    if (warningTooltip) {
+      warningTooltip.style.opacity = '0';
+      // Don't clear text content - just hide it
+      console.log('Hiding warning tooltip (opacity 0)');
+    }
+    if (mismatchTooltip) {
+      mismatchTooltip.style.opacity = '0';
+      // Don't clear text content - just hide it
+    }
+    
+    // Also clear link field tooltip if campaign ID has validation error
+    const linkFieldContainer = document.querySelector('.field.link-field');
+    if (linkFieldContainer) {
+      const linkMismatchTooltip = linkFieldContainer.querySelector('.mismatch-tooltip');
+      if (linkMismatchTooltip) {
+        linkMismatchTooltip.style.opacity = '0';
+        linkMismatchTooltip.textContent = '';
+      }
+    }
+  } else if (hasWarning && hasMismatch) {
+    // Combine warning and mismatch (only if no validation error)
+    if (warningTooltip) {
+      warningTooltip.style.opacity = '1';
+      // Get warning text and mismatch text
+      const warningText = warningTooltip.textContent || '';
+      const mismatchText = mismatchTooltip ? mismatchTooltip.textContent : '';
+      if (mismatchText && !warningText.includes(mismatchText)) {
+        warningTooltip.textContent = warningText + ', ' + mismatchText;
+      }
+    }
+    if (mismatchTooltip) mismatchTooltip.style.opacity = '0';
+  } else if (hasWarning) {
+    // Show warning only
+    if (warningTooltip) warningTooltip.style.opacity = '1';
+    if (mismatchTooltip) mismatchTooltip.style.opacity = '0';
+  } else if (hasMismatch) {
+    // Show mismatch only
+    if (mismatchTooltip) mismatchTooltip.style.opacity = '1';
+  }
+}
+
 // === Apply Update combo button ===
 (function(){
   const applyUpdateBtn = document.getElementById('applyUpdateBtn');
@@ -1086,16 +1403,13 @@ function updateAllCharCounts() {
       
       // Get current values from XML
       let currentCampaignId = xmlDoc.querySelector('AudienceModel')?.getAttribute('name') || '';
-      let currentSubject = xmlDoc.querySelector('MessageContent')?.getAttribute('subject') || '';
-      let currentLink = xmlDoc.querySelector('MessageBody')?.getAttribute('content') || '';
+      const currentSubject = xmlDoc.querySelector('MessageContent')?.getAttribute('subject') || '';
+      const currentLink = xmlDoc.querySelector('MessageBody')?.getAttribute('content') || '';
       
       // Get input values
-      let campaignIdValue = elements.campaignIdInput ? elements.campaignIdInput.value.trim() : '';
-      let subjectValue = elements.subjectInput ? elements.subjectInput.value.trim() : '';
-      let linkValue = elements.linkInput ? elements.linkInput.value.trim() : '';
-      
-      // Variable to track the campaign ID for updates
-      let campaignIdForUpdate = currentCampaignId;
+      const campaignIdValue = elements.campaignIdInput ? elements.campaignIdInput.value.trim() : '';
+      const subjectValue = elements.subjectInput ? elements.subjectInput.value.trim() : '';
+      const linkValue = elements.linkInput ? elements.linkInput.value.trim() : '';
       
       // Check if Campaign ID has changes
       if (campaignIdValue && campaignIdValue !== currentCampaignId) {
@@ -1117,29 +1431,29 @@ function updateAllCharCounts() {
           
           // Update Interaction elements
           xmlDoc.querySelectorAll('Interaction').forEach(el => {
-            if (el.getAttribute('name') === campaignIdForUpdate) {
+            if (el.getAttribute('name') === currentCampaignId) {
               el.setAttribute('name', campaignIdValue);
             }
-            if (el.getAttribute('message') === campaignIdForUpdate) {
+            if (el.getAttribute('message') === currentCampaignId) {
               el.setAttribute('message', campaignIdValue);
             }
           });
           
           // Update MessageContent elements
           xmlDoc.querySelectorAll('MessageContent').forEach(el => {
-            if (el.getAttribute('name') === campaignIdForUpdate) {
+            if (el.getAttribute('name') === currentCampaignId) {
               el.setAttribute('name', campaignIdValue);
             }
           });
           
           // Update FilterValue elements
           xmlDoc.querySelectorAll('FilterValue').forEach(el => {
-            if (el.getAttribute('value') === campaignIdForUpdate) {
+            if (el.getAttribute('value') === currentCampaignId) {
               el.setAttribute('value', campaignIdValue);
             }
           });
           
-          campaignIdForUpdate = campaignIdValue;
+          currentCampaignId = campaignIdValue;
           setStatusIcon('campaignIdCheckmark', 'ok');
           updateCount++;
         } else {
@@ -1402,8 +1716,20 @@ window.addEventListener('load', () => {
         return;
       }
       
+      // Show loading state on main save button
+      const originalContent = saveFileBtn.innerHTML;
+      saveFileBtn.disabled = true;
+      saveFileBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Loading...';
+      
+      // Small delay to show loading state
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
       // Show save confirmation modal instead of saving directly
       showSaveChangesModal();
+      
+      // Reset button after modal is shown
+      saveFileBtn.disabled = false;
+      saveFileBtn.innerHTML = originalContent;
     });
   }
 
@@ -1741,3 +2067,10 @@ async function selectFile(fileItem, fileHandle) {
     showNotification('Failed to load file: ' + error.message, 'error');
   }
 }
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', () => {
+  initializeTooltipCache(); // Initialize tooltip cache
+  loadState();
+  if (typeof decorateButtons === 'function') decorateButtons();
+});
