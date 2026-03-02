@@ -146,7 +146,7 @@
               <input id="campaignId" type="text" placeholder="YYYYMMDD_nama-campaign_XXXX" />
               <span id="campaignIdWarningTooltip" class="warning-tooltip">Campaign tanggal sudah lewat dari hari ini</span>
               <span id="campaignIdValidationTooltip" class="validation-tooltip">Format harus: YYYYMMDD_NAMA-CAMPAIGN_XXXX</span>
-              <span id="campaignIdMismatchTooltip" class="mismatch-tooltip">Campaign ID dan Link tidak match</span>
+              <span id="campaignIdMismatchTooltip" class="mismatch-tooltip">Campaign ID dan Link berbeda</span>
               <span id="campaignIdCharCount" class="char-count">0</span>
               <span id="campaignIdCheckmark" class="checkmark" style="display:none"><i class="fa-solid fa-check"></i></span>
             </div>
@@ -167,11 +167,12 @@
         <div class="field link-field">
           <label for="link">
             Link
-            <span id="linkMismatchTooltip" class="mismatch-tooltip">Campaign ID dan Link tidak match</span>
           </label>
           <div class="control">
             <div class="input-wrapper link-field">
-              <input id="link" type="text" placeholder="http://example.com/1450-anything" />
+              <input id="link" type="text" placeholder="http://mail.hsbc.com.hk/1450-campaign-name.html" />
+              <span id="linkValidationTooltip" class="validation-tooltip">Link harus dimulai dengan http://mail.hsbc.com.hk dan diakhiri dengan .html</span>
+              <span id="linkMismatchTooltip" class="mismatch-tooltip">Campaign ID dan Link berbeda</span>
               <span id="linkCharCount" class="char-count">0</span>
               <span id="mismatchWarning" class="warn" style="display:none">!</span>
               <span id="linkCheckmark" class="checkmark" style="display:none"><i class="fa-solid fa-check"></i></span>
@@ -225,23 +226,6 @@
     <div class="spinner" role="status" aria-label="Loading">
       <i class="fa-solid fa-rotate fa-spin"></i>
       <div>Loading…</div>
-    </div>
-  </div>
-
-  <!-- Save Changes Modal -->
-  <div id="saveChangesModal" class="modal" hidden>
-    <div class="modal-content">
-      <div class="modal-header">
-        <h3>Simpan Perubahan</h3>
-        <button class="modal-close" id="modalCloseBtn">&times;</button>
-      </div>
-      <div class="modal-body">
-        <p>Ada perubahan yang belum disimpan. Simpan perubahan ke file?</p>
-      </div>
-      <div class="modal-footer">
-        <button class="btn secondary" id="cancelModalBtn">Batal</button>
-        <button class="btn primary" id="saveChangesBtn">Simpan</button>
-      </div>
     </div>
   </div>
 
