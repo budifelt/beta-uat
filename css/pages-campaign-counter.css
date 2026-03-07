@@ -1,0 +1,560 @@
+/* Campaign Counter - Flat Design for Low-End Devices */
+
+/* Campaign Section Layout */
+.campaign-section {
+  padding: var(--space-12) 0;
+  background: #ffffff;
+  min-height: calc(100vh - 160px);
+  text-align: center;
+}
+
+.campaign-section .container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.campaign-section .container > * + * {
+  margin-top: var(--space-8);
+}
+
+/* Tab Navigation */
+.counter-tabs {
+  display: flex;
+  gap: 0;
+  margin: 0 0 var(--space-6);
+  border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+  width: 100%;
+  justify-content: stretch;
+}
+
+.tab-btn {
+  background: none;
+  border: none;
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  border-bottom: 3px solid transparent;
+  transition: all 0.2s ease;
+  flex: 1;
+  position: relative;
+}
+
+.tab-btn:hover {
+  color: rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.tab-btn.active[data-color="primary"] {
+  color: #ffffff;
+  border-bottom-color: #ffffff;
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: inset 0 -3px 0 0 #ffffff;
+}
+
+.tab-btn.active[data-color="success"] {
+  color: #ffffff;
+  border-bottom-color: #ffffff;
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: inset 0 -3px 0 0 #ffffff;
+}
+
+.tab-btn.active[data-color="warning"] {
+  color: #ffffff;
+  border-bottom-color: #ffffff;
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: inset 0 -3px 0 0 #ffffff;
+}
+
+.tab-btn.active[data-color="info"] {
+  color: #ffffff;
+  border-bottom-color: #ffffff;
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: inset 0 -3px 0 0 #ffffff;
+}
+
+.tab-btn i {
+  font-size: 14px;
+}
+
+.tab-name {
+  outline: none;
+  cursor: default;
+  padding: 0;
+  border-radius: 2px;
+  font-size: 11px;
+  display: inline;
+}
+
+/* Tab Content */
+.tab-content {
+  width: 50%;
+  margin: 0 auto;
+}
+
+.tab-pane {
+  display: none;
+}
+
+.tab-pane.active {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Counter Colors */
+.campaign1-counter {
+  background: var(--primary);
+  border-color: var(--primary);
+}
+
+.campaign2-counter {
+  background: var(--success);
+  border-color: var(--success);
+}
+
+.campaign3-counter {
+  background: var(--warning);
+  border-color: var(--warning);
+}
+
+.campaign4-counter {
+  background: var(--info);
+  border-color: var(--info);
+}
+
+/* Counter Container - Flat Design */
+.counter-container {
+  background: var(--primary);
+  border: 2px solid var(--primary);
+  padding: var(--space-8);
+  width: 100%;
+  position: relative;
+  /* Remove shadow for performance */
+  margin: 0 auto;
+}
+
+/* Counter title */
+.counter-container h2 {
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: 0.13em;
+  margin-bottom: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.edit-icon {
+  opacity: 0.3;
+  cursor: pointer;
+  color: #ffffff;
+  /* Remove transition for performance */
+}
+
+.edit-icon:hover {
+  opacity: 0.6;
+}
+
+/* Counter display */
+.counter-value {
+  margin: var(--space-8) 0;
+  position: relative;
+}
+
+#counter-number,
+#campaign1-number,
+#campaign2-number,
+#campaign3-number,
+#campaign4-number {
+  font-size: 120px;
+  font-weight: 300;
+  color: #ffffff;
+  letter-spacing: 0.1em;
+  line-height: 0.9;
+  font-variant-numeric: tabular-nums;
+  display: block;
+  text-align: center;
+}
+
+/* Progress bar - Flat */
+.progress-bar-container {
+  height: 2px;
+  background: rgba(255, 255, 255, 0.3);
+  margin: var(--space-8) 0;
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+  background: #ffffff;
+  width: 0%;
+  /* Remove transition for performance */
+}
+
+/* Status indicators */
+.sync-status,
+.last-updated,
+.cache-status {
+  font-size: var(--font-size-2xs);
+  color: rgba(255, 255, 255, 0.8);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-top: var(--space-3);
+  text-align: center;
+}
+
+/* Button group - Flat */
+.buttons {
+  display: flex;
+  gap: var(--space-4);
+  margin-top: 32px;
+}
+
+.buttons button {
+  flex: 1;
+  padding: var(--space-3) var(--space-5);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  border: 2px solid #ffffff;
+  background: transparent;
+  color: #ffffff;
+  /* Remove transition for performance */
+}
+
+.buttons button:hover {
+  background: #ffffff;
+  color: var(--primary);
+}
+
+/* Primary button - Generate */
+#add-btn {
+  background: #ffffff;
+  color: var(--primary);
+}
+
+#add-btn:hover {
+  background: transparent;
+  color: #ffffff;
+}
+
+/* History Container - Flat */
+.history-container {
+  background: var(--primary);
+  border: 2px solid var(--primary);
+  padding: var(--space-6) var(--space-8);
+  width: 100%;
+  max-height: 300px;
+  /* Remove shadow for performance */
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto;
+}
+
+.history-container h2 {
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: 0.13em;
+  margin-bottom: 16px;
+  flex-shrink: 0;
+}
+
+.history-list {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  min-height: 0;
+  padding-right: 4px;
+}
+
+/* Scrollbar styling for webkit browsers */
+.history-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.history-list::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+
+.history-list::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 3px;
+}
+
+.history-list::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+/* History items - Flat */
+.history-item {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-left: 3px solid #ffffff;
+  padding: var(--space-3) var(--space-4);
+  margin-bottom: var(--space-2);
+  /* Remove transition for performance */
+}
+
+.history-item:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.history-item i {
+  color: #ffffff;
+  font-size: 14px;
+  margin-right: var(--space-3);
+}
+
+.history-item strong {
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.history-item time {
+  font-size: var(--font-size-2xs);
+  color: rgba(255, 255, 255, 0.7);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+/* Load more button - Flat */
+.load-more-btn-custom {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #ffffff;
+  padding: var(--space-2) var(--space-4);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  margin-top: var(--space-4);
+  flex-shrink: 0;
+  /* Remove transition for performance */
+}
+
+.load-more-btn-custom:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+/* Edit Modal - Flat Design */
+#edit-modal.modal-overlay,
+#tab-name-modal.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1050;
+  /* Remove backdrop-filter for performance */
+}
+
+#edit-modal.modal-overlay.active,
+#tab-name-modal.modal-overlay.active {
+  display: flex;
+}
+
+#edit-modal .modal,
+#tab-name-modal .modal {
+  background: var(--surface);
+  border: 2px solid var(--primary);
+  padding: 0;
+  max-width: 450px;
+  width: 90%;
+  position: relative;
+  /* Remove shadow and animation for performance */
+}
+
+/* Modal Styles - Flat */
+.modal-header {
+  padding: var(--space-6);
+  border-bottom: 2px solid var(--gray-200);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--primary);
+  color: #ffffff;
+}
+
+.modal-header h3 {
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  color: #ffffff;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.13em;
+}
+
+.modal-close-btn {
+  background: none;
+  border: none;
+  color: #ffffff;
+  cursor: pointer;
+  font-size: var(--font-size-base);
+  padding: var(--space-1);
+}
+
+.modal-body {
+  padding: var(--space-6);
+}
+
+.modal-body p {
+  margin: 0 0 var(--space-4);
+  color: var(--text-muted);
+  font-size: var(--font-size-sm);
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.input-group label {
+  font-size: var(--font-size-2xs);
+  font-weight: 600;
+  color: var(--text);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.input-group input {
+  padding: 16px;
+  border: 2px solid var(--gray-200);
+  font-size: 16px;
+  background: var(--surface);
+  text-align: center;
+  font-weight: 600;
+}
+
+.input-group input[type="text"] {
+  text-align: left;
+}
+
+.input-group input:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+.input-hint {
+  font-size: var(--font-size-2xs);
+  color: var(--text-muted);
+}
+
+.modal-footer {
+  padding: var(--space-6);
+  border-top: 1px solid var(--gray-200);
+  display: flex;
+  gap: var(--space-3);
+  justify-content: flex-end;
+}
+
+.modal-footer button {
+  padding: var(--space-3) var(--space-5);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  border: 2px solid transparent;
+}
+
+.btn-cancel {
+  background: var(--gray-100);
+  color: var(--text-muted);
+  border-color: var(--gray-200);
+}
+
+.btn-confirm {
+  background: var(--primary);
+  color: #ffffff;
+  border-color: var(--primary);
+}
+
+.modal-footer button i {
+  font-size: var(--font-size-xs);
+}
+
+/* Responsive design */
+@media (min-width: 769px) {
+  #counter-number,
+  #campaign1-number,
+  #campaign2-number,
+  #campaign3-number,
+  #campaign4-number {
+    font-size: 120px !important;
+    letter-spacing: 0.1em !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .counter-container,
+  .history-container {
+    margin: 0 20px;
+    padding: 32px 24px;
+    max-width: 100%;
+  }
+  
+  #counter-number {
+    font-size: var(--font-size-6xl);
+    letter-spacing: -0.04em;
+  }
+  
+  .counter-container h2 {
+    font-size: var(--font-size-2xs);
+  }
+  
+  .buttons {
+    flex-direction: column;
+  }
+  
+  .modal {
+    padding: 32px 24px;
+  }
+}
+
+
+/* Optimize for low-end devices */
+.counter-value,
+.progress-bar,
+.history-item {
+  will-change: auto; /* Remove will-change to reduce GPU load */
+}
+
+/* Optimize animations */
+@media (max-width: 768px) {
+  /* Disable animations on mobile for better performance */
+  .edit-icon,
+  .progress-bar,
+  .buttons button,
+  .history-item,
+  .load-more-btn-custom {
+    transition: none;
+  }
+  
+  .history-item:hover {
+    transform: none;
+  }
+}

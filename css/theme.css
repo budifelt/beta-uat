@@ -1,9 +1,9 @@
 /* ===================================
-   THEME - RED & WHITE
+   THEME - RED & WHITE (with Dark Mode)
    =================================== */
 :root {
   /* ===================================
-     BASE PALETTE
+     BASE PALETTE - Light Mode
      =================================== */
   --bg: #FFFFFF;
   --surface: #FFFFFF;
@@ -14,15 +14,8 @@
      PRIMARY RED PALETTE
      =================================== */
   --red-50: #FFF5F3;
-  --red-100: #FED7D2;
-  --red-200: #FEB2B2;
-  --red-300: #FC8181;
-  --red-400: #F56565;
   --red-500: #F18C8E;  /* Primary brand color */
   --red-600: #DC2626;
-  --red-700: #B91C1C;
-  --red-800: #991B1B;
-  --red-900: #7F1D1D;
   
   /* ===================================
      SEMANTIC COLORS
@@ -44,16 +37,10 @@
   /* ===================================
      NEUTRAL COLORS
      =================================== */
-  --gray-50: #F9FAFB;
   --gray-100: #F3F4F6;
   --gray-200: #E5E7EB;
   --gray-300: #D1D5DB;
   --gray-400: #9CA3AF;
-  --gray-500: #6B7280;
-  --gray-600: #4B5563;
-  --gray-700: #374151;
-  --gray-800: #1F2937;
-  --gray-900: #111827;
   
   /* ===================================
      SYSTEM COLORS
@@ -68,11 +55,8 @@
      COMPONENT COLORS
      =================================== */
   --btn-primary-bg: var(--primary);
-  --btn-primary-text: #FFFFFF;
-  --btn-secondary-bg: var(--gray-50);
-  --btn-secondary-text: var(--text);
+  --btn-secondary-bg: #F9FAFB;
   --btn-danger-bg: var(--error);
-  --btn-danger-text: #FFFFFF;
   
   --link: var(--primary);
   --link-hover: var(--primary-hover);
@@ -80,15 +64,9 @@
   /* ===================================
      OPACITY COLORS
      =================================== */
-  --primary-opacity-03: rgba(232, 92, 65, 0.03);
   --primary-opacity-10: rgba(232, 92, 65, 0.1);
   --primary-opacity-20: rgba(232, 92, 65, 0.2);
   --primary-opacity-30: rgba(232, 92, 65, 0.3);
-  
-  --success-opacity-10: rgba(21, 128, 61, 0.1);
-  --warning-opacity-10: rgba(217, 119, 6, 0.1);
-  --error-opacity-10: rgba(220, 38, 38, 0.1);
-  --info-opacity-10: rgba(37, 99, 235, 0.1);
   
   /* ===================================
      GRADIENTS
@@ -125,17 +103,11 @@
   --font-size-xl: 1.25rem;
   --font-size-2xl: 1.5rem;
   --font-size-3xl: 1.875rem;
-  --font-size-4xl: 2.25rem;
-  --font-size-5xl: 3rem;
-  --font-size-6xl: 3.75rem;
   
-  --font-weight-light: 300;
   --font-weight-normal: 400;
   --font-weight-medium: 500;
   --font-weight-semibold: 600;
   --font-weight-bold: 700;
-  --font-weight-extrabold: 800;
-  --font-weight-black: 900;
   
   --line-height-tight: 1.25;
   --line-height-normal: 1.5;
@@ -154,9 +126,6 @@
   --space-10: 2.5rem;
   --space-12: 3rem;
   --space-16: 4rem;
-  --space-20: 5rem;
-  --space-24: 6rem;
-  --space-32: 8rem;
   
   /* Aliases for convenience */
   --space-xs: var(--space-1);
@@ -171,13 +140,10 @@
      BORDER RADIUS
      =================================== */
   --radius-none: 0;
-  --radius-xs: 0.125rem;
   --radius-sm: 0.25rem;
   --radius-md: 0.375rem;
   --radius-lg: 0.5rem;
   --radius-xl: 0.75rem;
-  --radius-2xl: 1rem;
-  --radius-3xl: 1.5rem;
   --radius-full: 9999px;
   
   /* ===================================
@@ -185,8 +151,6 @@
      =================================== */
   --transition-fast: 150ms ease;
   --transition-normal: 250ms ease;
-  --transition-slow: 350ms ease;
-  --transition-bounce: 400ms cubic-bezier(0.68, -0.55, 0.265, 1.55);
   
   /* Status backgrounds */
   --success-bg: rgba(34, 197, 94, 0.1);
@@ -213,9 +177,6 @@
      EFFECTS
      =================================== */
   --focus-ring: 0 0 0 2px var(--primary-opacity-20);
-  --hover-lift: -2px;
-  --hover-scale: 1.02;
-  --active-scale: 0.98;
   --header-height: 64px;
   --border-width: 1px;
   
@@ -224,7 +185,6 @@
      =================================== */
   --accent-primary: var(--primary);
   --text-secondary: var(--text-muted);
-  --bg-dark: var(--gray-800);
   --toast-success: var(--success);
   --toast-warning: var(--warning);
   --toast-error: var(--error);
@@ -245,8 +205,6 @@
   
   --bg-primary: var(--bg);
   --bg-secondary: var(--surface);
-  --bg-tertiary: var(--border);
-  --bg-quaternary: var(--divider);
   --bg-glass: rgba(255, 255, 255, 0.95);
   --bg-overlay: var(--primary-opacity-10);
   --bg-gradient: var(--gradient-surface);
@@ -254,48 +212,20 @@
   
   --text-primary: var(--text);
   --text-secondary: var(--text-muted);
-  --text-tertiary: var(--text-muted);
-  --text-quaternary: var(--text-muted);
   --text-inverse: #ffffff;
   --text-disabled: var(--disabled);
   
   --border-color: var(--border);
-  --border-light: var(--gray-200);
-  --border-medium: var(--gray-300);
-  --border-dark: var(--gray-400);
   --border-focus: var(--focus);
   --border-error: var(--error);
   --border-success: var(--success);
   --border-warning: var(--warning);
-  
-  --gradient-mesh: var(--gradient-surface);
-  --gradient-danger-start: var(--error);
-  --gradient-danger-end: var(--error-hover);
-  --gradient-accent-light: var(--primary);
-  --gradient-surface-start: var(--bg);
-  --gradient-surface-end: var(--red-50);
-  
-  --opacity-light: rgba(0, 0, 0, 0.05);
-  --opacity-medium: rgba(0, 0, 0, 0.1);
-  --opacity-strong: rgba(0, 0, 0, 0.15);
-  
-  --accent-opacity-03: var(--primary-opacity-03);
-  --accent-opacity-10: var(--primary-opacity-10);
-  --accent-opacity-15: rgba(232, 92, 65, 0.15);
-  --accent-opacity-20: var(--primary-opacity-20);
-  --accent-opacity-30: var(--primary-opacity-30);
-  --accent-opacity-40: rgba(232, 92, 65, 0.4);
-  
-  --white-opacity-10: rgba(255, 255, 255, 0.1);
-  --white-opacity-20: rgba(255, 255, 255, 0.2);
-  --white-opacity-95: rgba(255, 255, 255, 0.95);
 }
 
 /* ===================================
    THEME APPLICATION
    =================================== */
 body {
-  background-color: var(--primary) !important;
   color: var(--text);
 }
 
@@ -319,51 +249,8 @@ body {
 }
 
 /* ===================================
-   FLAT DESIGN THEME
+   SCROLLBAR
    =================================== */
-.flat-design {
-  border-radius: var(--radius-none);
-  box-shadow: none;
-  transition: none;
-}
-
-/* Apply flat design to specific components */
-.flat-design .btn,
-.flat-design .form-control,
-.flat-design .form-input,
-.flat-design .form-select,
-.flat-design .form-textarea,
-.flat-design .modal,
-.flat-design .modal-content,
-.flat-design .card,
-.flat-design .dropdown,
-.flat-design .profile-avatar,
-.flat-design .profile-avatar-large {
-  border-radius: var(--radius-none);
-  box-shadow: none;
-  transition: none;
-}
-
-/* Remove animations and transforms only from interactive elements */
-.flat-design .btn,
-.flat-design .card,
-.flat-design .dropdown-menu,
-.flat-design .modal {
-  animation: none;
-  transform: none;
-}
-
-/* Body specific flat design */
-body.flat-design {
-  background: var(--surface);
-  color: var(--text);
-}
-
-body.flat-design * {
-  animation: none;
-}
-
-/* Scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
@@ -380,6 +267,21 @@ body.flat-design * {
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--gray-400);
+}
+
+/* ===================================
+   SCROLLBAR STABILIZER - Prevent layout shift
+   =================================== */
+html {
+  scrollbar-gutter: stable; /* Reserve space for scrollbar */
+}
+
+/* Alternative for browsers that don't support scrollbar-gutter */
+@supports not (scrollbar-gutter: stable) {
+  html {
+    margin-left: calc(100vw - 100%);
+    margin-right: 0;
+  }
 }
 
 * {

@@ -1,0 +1,75 @@
+/* ===================================
+   LINK CHECKER PAGE STYLES
+   =================================== */
+
+/* Status Colors */
+.status.wait {
+  color: var(--text-muted);
+}
+
+.status.live {
+  color: var(--accent-primary);
+}
+
+.status.err {
+  color: var(--error);
+}
+
+/* Button Overrides */
+#checkBtn {
+  background: var(--accent-primary);
+  color: var(--text-inverse);
+  border: none;
+}
+
+#checkBtn:hover {
+  background: var(--accent-primary);
+}
+
+#runBulk {
+  background: var(--accent-primary);
+  color: var(--text-inverse);
+  border: none;
+}
+
+#runBulk:hover {
+  background: var(--accent-primary);
+}
+
+/* History Item Styles */
+.history-item .badge-primary {
+  background: var(--accent-primary);
+  color: var(--text-inverse);
+}
+
+.history-item .badge-error {
+  background: var(--error);
+  color: var(--text-inverse);
+}
+
+.history-item .badge-muted {
+  background: var(--text-muted);
+  color: var(--text-inverse);
+}
+
+/* Table Status */
+#tbl td:last-child {
+  font-weight: var(--font-weight-semibold);
+}
+
+#tbl tr:has(td:contains("LIVE")) td:last-child {
+  color: var(--accent-primary);
+}
+
+#tbl tr:has(td:contains("❌")) td:last-child {
+  color: var(--error);
+}
+
+/* Filter Input */
+#filterInput {
+  border-color: var(--border);
+}
+
+#filterInput:focus {
+  border-color: var(--accent-primary);
+}

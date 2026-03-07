@@ -16,7 +16,7 @@ function generateBuildNumber() {
 // Version Configuration
 // ⚠️ UBAH BAGIAN INI SAAT UPDATE VERSI MANUAL ⚠️
 const VERSION_CONFIG = {
-  version: '2.0.0',                    // ← GANTI VERSI DI SINI (contoh: '1.2.0', '2.0.0')
+  version: '2.2.0',                    // ← GANTI VERSI DI SINI (contoh: '1.2.0', '2.0.0')
   buildDate: new Date().toISOString(),        // ← OTOMATIS, tidak perlu diganti
   buildNumber: generateBuildNumber(),           // ← OTOMATIS, tidak perlu diganti
   environment: 'development',                 // ← GANTI JIKA PERLU (production/development)
@@ -134,7 +134,7 @@ function updateFooterVersion() {
   if (footerText) {
     footerText.innerHTML = 
       `© ${versionInfo.currentYear} ${versionInfo.appName} <span class="footer-version" data-version>v${versionInfo.version}</span>. ` +
-      `Built with <i class="fa-solid fa-heart"></i> for me.`;
+      `crafted with <i class="fa-solid fa-heart"></i>`;
   }
 }
 

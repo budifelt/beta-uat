@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -19,9 +20,14 @@
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/layout.css">
   <link rel="stylesheet" href="css/theme.css">
-  <link rel="stylesheet" href="css/components.css">
-  <link rel="stylesheet" href="css/modal-base.css">
-  <link rel="stylesheet" href="css/pages/campaign-counter.css">
+  <link rel="stylesheet" href="css/components/buttons.css">
+  <link rel="stylesheet" href="css/components/cards.css">
+  <link rel="stylesheet" href="css/components/forms.css">
+  <link rel="stylesheet" href="css/components/notifications.css">
+  <link rel="stylesheet" href="css/components/animations.css">
+  <link rel="stylesheet" href="css/components/utilities.css">
+  <!-- Modal styles removed -->
+  <link rel="stylesheet" href="css/pages-campaign-counter.css">
   
   <title>Campaign Counter - eDM Helper</title>
   <meta name="theme-color" content="#0f172a" />
@@ -30,133 +36,279 @@
   <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"></noscript>
 </head>
 <body>
-  <!-- Initial State Script -->
-  <script src="js/initial-state.js"></script>
+  <!-- Initial State Script - Removed -->
   
-  <header class="header">
-    <nav class="nav">
-      <!-- Home Button -->
+  <!-- Navigation Bar -->
+  <header class="header" role="banner">
+    <nav class="nav" role="navigation" aria-label="Main navigation">
+      <!-- Home/Logo Button -->
       <div class="nav-left">
         <a href="index.html" class="nav-link">
-          <i class="fa-solid fa-home"></i>
+          <i class="fa-solid fa-home" ></i>
           <span>Home</span>
         </a>
       </div>
       
-      <!-- Profile Section -->
-      <div class="profile-section">
-        <!-- Login Button (shown when not logged in) -->
-        <button id="login-btn" onclick="showLoginModal()" class="login-trigger-btn" style="display: none;" disabled>
-          <i class="fa-solid fa-right-to-bracket"></i>
-          <span>Login</span>
-        </button>
-        
-        <!-- Profile Dropdown (shown when logged in) -->
-        <div id="profile-dropdown" class="profile-dropdown" style="width: auto !important; min-width: 220px !important; max-width: 260px !important; display: none;">
-          <button onclick="toggleProfileMenu()" class="profile-trigger">
-            <div class="profile-avatar">
-              <i class="fa-solid fa-user"></i>
-            </div>
-            <span id="profile-name" style="flex: 1; min-width: 0; display: inline-block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">User</span>
-            <i class="fa-solid fa-chevron-down"></i>
-          </button>
-          
-          <div id="profile-menu" class="profile-menu" style="width: 220px !important; min-width: 220px !important; max-width: 260px !important;">
-            <div class="profile-header" onclick="showProfileModal(); toggleProfileMenu();" style="cursor: pointer;">
-              <div class="profile-info">
-                <div class="profile-avatar-large">
-                  <i class="fa-solid fa-user"></i>
-                </div>
-                <div class="profile-details">
-                  <div class="profile-name-display" id="profile-name-display">User</div>
-                  <div class="profile-role-display" id="profile-role-display">User</div>
-                </div>
+      <div class="nav-right">
+        <!-- Additional navigation items can be added here -->
+      </div>
+    </nav>
+  </header>
+
+  <main id="main-content" role="main">
+    <section class="campaign-section">
+      <div class="container">
+        <div class="tab-content">
+          <!-- Campaign 1 Tab -->
+          <div class="tab-pane active" id="campaign1-tab">
+            <div class="counter-container campaign1-counter">
+              <!-- Tab Navigation dalam Counter -->
+              <div class="counter-tabs">
+                <button class="tab-btn active" data-tab="campaign1" data-color="primary" title="Name 1 - Double click to edit">
+                  <i class="fa-solid fa-chart-line"></i>
+                  <span class="tab-name">Name 1</span>
+                </button>
+                <button class="tab-btn" data-tab="campaign2" data-color="success" title="Name 2 - Double click to edit">
+                  <i class="fa-solid fa-ticket"></i>
+                  <span class="tab-name">Name 2</span>
+                </button>
+                <button class="tab-btn" data-tab="campaign3" data-color="warning" title="Name 3 - Double click to edit">
+                  <i class="fa-solid fa-gift"></i>
+                  <span class="tab-name">Name 3</span>
+                </button>
+                <button class="tab-btn" data-tab="campaign4" data-color="info" title="Name 4 - Double click to edit">
+                  <i class="fa-solid fa-tag"></i>
+                  <span class="tab-name">Name 4</span>
+                </button>
+              </div>
+              
+              <h2>Name 1 Counter
+                <button class="edit-icon" onclick="editCounter('campaign1')" title="Edit manually">
+                  <i class="fa-solid fa-pen-to-square"></i>
+                </button>
+              </h2>
+              <div class="counter-value">
+                <span id="campaign1-number">0001</span>
+              </div>
+              <div class="progress-bar-container">
+                <div class="progress-bar" id="campaign1-progress"></div>
+              </div>
+              <div class="sync-status">Ready</div>
+              <div class="last-updated" id="campaign1-updated"></div>
+              <div class="cache-status">
+                <i class="fa-solid fa-database"></i> Browser Cache: <span id="campaign1-cache">0</span> items
+              </div>
+              <div class="buttons">
+                <button onclick="addCounter('campaign1')" class="add-btn">
+                  <i class="fa-solid fa-plus"></i> Generate New
+                </button>
+                <button onclick="decrementCounter('campaign1')" class="decrement-btn">
+                  <i class="fa-solid fa-rotate-left"></i> Revert
+                </button>
               </div>
             </div>
-            
-            <div class="profile-actions">
-              <a href="#" onclick="event.preventDefault(); showSettingsModal()" class="profile-action">
-                <i class="fa-solid fa-cog"></i>
-                <span>Settings</span>
-                <i class="fa-solid fa-chevron-right" style="margin-left: auto; font-size: 12px; opacity: 0.5;"></i>
-              </a>
+
+            <div class="history-container">
+              <h2>History</h2>
+              <div id="campaign1-history" class="history-list"></div>
+              <button onclick="loadMoreHistory('campaign1')" class="load-more-btn-custom">
+                Load More
+              </button>
+            </div>
+          </div>
+          
+          <!-- Campaign 2 Tab -->
+          <div class="tab-pane" id="campaign2-tab">
+            <div class="counter-container campaign2-counter">
+              <!-- Tab Navigation dalam Counter -->
+              <div class="counter-tabs">
+                <button class="tab-btn active" data-tab="campaign1" data-color="primary" title="Name 1 - Double click to edit">
+                  <i class="fa-solid fa-chart-line"></i>
+                  <span class="tab-name">Name 1</span>
+                </button>
+                <button class="tab-btn" data-tab="campaign2" data-color="success" title="Name 2 - Double click to edit">
+                  <i class="fa-solid fa-ticket"></i>
+                  <span class="tab-name">Name 2</span>
+                </button>
+                <button class="tab-btn" data-tab="campaign3" data-color="warning" title="Name 3 - Double click to edit">
+                  <i class="fa-solid fa-gift"></i>
+                  <span class="tab-name">Name 3</span>
+                </button>
+                <button class="tab-btn" data-tab="campaign4" data-color="info" title="Name 4 - Double click to edit">
+                  <i class="fa-solid fa-tag"></i>
+                  <span class="tab-name">Name 4</span>
+                </button>
+              </div>
               
-              <a href="#" onclick="showEditProfileModal()" class="profile-action">
-                <i class="fa-solid fa-user-edit"></i>
-                <span>Edit Profile</span>
-                <i class="fa-solid fa-chevron-right" style="margin-left: auto; font-size: 12px; opacity: 0.5;"></i>
-              </a>
+              <h2>Name 2 Counter
+                <button class="edit-icon" onclick="editCounter('campaign2')" title="Edit manually">
+                  <i class="fa-solid fa-pen-to-square"></i>
+                </button>
+              </h2>
+              <div class="counter-value">
+                <span id="campaign2-number">0001</span>
+              </div>
+              <div class="progress-bar-container">
+                <div class="progress-bar" id="campaign2-progress"></div>
+              </div>
+              <div class="sync-status">Ready</div>
+              <div class="last-updated" id="campaign2-updated"></div>
+              <div class="cache-status">
+                <i class="fa-solid fa-database"></i> Browser Cache: <span id="campaign2-cache">0</span> items
+              </div>
+              <div class="buttons">
+                <button onclick="addCounter('campaign2')" class="add-btn">
+                  <i class="fa-solid fa-plus"></i> Generate New
+                </button>
+                <button onclick="decrementCounter('campaign2')" class="decrement-btn">
+                  <i class="fa-solid fa-rotate-left"></i> Revert
+                </button>
+              </div>
+            </div>
+
+            <div class="history-container">
+              <h2>History</h2>
+              <div id="campaign2-history" class="history-list"></div>
+              <button onclick="loadMoreHistory('campaign2')" class="load-more-btn-custom">
+                Load More
+              </button>
+            </div>
+          </div>
+          
+          <!-- Campaign 3 Tab -->
+          <div class="tab-pane" id="campaign3-tab">
+            <div class="counter-container campaign3-counter">
+              <!-- Tab Navigation dalam Counter -->
+              <div class="counter-tabs">
+                <button class="tab-btn active" data-tab="campaign1" data-color="primary" title="Name 1 - Double click to edit">
+                  <i class="fa-solid fa-chart-line"></i>
+                  <span class="tab-name">Name 1</span>
+                </button>
+                <button class="tab-btn" data-tab="campaign2" data-color="success" title="Name 2 - Double click to edit">
+                  <i class="fa-solid fa-ticket"></i>
+                  <span class="tab-name">Name 2</span>
+                </button>
+                <button class="tab-btn" data-tab="campaign3" data-color="warning" title="Name 3 - Double click to edit">
+                  <i class="fa-solid fa-gift"></i>
+                  <span class="tab-name">Name 3</span>
+                </button>
+                <button class="tab-btn" data-tab="campaign4" data-color="info" title="Name 4 - Double click to edit">
+                  <i class="fa-solid fa-tag"></i>
+                  <span class="tab-name">Name 4</span>
+                </button>
+              </div>
               
-              <a href="#" onclick="showNotificationsModal()" class="profile-action">
-                <i class="fa-solid fa-bell"></i>
-                <span>Notifications</span>
-                <span class="notification-badge" style="margin-left: auto; background: var(--accent-primary); color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px; min-width: 18px; text-align: center;">3</span>
-              </a>
+              <h2>Name 3 Counter
+                <button class="edit-icon" onclick="editCounter('campaign3')" title="Edit manually">
+                  <i class="fa-solid fa-pen-to-square"></i>
+                </button>
+              </h2>
+              <div class="counter-value">
+                <span id="campaign3-number">0001</span>
+              </div>
+              <div class="progress-bar-container">
+                <div class="progress-bar" id="campaign3-progress"></div>
+              </div>
+              <div class="sync-status">Ready</div>
+              <div class="last-updated" id="campaign3-updated"></div>
+              <div class="cache-status">
+                <i class="fa-solid fa-database"></i> Browser Cache: <span id="campaign3-cache">0</span> items
+              </div>
+              <div class="buttons">
+                <button onclick="addCounter('campaign3')" class="add-btn">
+                  <i class="fa-solid fa-plus"></i> Generate New
+                </button>
+                <button onclick="decrementCounter('campaign3')" class="decrement-btn">
+                  <i class="fa-solid fa-rotate-left"></i> Revert
+                </button>
+              </div>
+            </div>
+
+            <div class="history-container">
+              <h2>History</h2>
+              <div id="campaign3-history" class="history-list"></div>
+              <button onclick="loadMoreHistory('campaign3')" class="load-more-btn-custom">
+                Load More
+              </button>
+            </div>
+          </div>
+          
+          <!-- Campaign 4 Tab -->
+          <div class="tab-pane" id="campaign4-tab">
+            <div class="counter-container campaign4-counter">
+              <!-- Tab Navigation dalam Counter -->
+              <div class="counter-tabs">
+                <button class="tab-btn active" data-tab="campaign1" data-color="primary" title="Name 1 - Double click to edit">
+                  <i class="fa-solid fa-chart-line"></i>
+                  <span class="tab-name">Name 1</span>
+                </button>
+                <button class="tab-btn" data-tab="campaign2" data-color="success" title="Name 2 - Double click to edit">
+                  <i class="fa-solid fa-ticket"></i>
+                  <span class="tab-name">Name 2</span>
+                </button>
+                <button class="tab-btn" data-tab="campaign3" data-color="warning" title="Name 3 - Double click to edit">
+                  <i class="fa-solid fa-gift"></i>
+                  <span class="tab-name">Name 3</span>
+                </button>
+                <button class="tab-btn" data-tab="campaign4" data-color="info" title="Name 4 - Double click to edit">
+                  <i class="fa-solid fa-tag"></i>
+                  <span class="tab-name">Name 4</span>
+                </button>
+              </div>
               
-              <a href="#" onclick="showHelpModal()" class="profile-action">
-                <i class="fa-solid fa-question-circle"></i>
-                <span>Help & Support</span>
-                <i class="fa-solid fa-chevron-right" style="margin-left: auto; font-size: 12px; opacity: 0.5;"></i>
-              </a>
-              
-              <div class="profile-divider"></div>
-              
-              <button onclick="showLogoutModal()" class="profile-action profile-logout">
-                <i class="fa-solid fa-sign-out-alt"></i>
-                <span>Logout</span>
+              <h2>Name 4 Counter
+                <button class="edit-icon" onclick="editCounter('campaign4')" title="Edit manually">
+                  <i class="fa-solid fa-pen-to-square"></i>
+                </button>
+              </h2>
+              <div class="counter-value">
+                <span id="campaign4-number">0001</span>
+              </div>
+              <div class="progress-bar-container">
+                <div class="progress-bar" id="campaign4-progress"></div>
+              </div>
+              <div class="sync-status">Ready</div>
+              <div class="last-updated" id="campaign4-updated"></div>
+              <div class="cache-status">
+                <i class="fa-solid fa-database"></i> Browser Cache: <span id="campaign4-cache">0</span> items
+              </div>
+              <div class="buttons">
+                <button onclick="addCounter('campaign4')" class="add-btn">
+                  <i class="fa-solid fa-plus"></i> Generate New
+                </button>
+                <button onclick="decrementCounter('campaign4')" class="decrement-btn">
+                  <i class="fa-solid fa-rotate-left"></i> Revert
+                </button>
+              </div>
+            </div>
+
+            <div class="history-container">
+              <h2>History</h2>
+              <div id="campaign4-history" class="history-list"></div>
+              <button onclick="loadMoreHistory('campaign4')" class="load-more-btn-custom">
+                Load More
               </button>
             </div>
           </div>
         </div>
       </div>
-    </nav>
-  </header>
-
-  <main id="main-content" class="page">
-      <div class="counter-container">
-        <h1>Campaign Counter
-          <button class="edit-icon" onclick="editCampaignID()" title="Edit manually"><i class="fa-solid fa-pen-to-square"></i></button>
-        </h1>
-        <div class="counter-value" id="counter">
-          <span id="counter-number">0001</span>
-        </div>
-        <div class="progress-bar-container">
-          <div class="progress-bar" id="progress-bar"></div>
-        </div>
-        <div class="sync-status" id="sync-status">Ready</div>
-        <div class="last-updated" id="last-updated"></div>
-        <div class="cache-status cache-status-custom" id="cache-status">
-          <i class="fa-solid fa-database"></i> Browser Cache: <span id="cache-size">0</span> items
-        </div>
-        <div class="buttons">
-          <button onclick="addCampaignID()" id="add-btn"><i class="fa-solid fa-plus"></i> Generate New Campaign ID</button>
-          <button onclick="decrementCampaignID()" id="decrement-btn"><i class="fa-solid fa-rotate-left"></i> Revert Campaign ID</button>
-        </div>
-      </div>
-
-      <div class="history-container">
-        <h2>History</h2>
-        <div id="history-list"></div>
-        <button id="load-more-btn" onclick="loadMoreHistory()" class="load-more-btn-custom">
-          Load More
-        </button>
-      </div>
+    </section>
   </main>
 
-  <!-- Modal Edit Campaign ID -->
+  <!-- Modal Edit Counter -->
   <div class="modal-overlay" id="edit-modal">
     <div class="modal">
       <div class="modal-header">
-        <h3>Edit Campaign ID</h3>
+        <h3 id="modal-title">Edit Campaign ID</h3>
         <button class="modal-close-btn" onclick="closeEditModal()">
           <i class="fa-solid fa-times"></i>
         </button>
       </div>
       <div class="modal-body">
-        <p>Enter the new campaign ID number</p>
+        <p>Enter the new counter number</p>
         <div class="input-group">
-          <label for="modal-input">Campaign ID</label>
-          <input type="number" id="modal-input" min="1" placeholder="Enter campaign ID" autocomplete="off">
+          <label for="modal-input">Counter ID</label>
+          <input type="number" id="modal-input" min="1" placeholder="Enter counter ID" autocomplete="off">
           <small class="input-hint">Minimum value: 1</small>
         </div>
       </div>
@@ -164,7 +316,35 @@
         <button class="btn-cancel" onclick="closeEditModal()">
           <i class="fa-solid fa-xmark"></i> Cancel
         </button>
-        <button class="btn-confirm" onclick="confirmEditCampaignID()">
+        <button class="btn-confirm" onclick="confirmEditCounter()">
+          <i class="fa-solid fa-check"></i> Confirm
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Edit Tab Name -->
+  <div class="modal-overlay" id="tab-name-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Edit Tab Name</h3>
+        <button class="modal-close-btn" onclick="closeTabNameModal()">
+          <i class="fa-solid fa-times"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Enter the new tab name</p>
+        <div class="input-group">
+          <label for="tab-name-input">Tab Name</label>
+          <input type="text" id="tab-name-input" placeholder="Enter tab name" autocomplete="off" maxlength="30">
+          <small class="input-hint">Maximum 30 characters</small>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-cancel" onclick="closeTabNameModal()">
+          <i class="fa-solid fa-xmark"></i> Cancel
+        </button>
+        <button class="btn-confirm" onclick="confirmTabName()">
           <i class="fa-solid fa-check"></i> Confirm
         </button>
       </div>
@@ -172,40 +352,411 @@
   </div>
 
   <!-- Footer -->
-  <footer class="footer">
+  <footer class="footer" role="contentinfo">
     <div class="container">
       <div class="footer-content">
         <div class="footer-left">
           <p class="footer-text">
-            &copy; <span id="footer-year">2026</span> eDM Helper <span class="footer-version" data-version>v1.0.0</span>. 
-            Built with <i class="fa-solid fa-heart"></i> for developers.
+            &copy; <span id="footer-year">2025</span> eDM Helper <span class="footer-version" data-version>v1.0.0</span>. 
+            Built with <i class="fa-solid fa-heart" ></i> for developers.
           </p>
         </div>
         <div class="footer-right">
-          <div class="footer-links">
-            <a href="https://github.com/budifelt" target="_blank" class="footer-link" title="GitHub">
+          <nav class="footer-links" aria-label="Social media links">
+            <a href="https://github.com/budifelt" target="_blank" class="footer-link" aria-label="GitHub">
               <i class="fa-brands fa-github"></i>
             </a>
-            <a href="https://instagram.com/budife.psd/" target="_blank" class="footer-link" title="Instagram">
+            <a href="https://instagram.com/budife.psd/" target="_blank" class="footer-link" aria-label="Instagram">
               <i class="fa-brands fa-instagram"></i>
             </a>
-            <a href="https://linkedin.com/in/budifelt/" target="_blank" class="footer-link" title="LinkedIn">
+            <a href="https://linkedin.com/in/budifelt/" target="_blank" class="footer-link" aria-label="LinkedIn">
               <i class="fa-brands fa-linkedin"></i>
             </a>
-          </div>
+          </nav>
         </div>
       </div>
     </div>
   </footer>
 
   <!-- Include Settings Modal -->
-  <div id="settings-container"></div>
+  <!-- Page Scripts (Load Last) -->
 
-  <script src="js/modal-manager.js" defer></script>
-  <script src="js/nav.js" defer></script>
   <script src="js/version-config.js" defer></script>
-  <script src="js/toast-manager.js" defer></script>
-  <script src="js/url-fetcher.js" defer></script>
-  <script src="js/pages/campaign-counter.js" defer></script>
+  <script src="js/pages-campaign-counter.js" defer></script>
+  
+  <script>
+    // Multi-counter system
+    const counters = {
+      campaign1: {
+        value: parseInt(localStorage.getItem('campaign1Counter')) || 1,
+        color: 'primary',
+        name: localStorage.getItem('campaign1TabName') || 'Name 1'
+      },
+      campaign2: {
+        value: parseInt(localStorage.getItem('campaign2Counter')) || 1,
+        color: 'success',
+        name: localStorage.getItem('campaign2TabName') || 'Name 2'
+      },
+      campaign3: {
+        value: parseInt(localStorage.getItem('campaign3Counter')) || 1,
+        color: 'warning',
+        name: localStorage.getItem('campaign3TabName') || 'Name 3'
+      },
+      campaign4: {
+        value: parseInt(localStorage.getItem('campaign4Counter')) || 1,
+        color: 'info',
+        name: localStorage.getItem('campaign4TabName') || 'Name 4'
+      }
+    };
+    
+    let currentTab = 'campaign1';
+    let currentEditCounter = null;
+    let currentEditTab = null;
+    
+    // Initialize on load
+    document.addEventListener('DOMContentLoaded', function() {
+      // Setup tab switching
+      setupTabs();
+      
+      // Load tab names from storage
+      loadTabNames();
+      
+      // Update all counters
+      Object.keys(counters).forEach(type => {
+        updateCounterDisplay(type);
+        updateHistoryDisplay(type);
+      });
+    });
+    
+    // Load tab names from storage
+    function loadTabNames() {
+      Object.keys(counters).forEach(type => {
+        // Update ALL tab names di semua containers
+        document.querySelectorAll(`[data-tab="${type}"] .tab-name`).forEach(tabName => {
+          tabName.textContent = counters[type].name;
+        });
+        
+        // Update ALL counter titles
+        document.querySelectorAll(`#${type}-tab .counter-container h2`).forEach(counterTitle => {
+          counterTitle.innerHTML = `${counters[type].name} Counter
+            <button class="edit-icon" onclick="editCounter('${type}')" title="Edit manually">
+              <i class="fa-solid fa-pen-to-square"></i>
+            </button>`;
+        });
+        
+        // Update ALL tooltips
+        document.querySelectorAll(`[data-tab="${type}"]`).forEach(tabBtn => {
+          tabBtn.title = `${counters[type].name} - Double click to edit`;
+        });
+      });
+    }
+    
+    // Open tab name modal
+    function openTabNameModal(type) {
+      currentEditTab = type;
+      const modal = document.getElementById('tab-name-modal');
+      const input = document.getElementById('tab-name-input');
+      
+      input.value = counters[type].name;
+      modal.style.display = 'flex';
+      input.focus();
+      input.select();
+    }
+    
+    // Close tab name modal
+    function closeTabNameModal() {
+      const modal = document.getElementById('tab-name-modal');
+      modal.style.display = 'none';
+      currentEditTab = null;
+    }
+    
+    // Confirm tab name
+    function confirmTabName() {
+      const input = document.getElementById('tab-name-input');
+      const newName = input.value.trim();
+      
+      if (newName && currentEditTab) {
+        counters[currentEditTab].name = newName;
+        localStorage.setItem(`${currentEditTab}TabName`, newName);
+        
+        // Update ALL tab names di semua containers
+        document.querySelectorAll(`[data-tab="${currentEditTab}"] .tab-name`).forEach(tabName => {
+          tabName.textContent = newName;
+        });
+        
+        // Update ALL counter titles
+        document.querySelectorAll(`#${currentEditTab}-tab .counter-container h2`).forEach(counterTitle => {
+          counterTitle.innerHTML = `${newName} Counter
+            <button class="edit-icon" onclick="editCounter('${currentEditTab}')" title="Edit manually">
+              <i class="fa-solid fa-pen-to-square"></i>
+            </button>`;
+        });
+        
+        // Update ALL tooltips
+        document.querySelectorAll(`[data-tab="${currentEditTab}"]`).forEach(tabBtn => {
+          tabBtn.title = `${newName} - Double click to edit`;
+        });
+        
+        closeTabNameModal();
+      }
+    }
+    
+    // Tab switching
+    function setupTabs() {
+      const tabBtns = document.querySelectorAll('.tab-btn');
+      tabBtns.forEach(btn => {
+        // Single click untuk switch tab
+        btn.addEventListener('click', function() {
+          const tabName = this.dataset.tab;
+          switchTab(tabName);
+          
+          // Update active state di semua tab containers
+          document.querySelectorAll('.counter-tabs').forEach(container => {
+            container.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            container.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+          });
+        });
+        
+        // Double click untuk edit nama
+        btn.addEventListener('dblclick', function(e) {
+          e.stopPropagation();
+          openTabNameModal(this.dataset.tab);
+        });
+      });
+    }
+    
+    function switchTab(tabName) {
+      // Update panes
+      document.querySelectorAll('.tab-pane').forEach(pane => {
+        pane.classList.remove('active');
+      });
+      document.getElementById(`${tabName}-tab`).classList.add('active');
+      
+      currentTab = tabName;
+    }
+    
+    // Update counter display
+    function updateCounterDisplay(type) {
+      const counter = counters[type];
+      document.getElementById(`${type}-number`).textContent = String(counter.value).padStart(4, '0');
+      
+      // Update progress bar
+      const progress = ((counter.value % 100) / 100) * 100;
+      document.getElementById(`${type}-progress`).style.width = progress + '%';
+      
+      // Update status
+      const updatedEl = document.getElementById(`${type}-updated`);
+      if (updatedEl) {
+        updatedEl.textContent = 'Last updated: ' + formatDateTime(new Date());
+      }
+      
+      // Update cache status
+      const history = JSON.parse(localStorage.getItem(`${type}History`) || '[]');
+      const cacheEl = document.getElementById(`${type}-cache`);
+      if (cacheEl) {
+        cacheEl.textContent = history.length;
+      }
+    }
+    
+    // Add counter
+    function addCounter(type) {
+      counters[type].value++;
+      localStorage.setItem(`${type}Counter`, counters[type].value);
+      updateCounterDisplay(type);
+      addToHistory(type, counters[type].value, 'generated');
+      console.log(`New ${type} ID: ` + String(counters[type].value).padStart(4, '0'));
+    }
+    
+    // Decrement counter
+    function decrementCounter(type) {
+      if (counters[type].value > 1) {
+        counters[type].value--;
+        localStorage.setItem(`${type}Counter`, counters[type].value);
+        updateCounterDisplay(type);
+        addToHistory(type, counters[type].value, 'reverted');
+        console.log(`${type} ID reverted to: ` + String(counters[type].value).padStart(4, '0'));
+      }
+    }
+    
+    // Edit counter
+    function editCounter(type) {
+      if (!counters[type]) {
+        console.error('Counter type not found:', type);
+        return;
+      }
+      currentEditCounter = type;
+      const modal = document.getElementById('edit-modal');
+      const input = document.getElementById('modal-input');
+      const title = document.getElementById('modal-title');
+      
+      input.value = counters[type].value;
+      title.textContent = `Edit ${counters[type].name} ID`;
+      modal.style.display = 'flex';
+      input.focus();
+      input.select();
+    }
+    
+    // Add to history
+    function addToHistory(type, value, action) {
+      const history = JSON.parse(localStorage.getItem(`${type}History`) || '[]');
+      const entry = {
+        id: value,
+        action: action,
+        timestamp: new Date().toISOString(),
+        display: String(value).padStart(4, '0')
+      };
+      
+      history.unshift(entry);
+      if (history.length > 50) history.pop();
+      
+      localStorage.setItem(`${type}History`, JSON.stringify(history));
+      updateHistoryDisplay(type);
+    }
+    
+    // Update history display
+    function updateHistoryDisplay(type) {
+      const historyList = document.getElementById(`${type}-history`);
+      if (!historyList) return;
+      
+      let history = JSON.parse(localStorage.getItem(`${type}History`) || '[]');
+      
+      // Add dummy history if empty (for testing)
+      if (history.length === 0) {
+        history = [
+          {
+            id: counters[type].value,
+            action: 'generated',
+            timestamp: new Date().toISOString(),
+            display: String(counters[type].value).padStart(4, '0')
+          }
+        ];
+        localStorage.setItem(`${type}History`, JSON.stringify(history));
+      }
+      
+      historyList.innerHTML = history.slice(0, 10).map(entry => `
+        <div class="history-item">
+          <i class="fa-solid fa-${entry.action === 'generated' ? 'plus-circle' : entry.action === 'reverted' ? 'rotate-left' : 'edit'}"></i>
+          <div>
+            <strong>${entry.display}</strong>
+            <time>${formatTime(entry.timestamp)}</time>
+          </div>
+        </div>
+      `).join('');
+    }
+    
+    // Format date and time
+    function formatDateTime(date) {
+      const d = new Date(date);
+      
+      // Format: DD/MM/YYYY HH:mm:ss
+      const day = String(d.getDate()).padStart(2, '0');
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      const year = d.getFullYear();
+      const hours = String(d.getHours()).padStart(2, '0');
+      const minutes = String(d.getMinutes()).padStart(2, '0');
+      const seconds = String(d.getSeconds()).padStart(2, '0');
+      
+      return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
+    }
+    
+    // Format time (for backward compatibility)
+    function formatTime(timestamp) {
+      return formatDateTime(timestamp);
+    }
+    
+    // Load more history
+    function loadMoreHistory(type) {
+      const historyList = document.getElementById(`${type}-history`);
+      const currentCount = historyList.children.length;
+      const history = JSON.parse(localStorage.getItem(`${type}History`) || '[]');
+      
+      const moreItems = history.slice(currentCount, currentCount + 10);
+      moreItems.forEach(entry => {
+        const item = document.createElement('div');
+        item.className = 'history-item';
+        item.innerHTML = `
+          <i class="fa-solid fa-${entry.action === 'generated' ? 'plus-circle' : entry.action === 'reverted' ? 'rotate-left' : 'edit'}"></i>
+          <div>
+            <strong>${entry.display}</strong>
+            <time>${formatTime(entry.timestamp)}</time>
+          </div>
+        `;
+        historyList.appendChild(item);
+      });
+      
+      // Hide button if no more items
+      if (currentCount + 10 >= history.length) {
+        event.target.style.display = 'none';
+      }
+    }
+    
+    // Modal functions
+    function closeEditModal() {
+      const modal = document.getElementById('edit-modal');
+      modal.style.display = 'none';
+      currentEditCounter = null;
+    }
+    
+    function confirmEditCounter() {
+      const input = document.getElementById('modal-input');
+      const newValue = parseInt(input.value);
+      
+      if (newValue >= 1 && newValue <= 9999 && currentEditCounter && counters[currentEditCounter]) {
+        counters[currentEditCounter].value = newValue;
+        localStorage.setItem(`${currentEditCounter}Counter`, counters[currentEditCounter].value);
+        updateCounterDisplay(currentEditCounter);
+        addToHistory(currentEditCounter, counters[currentEditCounter].value, 'manual_edit');
+        console.log(`${counters[currentEditCounter].name} ID updated to ` + String(counters[currentEditCounter].value).padStart(4, '0'));
+        closeEditModal();
+      } else {
+        alert('Please enter a valid number (1-9999)');
+        input.focus();
+      }
+    }
+    
+    // Event listeners
+    document.getElementById('edit-modal').addEventListener('click', function(e) {
+      if (e.target === this) {
+        closeEditModal();
+      }
+    });
+    
+    document.getElementById('tab-name-modal').addEventListener('click', function(e) {
+      if (e.target === this) {
+        closeTabNameModal();
+      }
+    });
+    
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        closeEditModal();
+        closeTabNameModal();
+      }
+    });
+    
+    document.getElementById('modal-input').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') {
+        confirmEditCounter();
+      }
+    });
+    
+    document.getElementById('tab-name-input').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') {
+        confirmTabName();
+      }
+    });
+    
+    document.getElementById('modal-input').addEventListener('input', function(e) {
+      e.target.value = e.target.value.replace(/\D/g, '').slice(0, 4);
+    });
+    
+    // Auto-save every 30 seconds
+    setInterval(function() {
+      Object.keys(counters).forEach(type => {
+        localStorage.setItem(`${type}Counter`, counters[type].value);
+      });
+      console.log('Auto-saved all counters');
+    }, 30000);
+  </script>
 </body>
 </html>

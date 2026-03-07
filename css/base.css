@@ -91,7 +91,7 @@ button {
   border-radius: 0;
 }
 
-/* Remove default browser styling */
+/* Remove default browser styling - Flat Design */
 * {
   border-radius: 0 !important;
 }

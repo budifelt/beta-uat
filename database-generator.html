@@ -17,14 +17,14 @@
   <!-- CSS Structure -->
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/layout.css">
-  <link rel="stylesheet" href="css/utilities.css">
-  <link rel="stylesheet" href="css/theme-default.css">
-  <link rel="stylesheet" href="css/ui-buttons.css">
-  <link rel="stylesheet" href="css/ui-cards.css">
-  <link rel="stylesheet" href="css/ui-modals.css">
-  <link rel="stylesheet" href="css/ui-forms.css">
-  <link rel="stylesheet" href="css/page-components.css">
-  <link rel="stylesheet" href="css/ui-improvements.css">
+  <link rel="stylesheet" href="css/theme.css">
+  <link rel="stylesheet" href="css/components/buttons.css">
+  <link rel="stylesheet" href="css/components/cards.css">
+  <link rel="stylesheet" href="css/components/forms.css">
+  <link rel="stylesheet" href="css/components/notifications.css">
+  <link rel="stylesheet" href="css/components/animations.css">
+  <link rel="stylesheet" href="css/components/utilities.css">
+  <link rel="stylesheet" href="css/pages-database-generator.css">
   
   <title>Database Generator - eDM Helper</title>
   <meta name="theme-color" content="#0f172a" />
@@ -33,8 +33,8 @@
 </head>
 <body class="page">
   <!-- Navigation Bar -->
-  <header class="header">
-    <nav class="nav">
+  <header class="header" role="banner">
+    <nav class="nav" role="navigation" aria-label="Main navigation">
       <!-- Home Button -->
       <div class="nav-left">
         <a href="index.html" class="nav-link">
@@ -43,68 +43,8 @@
         </a>
       </div>
       
-      <!-- Profile Section -->
-      <div class="profile-section">
-        <!-- Login Button (shown when not logged in) -->
-        <button id="login-btn" onclick="showLoginModal()" class="login-trigger-btn" disabled>
-          <i class="fa-solid fa-right-to-bracket"></i>
-          <span>Login</span>
-        </button>
-        
-        <!-- Profile Dropdown (shown when logged in) -->
-        <div id="profile-dropdown" class="profile-dropdown" style="width: auto !important; min-width: 220px !important; max-width: 260px !important; display: none;">
-          <button onclick="toggleProfileMenu()" class="profile-trigger">
-            <div class="profile-avatar">
-              <i class="fa-solid fa-user"></i>
-            </div>
-            <span id="profile-name" style="flex: 1; min-width: 0; display: inline-block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">John Doe</span>
-            <i class="fa-solid fa-chevron-down"></i>
-          </button>
-          
-          <div id="profile-menu" class="profile-menu hidden" style="width: 220px !important; min-width: 220px !important; max-width: 260px !important;">
-            <div class="profile-header" onclick="showProfileModal(); toggleProfileMenu();" style="cursor: pointer;">
-              <div class="profile-info">
-                <div class="profile-avatar-large">
-                  <i class="fa-solid fa-user"></i>
-                </div>
-                <div class="profile-details">
-                  <div class="profile-name-display" id="profile-name-display">John Doe</div>
-                  <div class="profile-email-display" id="profile-email-display">john@example.com</div>
-                  <div class="profile-role-display" id="profile-role-display">User</div>
-                </div>
-              </div>
-            </div>
-            
-            <div class="profile-actions">
-              <a href="#" onclick="showSettingsModal()" class="profile-action">
-                <i class="fa-solid fa-cog"></i>
-                <span>Settings</span>
-              </a>
-              
-              <a href="#" onclick="showProfileModal()" class="profile-action">
-                <i class="fa-solid fa-user-edit"></i>
-                <span>Edit Profile</span>
-              </a>
-              
-              <a href="#" onclick="showNotificationsModal()" class="profile-action">
-                <i class="fa-solid fa-bell"></i>
-                <span>Notifications</span>
-              </a>
-              
-              <a href="#" onclick="showHelpModal()" class="profile-action">
-                <i class="fa-solid fa-question-circle"></i>
-                <span>Help & Support</span>
-              </a>
-              
-              <div class="profile-divider"></div>
-              
-              <button onclick="logout()" class="profile-action profile-logout">
-                <i class="fa-solid fa-sign-out-alt"></i>
-                <span>Logout</span>
-              </button>
-            </div>
-          </div>
-        </div>
+      <div class="nav-right">
+        <!-- Additional navigation items can be added here -->
       </div>
     </nav>
   </header>
@@ -112,29 +52,61 @@
   <main class="container">
     <div class="form-grid">
       <div class="form-field">
-        <label for="campaignId" class="form-label">Campaign ID</label>
-        <input id="campaignId" class="form-input" placeholder="YYYYMMDD_nama_bebas" spellcheck="false" />
-        <p class="form-hint">Contoh: <span class="font-mono">20250817_Independence-Day_1700</span></p>
+        <label for="campaignId" class="form-label">
+          <i class="fa-solid fa-tag form-label-icon"></i>
+          Campaign ID
+        </label>
+        <input id="campaignId" class="form-input" placeholder="YYYYMMDD_Nama-Campaign_XXXX" spellcheck="false" />
+        <p class="form-hint">Format: <span class="font-mono">20250817_Independence-Day_1700</span> atau <span class="font-mono">20250817A_Independence-Day_1700</span></p>
       </div>
-    </section>
+      
+      <div class="form-field">
+        <label class="form-label">
+          <i class="fa-solid fa-cog form-label-icon"></i>
+          Tipe Campaign
+        </label>
+        <div class="campaign-type-selector">
+          <label class="radio-option">
+            <input type="radio" name="campaignType" value="static" checked>
+            <span class="radio-label">Static</span>
+            <span class="radio-hint">Tanpa KRHRED</span>
+          </label>
+          <label class="radio-option">
+            <input type="radio" name="campaignType" value="dynamic">
+            <span class="radio-label">Dynamic</span>
+            <span class="radio-hint">Dengan KRHRED</span>
+          </label>
+        </div>
+      </div>
+    </div>
 
     <!-- PANEL: EMAIL + KRHRED -->
     <section id="krPanel" class="panel">
       <div class="panel-header">
         <div class="panel-row">
           <div class="panel-field">
-            <label for="newEmail" class="form-label">Tambah Email</label>
+            <label for="newEmail" class="form-label">
+              <i class="fa-solid fa-envelope form-label-icon"></i>
+              Tambah Email
+            </label>
             <input id="newEmail" class="form-input" placeholder="email@contoh.com"/>
           </div>
           <button id="addEmail" class="btn success">Tambah email</button>
         </div>
-        <div class="panel-row">
+        
+        <!-- KRHRED Section - Only for Dynamic Campaign -->
+        <div id="krhredSection" class="krhred-section">
           <div class="panel-field">
-            <label for="newKey" class="form-label">Tambah kolom KRHRED</label>
-            <input id="newKey" class="form-input" placeholder="KRHRED_Unit_30"/>
+            <label for="newKey" class="form-label">
+              <i class="fa-solid fa-columns form-label-icon"></i>
+              Tambah kolom KRHRED
+            </label>
+            <div class="input-button-group">
+              <input id="newKey" class="form-input" placeholder="KRHRED_Unit_30"/>
+              <button id="addKey" class="btn primary">Tambah kolom</button>
+            </div>
             <p class="form-hint">Kosongkan untuk auto: <span class="font-mono">KRHRED_Unit_N</span> berikutnya.</p>
           </div>
-          <button id="addKey" class="btn primary">Tambah kolom</button>
         </div>
 
         <!-- tombol buka panel bulk -->
@@ -145,13 +117,16 @@
 
       <!-- panel bulk -->
       <div id="bulkBox" class="bulk-box hidden">
-        <label class="form-label">Tempel banyak email (pisahkan dengan baris/koma/titik koma/spasi)</label>
-        <textarea id="bulkEmails" class="mt-1 w-full rounded-2xl bg-slate-900 border border-slate-700 px-4 py-3 h-28 resize-y focus:outline-none focus:ring-2 focus:ring-indigo-500 font-mono" placeholder="email1@a.com&#10;email2@a.com, email3@a.com; email4@a.com"></textarea>
-        <div class="flex gap-3 mt-2">
-          <button id="applyBulk" class="px-4 py-2 rounded-2xl bg-emerald-600 hover:bg-emerald-500">Tambahkan</button>
-          <button id="cancelBulk" class="px-4 py-2 rounded-2xl bg-slate-800 hover:bg-slate-700">Batal</button>
+        <label class="form-label">
+          <i class="fa-solid fa-paste form-label-icon"></i>
+          Tempel banyak email (pisahkan dengan baris/koma/titik koma/spasi)
+        </label>
+        <textarea id="bulkEmails" placeholder="email1@a.com&#10;email2@a.com, email3@a.com; email4@a.com"></textarea>
+        <div class="flex">
+          <button id="applyBulk">Tambahkan</button>
+          <button id="cancelBulk">Batal</button>
         </div>
-        <p id="bulkInfo" class="text-xs text-slate-400 mt-2"></p>
+        <p id="bulkInfo"></p>
       </div>
 
       <div class="text-xs text-slate-400 mb-2 flex items-center gap-3">
@@ -160,10 +135,10 @@
       </div>
 
       <div class="overflow-auto">
-        <table class="min-w-full text-sm">
+        <table>
           <thead>
             <tr id="krHeadRow">
-              <th class="text-left px-3 py-2 sticky left-0 bg-slate-900/80 backdrop-blur border-b border-slate-800">Email</th>
+              <th>Email</th>
               <!-- dynamic head cells here -->
             </tr>
           </thead>
@@ -171,30 +146,37 @@
         </table>
       </div>
 
-      <div class="text-xs text-slate-400 mt-3">
-        <p>Tips: klik ikon ✕ di header kolom untuk menghapus kolom KRHRED. Klik 🗑 di baris untuk menghapus email.</p>
+      <div class="table-tips">
+        <h4><i class="fa-solid fa-lightbulb"></i> Tips Penggunaan</h4>
+        <ul>
+          <li>Klik ikon <i class="fa-solid fa-times"></i> di header kolom untuk menghapus kolom KRHRED</li>
+          <li>Klik ikon <i class="fa-solid fa-trash"></i> di baris email untuk menghapus email</li>
+          <li>Input email bisa diedit langsung di tabel</li>
+          <li>Nilai KRHRED akan otomatis tersimpan saat Anda mengetik</li>
+          <li>Tabel bisa scroll horizontal jika kolom terlalu banyak</li>
+        </ul>
       </div>
     </section>
 
-    <div class="flex flex-wrap items-center gap-3 mb-2">
-      <button id="btnDownload" class="px-4 py-2 rounded-2xl shadow bg-indigo-600 hover:bg-indigo-500 disabled:opacity-40" disabled>
+    <div class="flex flex-wrap">
+      <button id="btnDownload" class="btn" disabled>
         Download 4 file
       </button>
-      <button id="btnSave" class="px-4 py-2 rounded-2xl shadow bg-emerald-600 hover:bg-emerald-500 disabled:opacity-40" disabled>
+      <button id="btnSave" class="btn success" disabled>
         Save to folder
       </button>
       <span id="stateMsg" class="text-xs text-slate-400"></span>
     </div>
 
-    <p id="error" class="text-amber-300 text-sm mb-4 hidden"></p>
+    <p id="error" class="hidden"></p>
 
     <section id="previews" class="grid grid-cols-1 md:grid-cols-2 gap-4"></section>
 
     <!-- Fallback links jika auto-download diblok -->
-    <section id="dlSection" class="mt-4 hidden">
-      <h3 class="text-sm text-slate-300 mb-2">Unduhan manual (fallback)</h3>
-      <div id="downloadsList" class="flex flex-col gap-2"></div>
-      <p class="text-xs text-slate-400 mt-2">Jika auto-download tidak berjalan, klik link di atas satu per satu.</p>
+    <section id="dlSection" class="hidden">
+      <h3>Unduhan manual (fallback)</h3>
+      <div id="downloadsList"></div>
+      <p>Jika auto-download tidak berjalan, klik link di atas satu per satu.</p>
     </section>
 
     <footer class="mt-6 text-xs text-slate-400">
@@ -229,11 +211,7 @@
     </div>
   </footer>
 
-<script src="js/index.js" defer></script>
 <script src="js/version-config.js" defer></script>
-<script src="js/settings-modal.js" defer></script>
-<script src="js/toast-manager.js" defer></script>
-<script src="js/modal-manager.js" defer></script>
-<script src="js/pages/database-generator.js" defer></script>
+<script src="js/pages-database-generator.js" defer></script>
 </body>
 </html>

@@ -1,0 +1,725 @@
+/* ===================================
+   CONFIG PAGE - BODY & CONTENT ONLY
+   =================================== */
+
+/* Config Layout - Override main from layout.css */
+main.layout {
+  display: flex;
+  flex-direction: row; /* Override column from layout.css */
+  height: calc(100vh - var(--header-height));
+  overflow: hidden; /* Prevent scroll on main */
+}
+
+/* Container inside layout */
+.layout > .container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--space-5);
+  display: flex;
+  flex: 1;
+  background: var(--surface);
+}
+
+
+/* Breadcrumb */
+.content-header {
+  padding: var(--space-4) var(--space-6);
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+  height: 48px; /* Same as sidebar header */
+}
+
+.breadcrumb {
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+/* Right Content - Enhanced */
+.content {
+  padding: 0;
+  overflow: hidden;
+  background: var(--bg-secondary);
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Content Controls - Flat Design */
+.content .controls {
+  background: var(--surface);
+  padding: var(--space-6);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+/* Input Wrapper for Inline Indicators - Flat Design */
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+
+.input-wrapper input {
+  flex: 1;
+  padding: var(--space-4) var(--space-4);
+  padding-right: var(--space-12);
+  border: 1px solid var(--border);
+  background: var(--bg-secondary);
+  font-size: var(--font-size-base);
+  color: var(--text);
+  border-radius: 0;
+  font-family: var(--font-family-base);
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+  position: relative;
+  width: 100%;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.input-wrapper input:hover {
+  border-color: var(--accent-primary);
+  background: var(--surface);
+}
+
+.input-wrapper input:focus {
+  background: var(--surface);
+  outline: none;
+  border-color: var(--accent-primary);
+}
+
+.input-wrapper input::placeholder {
+  color: var(--text-muted);
+  transition: opacity 0.15s ease;
+}
+
+.input-wrapper input:focus::placeholder {
+  opacity: 0.7;
+}
+
+/* Flat Inline Char Count */
+.char-count {
+  position: absolute !important;
+  right: var(--space-3) !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  font-size: var(--font-size-xs);
+  font-family: var(--font-family-mono);
+  color: var(--text-muted);
+  pointer-events: none;
+  transition: color 0.15s ease;
+}
+
+/* Box Design for All Char Counts - High Specificity */
+input-wrapper .char-count#campaignIdCharCount,
+input-wrapper .char-count#subjectCharCount,
+input-wrapper .char-count#linkCharCount,
+#campaignIdCharCount.char-count,
+#subjectCharCount.char-count,
+#linkCharCount.char-count {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: var(--space-1) !important;
+  padding: var(--space-1) var(--space-2) !important;
+  background: var(--bg-secondary) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 0 !important;
+  font-weight: 600 !important;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease !important;
+  min-width: 30px !important;
+}
+
+/* Default state - Abu-abu saat baru dibuka */
+#campaignIdCharCount:not(.applied):not(.saved),
+#subjectCharCount:not(.applied):not(.saved),
+#linkCharCount:not(.applied):not(.saved) {
+  background: var(--bg-secondary) !important;
+  border-color: var(--border) !important;
+  color: var(--text-muted) !important;
+}
+
+/* Applied state - Kuning ketika di apply */
+#campaignIdCharCount.applied,
+#subjectCharCount.applied,
+#linkCharCount.applied {
+  background: var(--warning-bg) !important;
+  border-color: var(--warning) !important;
+  color: var(--warning) !important;
+}
+
+/* Saved state - Hijau ketika di save */
+#campaignIdCharCount.saved,
+#subjectCharCount.saved,
+#linkCharCount.saved {
+  background: var(--success-bg) !important;
+  border-color: var(--success) !important;
+  color: var(--success) !important;
+}
+
+/* Hover effects */
+#campaignIdCharCount:hover,
+#subjectCharCount:hover,
+#linkCharCount:hover {
+  opacity: 0.8;
+}
+
+.input-wrapper:focus-within .char-count {
+  color: var(--accent-primary);
+}
+
+/* Don't apply focus styles to boxed char counts */
+.input-wrapper:focus-within #campaignIdCharCount,
+.input-wrapper:focus-within #subjectCharCount,
+.input-wrapper:focus-within #linkCharCount {
+  color: inherit;
+}
+
+/* Flat Inline Checkmark */
+.checkmark {
+  position: absolute;
+  right: var(--space-10);
+  top: 50%;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--success);
+  font-size: var(--font-size-sm);
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  background: var(--surface);
+  border: 2px solid var(--success);
+  border-radius: 0;
+}
+
+.checkmark.show {
+  opacity: 1;
+}
+
+.char-count.at-limit {
+  color: var(--error);
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateY(-50%) translateX(0); }
+  25% { transform: translateY(-50%) translateX(-2px); }
+  75% { transform: translateY(-50%) translateX(2px); }
+}
+
+@keyframes pulse {
+  0% { transform: translateY(-2px) scale(1); }
+  50% { transform: translateY(-2px) scale(1.05); }
+  100% { transform: translateY(-2px) scale(1); }
+}
+
+@keyframes slideIn {
+  from { 
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to { 
+    opacity: 1;
+    transform: translateY(-2px);
+  }
+}
+
+/* Enhanced tooltip animations */
+.content .field .validation-tooltip,
+.content .field .warning-tooltip,
+.content .field .mismatch-tooltip {
+  animation: slideIn 0.2s ease-out;
+}
+
+.content .field .validation-tooltip.pulse,
+.content .field .warning-tooltip.pulse,
+.content .field .mismatch-tooltip.pulse {
+  animation: pulse 1s ease-in-out, slideIn 0.2s ease-out;
+}
+
+/* Campaign Count Indicator - Flat Design */
+.campaign-count-indicator {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 0;
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  color: var(--text-muted);
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+/* Default state - Abu-abu saat baru dibuka */
+.campaign-count-indicator:not(.low):not(.complete) {
+  background: var(--bg-secondary);
+  border-color: var(--border);
+  color: var(--text-muted);
+}
+
+/* Applied state - Kuning ketika di apply (class 'low') */
+.campaign-count-indicator.low {
+  background: var(--warning-bg);
+  border-color: var(--warning);
+  color: var(--warning);
+}
+
+/* Saved state - Hijau ketika di save (class 'complete') */
+.campaign-count-indicator.complete {
+  background: var(--success-bg);
+  border-color: var(--success);
+  color: var(--success);
+}
+
+/* Hover effects - Flat */
+.campaign-count-indicator:hover {
+  opacity: 0.8;
+}
+
+/* Remove all animations and pseudo-elements */
+.campaign-count-indicator::before {
+  display: none;
+}
+
+/* Campaign ID field special styling */
+.input-wrapper.campaign-id-field {
+  position: relative;
+}
+
+.input-wrapper.campaign-id-field::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: var(--error);
+  border-radius: 0;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  z-index: -1;
+}
+
+.input-wrapper.campaign-id-field.past-date-warning::before {
+  opacity: 0.3;
+}
+
+/* Campaign ID label with warning */
+.content .field.campaign-id-field > label {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  position: relative;
+}
+
+/* ===================================
+   UNIFIED TOOLTIP SYSTEM - Standardized Size & Position
+   =================================== */
+
+/* Base tooltip styles - All tooltips inherit these */
+.content .field .warning-tooltip,
+.content .field .validation-tooltip,
+.content .field .mismatch-tooltip {
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  margin-bottom: 8px;
+  padding: 6px 10px; /* Standardized padding */
+  background: #dc2626; /* Default red color */
+  color: white;
+  font-size: 11px; /* Standardized font size */
+  font-weight: 500;
+  border-radius: 0;
+  white-space: nowrap; /* Prevent text wrapping */
+  width: auto; /* Auto width based on content */
+  min-width: fit-content; /* Minimum width to fit content */
+  max-width: 300px; /* Maximum width for long messages */
+  box-sizing: border-box;
+  opacity: 0; /* Hidden by default */
+  transform: translateY(-4px); /* Slight upward offset when hidden */
+  transition: all 0.2s ease; /* Smooth transition */
+  z-index: 10; /* Base z-index */
+  pointer-events: none; /* Don't interfere with input */
+  text-align: left; /* Standardized text alignment */
+  line-height: 1.3; /* Standardized line height */
+}
+
+/* Hard guard: when no file is active, never show tooltip remnants. */
+body.tooltips-disabled .content .field .warning-tooltip,
+body.tooltips-disabled .content .field .validation-tooltip,
+body.tooltips-disabled .content .field .mismatch-tooltip {
+  display: none !important;
+  opacity: 0 !important;
+  transform: translateY(-4px) !important;
+}
+
+/* Additional guard: during page initialization, hide all tooltips */
+body.initializing .content .field .warning-tooltip,
+body.initializing .content .field .validation-tooltip,
+body.initializing .content .field .mismatch-tooltip {
+  display: none !important;
+  opacity: 0 !important;
+  transform: translateY(-4px) !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+/* Extra aggressive guard: hide tooltips with any opacity during initialization */
+body.initializing .content .field [class*="tooltip"] {
+  display: none !important;
+  opacity: 0 !important;
+  transform: translateY(-4px) !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+/* Base tooltip arrow */
+.content .field .warning-tooltip::before,
+.content .field .validation-tooltip::before,
+.content .field .mismatch-tooltip::before {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 12px; /* Standardized arrow position */
+  width: 8px;
+  height: 8px;
+  background: #dc2626; /* Default red color */
+  transform: rotate(45deg);
+}
+
+/* Mismatch tooltip specific styles */
+.content .field .mismatch-tooltip {
+  background: #eab308; /* Yellow color for mismatch */
+  color: #000; /* Black text for yellow background */
+  z-index: 12; /* Higher priority than warning */
+}
+
+.content .field .mismatch-tooltip::before {
+  background: #eab308; /* Yellow color for arrow */
+}
+
+/* Warning tooltip specific styles */
+.content .field .warning-tooltip {
+  background: #eab308; /* Yellow color for warning */
+  color: #000; /* Black text for yellow background */
+  z-index: 11;
+}
+
+.content .field .warning-tooltip::before {
+  background: #eab308; /* Yellow color for arrow */
+}
+
+/* Validation tooltip specific styles */
+.content .field .validation-tooltip {
+  background: #dc2626; /* Red color for validation */
+  color: white;
+  z-index: 12; /* Highest priority */
+}
+
+.content .field .validation-tooltip::before {
+  background: #dc2626; /* Red color for arrow */
+}
+
+/* Green tooltip for today's date */
+.content .field.today-warning .warning-tooltip {
+  background: #22c55e; /* Green color for today */
+  color: #fff; /* White text for green background */
+}
+
+.content .field.today-warning .warning-tooltip::before {
+  background: #22c55e; /* Green color for arrow */
+}
+
+/* Red tooltip for validation errors (using warning tooltip) */
+.content .field.validation-error .warning-tooltip {
+  background: #dc2626; /* Red color for validation */
+  color: white;
+}
+
+.content .field.validation-error .warning-tooltip::before {
+  background: #dc2626; /* Red color for arrow */
+}
+
+/* Visible states */
+.content .field.past-date-warning .warning-tooltip,
+.content .field.today-warning .warning-tooltip,
+.content .field.validation-error .warning-tooltip,
+.content .field.mismatch-error .mismatch-tooltip {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Flat Field Styling */
+.content .field {
+  margin-bottom: var(--space-5);
+}
+
+.content .field label {
+  display: block;
+  margin-bottom: var(--space-2);
+  font-weight: 600;
+  font-size: var(--font-size-sm);
+  color: var(--text);
+}
+
+.content .field .control {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+/* === CodeMirror Editor Styling === */
+.editor-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+/* Hide original textarea */
+.editor-container textarea#editor {
+  display: none !important;
+}
+
+/* CodeMirror container */
+.CodeMirror {
+  height: 100% !important;
+  width: 100% !important;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 13px;
+  line-height: 1.5;
+  background: #272822 !important;
+  color: #f8f8f2 !important;
+  border: none;
+  outline: none;
+}
+
+/* Remove any default textbox appearance */
+.CodeMirror textarea {
+  display: none !important;
+}
+
+/* Editor scrollbars */
+.CodeMirror-scrollbar-filler,
+.CodeMirror-gutter-filler {
+  background-color: #272822;
+}
+
+/* Line numbers */
+.CodeMirror-linenumber {
+  color: #75715e !important;
+  min-width: 3em;
+  text-align: right;
+}
+
+/* Selected line */
+.CodeMirror-selected {
+  background: #49483e !important;
+}
+
+/* Cursor */
+.CodeMirror-cursor {
+  border-left: 1px solid #f8f8f2 !important;
+}
+
+/* Matching tags */
+.CodeMirror-matchingtag {
+  background: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Fold gutter */
+.CodeMirror-foldgutter {
+  width: 1em;
+}
+
+.CodeMirror-foldgutter-open,
+.CodeMirror-foldgutter-folded {
+  color: #75715e;
+  cursor: pointer;
+}
+
+.CodeMirror-foldgutter-open:after {
+  content: "▼";
+}
+
+.CodeMirror-foldgutter-folded:after {
+  content: "▶";
+}
+
+/* Search dialog */
+.CodeMirror-dialog {
+  background: #272822 !important;
+  color: #f8f8f2 !important;
+  border: 1px solid #49483e !important;
+}
+
+.CodeMirror-dialog input {
+  background: #1e1f1c !important;
+  color: #f8f8f2 !important;
+  border: 1px solid #49483e !important;
+}
+
+/* === Toast Container in Content Area === */
+.content #toast-container {
+  position: fixed !important;
+  top: 80px !important;
+  right: 20px !important;
+  z-index: 10000 !important;
+  pointer-events: none !important;
+}
+
+/* Toast styling adjustments for content area */
+.content .toast {
+  background: var(--bg-secondary) !important;
+  color: var(--text) !important;
+  border: 1px solid var(--border) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+}
+
+.content .toast.toast-success {
+  background: #22c55e !important;
+  color: white !important;
+  border-color: #22c55e !important;
+}
+
+.content .toast.toast-error {
+  background: #ef4444 !important;
+  color: white !important;
+  border-color: #ef4444 !important;
+}
+
+.content .toast.toast-warning {
+  background: #eab308 !important;
+  color: white !important;
+  border-color: #eab308 !important;
+}
+
+.content .toast.toast-info {
+  background: #3b82f6 !important;
+  color: white !important;
+  border-color: #3b82f6 !important;
+}
+
+/* === Link field mismatch tooltip */
+.content .field.link-field > label {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  position: relative;
+}
+
+/* Subject field special styling */
+.input-wrapper.subject-field {
+  position: relative;
+}
+
+.input-wrapper.subject-field::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, var(--accent-primary) 0%, transparent 100%);
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+  pointer-events: none;
+  z-index: -1;
+}
+
+.input-wrapper.subject-field:focus-within::before {
+  opacity: 0.05;
+}
+
+/* Character limit indicator - Flat Design */
+.char-count.near-limit {
+  color: var(--warning);
+  background: var(--warning-bg);
+  border-color: var(--warning);
+}
+
+.char-count.at-limit {
+  color: var(--error);
+  background: var(--error-bg);
+  border-color: var(--error);
+  animation: shake 0.5s;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateY(-50%) translateX(0); }
+  25% { transform: translateY(-50%) translateX(-2px); }
+  75% { transform: translateY(-50%) translateX(2px); }
+}
+
+@keyframes pulse {
+  0% { transform: translateY(-2px) scale(1); }
+  50% { transform: translateY(-2px) scale(1.05); }
+  100% { transform: translateY(-2px) scale(1); }
+}
+
+@keyframes slideIn {
+  from { 
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to { 
+    opacity: 1;
+    transform: translateY(-2px);
+  }
+}
+
+/* Enhanced tooltip animations */
+.content .field .validation-tooltip,
+.content .field .warning-tooltip,
+.content .field .mismatch-tooltip {
+  animation: slideIn 0.2s ease-out;
+}
+
+.content .field .validation-tooltip.pulse,
+.content .field .warning-tooltip.pulse,
+.content .field .mismatch-tooltip.pulse {
+  animation: pulse 1s ease-in-out, slideIn 0.2s ease-out;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

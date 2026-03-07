@@ -1,0 +1,652 @@
+/* ===================================
+   BOOKMARKLET PAGE CSS
+   =================================== */
+
+/* ===================================
+   BODY & MAIN LAYOUT
+   =================================== */
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--primary, #F18C8E);
+}
+
+main {
+  flex: 1;
+}
+
+/* ===================================
+   PAGE HEADER
+   =================================== */
+.page-header {
+  text-align: center;
+  margin: var(--space-10) 0 var(--space-12);
+  position: relative;
+  padding-top: var(--space-4);
+}
+
+.page-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--accent-primary, #F18C8E), transparent);
+}
+
+.page-header::after {
+  content: '';
+  position: absolute;
+  bottom: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 4px;
+  background: var(--accent-primary, #F18C8E);
+  border-radius: 2px;
+}
+
+.page-header-content {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.page-header-content h1 {
+  font-size: var(--font-size-5xl);
+  font-weight: var(--font-weight-black);
+  color: var(--text);
+  margin: 0 0 var(--space-4);
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  animation: fadeInDown 0.6s ease-out;
+}
+
+.page-header-content h1 i {
+  color: var(--accent-primary, #F18C8E);
+  font-size: var(--font-size-4xl);
+  flex-shrink: 0;
+  animation: spinIn 0.8s ease-out;
+}
+
+.subtitle {
+  font-size: var(--font-size-lg);
+  color: var(--text-muted);
+  margin: 0;
+  font-weight: var(--font-weight-medium);
+  line-height: 1.5;
+  animation: fadeInUp 0.6s ease-out 0.2s backwards;
+}
+
+/* ===================================
+   INSTRUCTIONS SECTION
+   =================================== */
+.instructions {
+  background: var(--bg-secondary, #FFFFFF);
+  border: 2px solid var(--accent-primary, #F18C8E);
+  padding: var(--space-8);
+  margin-bottom: var(--space-12);
+  border-radius: var(--radius-lg, 8px);
+}
+
+.instructions h3 {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--text);
+  margin: 0 0 var(--space-4);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.instructions h3 i {
+  color: var(--accent-primary, #F18C8E);
+  font-size: var(--font-size-xl);
+}
+
+.instructions ol {
+  margin: 0 0 var(--space-6);
+  padding-left: var(--space-6);
+}
+
+.instructions li {
+  font-size: var(--font-size-base);
+  color: var(--text);
+  margin-bottom: var(--space-3);
+  line-height: var(--line-height-relaxed);
+}
+
+.instructions li strong {
+  color: var(--accent-primary, #F18C8E);
+  font-weight: var(--font-weight-semibold);
+}
+
+.browser-notes {
+  background: var(--bg-tertiary, #F3F4F6);
+  border: 2px solid var(--border-color, #E5E7EB);
+  padding: var(--space-4);
+  margin-top: var(--space-4);
+  border-radius: var(--radius-md, 6px);
+}
+
+.browser-notes p {
+  font-size: var(--font-size-sm);
+  color: var(--text-muted);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.browser-notes strong {
+  color: var(--text);
+  font-weight: var(--font-weight-semibold);
+}
+
+/* ===================================
+   NO RESULTS MESSAGE
+   =================================== */
+.no-results {
+  text-align: center;
+  padding: var(--space-12);
+  color: var(--text-muted);
+  font-size: var(--font-size-lg);
+  display: none;
+}
+
+.no-results.show {
+  display: block;
+  animation: fadeInUp 0.5s ease-out;
+}
+
+.no-results i {
+  font-size: var(--font-size-4xl);
+  color: var(--border);
+  margin-bottom: var(--space-4);
+  display: block;
+}
+
+/* ===================================
+   PAGE LAYOUT IMPROVEMENTS
+   =================================== */
+
+.bookmarklet-section {
+  flex: 1;
+  background: #ffffff;
+  padding: 60px 20px 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  min-height: calc(100vh - 400px);
+}
+
+/* Container styles moved to line 8 to avoid duplication */
+
+/* ===================================
+   BOOKMARKLETS GRID
+   =================================== */
+.bookmarklets-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-6);
+  margin-top: var(--space-8);
+}
+
+/* List View */
+.bookmarklets-grid.list-view {
+  grid-template-columns: 1fr;
+  gap: var(--space-4);
+}
+
+.bookmarklets-grid.list-view .bookmarklet-card {
+  display: flex;
+  align-items: center;
+  padding: var(--space-4);
+}
+
+.bookmarklets-grid.list-view .bookmarklet-header {
+  margin-bottom: 0;
+  margin-right: var(--space-4);
+}
+
+.bookmarklets-grid.list-view .bookmarklet-header i {
+  width: var(--space-10);
+  height: var(--space-10);
+  font-size: var(--font-size-base);
+}
+
+.bookmarklets-grid.list-view .bookmarklet-header h3 {
+  font-size: var(--font-size-lg);
+}
+
+.bookmarklets-grid.list-view p {
+  margin: 0 0 0 var(--space-4);
+  flex: 1;
+}
+
+.bookmarklets-grid.list-view .bookmarklet-btn {
+  width: auto;
+  min-width: 150px;
+  padding: var(--space-2) var(--space-4);
+  font-size: var(--font-size-xs);
+}
+
+/* ===================================
+   BOOKMARKLET CARD
+   =================================== */
+.bookmarklet-card {
+  background: var(--bg-secondary, #FFFFFF);
+  border: 2px solid var(--border-color, #E5E7EB);
+  border-radius: var(--radius-lg, 8px);
+  padding: var(--space-6, 24px);
+  transition: all var(--transition-normal, 0.2s ease);
+  position: relative;
+  overflow: hidden;
+  animation: fadeInUp 0.3s ease-out backwards;
+}
+
+.bookmarklet-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--accent-primary, #F18C8E);
+  transform: scaleX(0);
+  transition: transform var(--transition-normal, 0.2s ease);
+}
+
+.bookmarklet-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--accent-primary, #F18C8E);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.bookmarklet-card:hover::before {
+  transform: scaleX(1);
+}
+
+.bookmarklet-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+.bookmarklet-header i {
+  width: var(--space-12);
+  height: var(--space-12);
+  background: var(--accent-primary);
+  color: var(--text-inverse);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-lg);
+  flex-shrink: 0;
+}
+
+.bookmarklet-header h3 {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--text);
+  margin: 0;
+  line-height: var(--line-height-tight);
+}
+
+.bookmarklet-card p {
+  font-size: var(--font-size-sm);
+  color: var(--text-muted);
+  margin: 0 0 var(--space-5);
+  line-height: var(--line-height-normal);
+}
+
+/* ===================================
+   BOOKMARKLET BUTTON
+   =================================== */
+.bookmarklet-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  width: 100%;
+  padding: var(--space-3, 12px) var(--space-5, 20px);
+  background: var(--accent-primary, #F18C8E);
+  color: var(--text-inverse, #ffffff);
+  border: 2px solid var(--accent-primary, #F18C8E);
+  font-size: var(--font-size-sm, 14px);
+  font-weight: var(--font-weight-semibold, 600);
+  text-decoration: none;
+  cursor: pointer;
+  transition: all var(--transition-normal, 0.2s ease);
+  user-select: none;
+  border-radius: var(--radius-md, 6px);
+}
+
+.bookmarklet-btn:hover {
+  background: transparent;
+  color: var(--accent-primary, #F18C8E);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(241, 140, 142, 0.2);
+}
+
+.bookmarklet-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(241, 140, 142, 0.2);
+}
+
+.bookmarklet-btn i {
+  font-size: var(--font-size-base);
+}
+
+.bookmarklet-btn .btn-text {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+}
+
+/* ===================================
+   CATEGORY SECTIONS (Future use)
+   =================================== */
+.bookmarklet-category {
+  margin: var(--space-12) 0;
+}
+
+.bookmarklet-category-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-6);
+  padding-bottom: var(--space-3);
+  border-bottom: 2px solid var(--border);
+}
+
+.bookmarklet-category-title {
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--text);
+  margin: 0;
+}
+
+.bookmarklet-category-icon {
+  width: var(--space-10);
+  height: var(--space-10);
+  background: var(--accent-primary);
+  color: var(--text-inverse);
+  border-radius: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-lg);
+}
+
+/* ===================================
+   SEARCH/FILTER SECTION (Future use)
+   =================================== */
+.bookmarklet-filter {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 0;
+  padding: var(--space-4);
+  margin-bottom: var(--space-8);
+  display: flex;
+  gap: var(--space-4);
+  align-items: center;
+}
+
+.bookmarklet-search {
+  flex: 1;
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--border);
+  border-radius: 0;
+  font-size: var(--font-size-base);
+  background: var(--bg);
+  /* Simplified transition - only border-color */
+  transition: border-color var(--transition-fast);
+}
+
+.bookmarklet-search:focus {
+  outline: none;
+  border-color: var(--accent-primary);
+  /* Removed box-shadow to reduce GPU load */
+}
+
+.bookmarklet-filter-btn {
+  padding: var(--space-3) var(--space-4);
+  background: var(--btn-secondary-bg);
+  color: var(--btn-secondary-text);
+  border: 1px solid var(--border);
+  border-radius: 0;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  /* Simplified transition - only background and border-color */
+  transition: background var(--transition-fast), border-color var(--transition-fast);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.bookmarklet-filter-btn:hover {
+  background: var(--hover);
+  border-color: var(--divider);
+}
+
+/* ===================================
+   SCRIPT CONTAINER
+   =================================== */
+.script-container {
+  margin-top: var(--space-4);
+  border-radius: 0;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+
+.script-container textarea {
+  width: 100%;
+  min-height: var(--space-50);
+  padding: var(--space-4);
+  background: var(--gray-900);
+  color: var(--success);
+  font-family: var(--font-family-mono, 'Courier New', monospace);
+  font-size: var(--font-size-sm);
+  border: none;
+  resize: vertical;
+  outline: none;
+  line-height: var(--line-height-relaxed);
+}
+
+.script-container textarea::selection {
+  background: rgba(16, 185, 129, 0.3);
+}
+
+.copy-btn {
+  margin-top: var(--space-3);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  background: var(--accent-primary);
+  color: var(--text-inverse);
+  border: none;
+  border-radius: 0;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  /* Simplified transition - only background */
+  transition: background var(--transition-fast);
+}
+
+.copy-btn:hover {
+  background: var(--accent-hover);
+  /* Removed transform to reduce repaints */
+}
+
+.copy-btn.copied {
+  background: var(--success);
+}
+
+/* ===================================
+   RESPONSIVE DESIGN
+   =================================== */
+@media (max-width: 768px) {
+  .container {
+    padding: var(--space-6) var(--space-4);
+  }
+  
+  .container h1 {
+    font-size: var(--font-size-4xl);
+  }
+  
+  .subtitle {
+    font-size: var(--font-size-lg);
+  }
+  
+  .instructions {
+    padding: var(--space-6);
+  }
+  
+  .instructions h3 {
+    font-size: var(--font-size-xl);
+  }
+  
+  .bookmarklets-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+  }
+  
+  .bookmarklet-card {
+    padding: var(--space-5);
+  }
+  
+  .bookmarklet-header i {
+    width: var(--space-10);
+    height: var(--space-10);
+    font-size: var(--font-size-base);
+  }
+  
+  .bookmarklet-header h3 {
+    font-size: var(--font-size-lg);
+  }
+}
+
+@media (max-width: 480px) {
+  .container h1 {
+    font-size: var(--font-size-3xl);
+  }
+  
+  .instructions {
+    padding: var(--space-4);
+  }
+  
+  .instructions ol {
+    padding-left: var(--space-4);
+  }
+  
+  .bookmarklet-card {
+    padding: var(--space-4);
+  }
+}
+
+/* ===================================
+   SHORTCUTS SECTION
+   =================================== */
+.keyboard-shortcuts {
+  margin-top: var(--space-4);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+.shortcut-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--font-size-sm);
+  color: var(--text-muted);
+}
+
+.shortcut-item kbd {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 0;
+  padding: var(--space-1) var(--space-2);
+  font-family: var(--font-family-mono, monospace);
+  font-size: var(--font-size-xs);
+  color: var(--text);
+}
+
+/* ===================================
+   TIPS SECTION
+   =================================== */
+.tips-section {
+  margin-top: var(--space-6);
+  margin-bottom: var(--space-12);
+}
+
+.tips-section h3 {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text);
+  margin-bottom: var(--space-3);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.tips-section h3 i {
+  color: var(--warning);
+}
+
+.tips-section ul {
+  list-style: none;
+  padding: 0;
+}
+
+.tips-section li {
+  position: relative;
+  padding-left: var(--space-6);
+  margin-bottom: var(--space-2);
+  font-size: var(--font-size-sm);
+  color: var(--text-muted);
+  line-height: var(--line-height-relaxed);
+}
+
+.tips-section li::before {
+  content: '•';
+  position: absolute;
+  left: var(--space-2);
+  color: var(--accent-primary);
+  font-weight: bold;
+}
+
+/* ===================================
+   PRINT STYLES
+   =================================== */
+@media print {
+  .header,
+  .footer,
+  .bookmarklet-btn {
+    display: none;
+  }
+  
+  .bookmarklet-card {
+    break-inside: avoid;
+    border: 1px solid var(--text);
+    margin-bottom: 1rem;
+  }
+  
+  .container h1 {
+    color: var(--text);
+    -webkit-text-fill-color: var(--text);
+  }
+}
