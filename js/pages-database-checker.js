@@ -474,12 +474,22 @@ const chunk = this.currentLines.slice(i, Math.min(i+chunkSize, this.currentLines
     try{
       this.clearResults();
       this.showLoading(true);
-      const file = await fileHandle.getFile();
       
-      // Update current path
+      // Get file info
+      const file = await fileHandle.getFile();
+      const startTime = performance.now();
+      
+      // Update current path immediately
       const currentPathEl = document.getElementById('currentPath');
       if (currentPathEl) {
         currentPathEl.textContent = file.name;
+      }
+
+      // Early validation
+      if (file.size === 0) {
+        alert('File is empty!');
+        this.showLoading(false);
+        return;
       }
 
       if (file.size > MAX_MEMORY_USAGE){
@@ -487,25 +497,67 @@ const chunk = this.currentLines.slice(i, Math.min(i+chunkSize, this.currentLines
         if (!ok){ this.showLoading(false); return; }
       }
 
-      // Use FileProcessor for simpler loading
+      // Optimized file reading with better progress
       const processor = new FileProcessor();
-      this.currentLines = await processor.readFile(file);
       
-      // Display data
-      this.displayData();
+      // Add progress callback for better UX
+      const onProgress = (loaded, total) => {
+        const percent = Math.round((loaded / total) * 100);
+        this.updateProgress(percent);
+        
+        // Update status with more info
+        const progressText = document.getElementById('progressText');
+        if (progressText) {
+          const mbLoaded = (loaded / 1024 / 1024).toFixed(1);
+          const mbTotal = (total / 1024 / 1024).toFixed(1);
+          progressText.textContent = `${percent}% (${mbLoaded}/${mbTotal} MB)`;
+        }
+      };
       
-      // Update stats
-      updateQuickStatsAsync();
+      // Read file with progress tracking
+      this.currentLines = await processor.readFile(file, onProgress);
       
-      // Enable buttons after successful load
-      this.checkBtn.disabled = false;
-      document.getElementById('openSearchModalBtn').disabled = false;
-      document.getElementById('exportBtn').disabled = false;
+      // Validate loaded data
+      if (!this.currentLines || this.currentLines.length === 0) {
+        alert('No data found in file!');
+        this.showLoading(false);
+        return;
+      }
+      
+      // Filter out empty lines early
+      const originalCount = this.currentLines.length;
+      this.currentLines = this.currentLines.filter(line => line.trim().length > 0);
+      const filteredCount = this.currentLines.length;
+      
+      if (originalCount !== filteredCount) {
+        console.log(`Filtered ${originalCount - filteredCount} empty lines`);
+      }
+      
+      // Display data with requestAnimationFrame for smooth UI
+      requestAnimationFrame(() => {
+        this.displayData();
+        
+        // Update stats after display
+        requestAnimationFrame(() => {
+          updateQuickStatsAsync();
+          
+          // Enable buttons after everything is loaded
+          this.checkBtn.disabled = false;
+          document.getElementById('openSearchModalBtn').disabled = false;
+          document.getElementById('exportBtn').disabled = false;
+          
+          // Log performance
+          const loadTime = performance.now() - startTime;
+          console.log(`File loaded successfully: ${filteredCount} lines in ${loadTime.toFixed(2)}ms`);
+          
+          // Hide loading
+          this.showLoading(false);
+        });
+      });
       
     } catch(err){
       console.error('Error loading file:', err);
       alert('Error loading file: ' + err.message);
-    } finally {
       this.showLoading(false);
     }
   }
@@ -584,108 +636,62 @@ const chunk = this.currentLines.slice(i, Math.min(i+chunkSize, this.currentLines
     // Clear container
     dataContainer.innerHTML = '';
     
-    // Create table
+    // Create table structure once
     const table = document.createElement('table');
     table.className = 'database-table';
     const tbody = document.createElement('tbody');
     
-    // Render all lines at once for small files, chunked for large files
+    // Optimize based on file size
     const totalLines = this.currentLines.length;
-    const CHUNK_SIZE = 5000; // Larger chunks for better performance
+    const CHUNK_SIZE = totalLines > 10000 ? 10000 : 5000;
     
-    if (totalLines <= CHUNK_SIZE) {
-      // Small file - render all at once
-      const fragment = document.createDocumentFragment();
+    // Pre-allocate array for better performance
+    const rows = [];
+    
+    // Process all rows first (faster than DOM ops)
+    for (let i = 0; i < totalLines; i++) {
+      const line = this.currentLines[i];
+      if (!line.trim()) continue;
       
-      for (let i = 0; i < totalLines; i++) {
-        const line = this.currentLines[i];
-        if (!line.trim()) continue;
-        
-        // Fast line processing
-        const values = line.split('|').map(v => v.trim());
-        
-        // Remove empty values from end
-        while (values.length > 0 && values[values.length - 1] === '') {
-          values.pop();
+      // Fast split without map for better performance
+      const parts = line.split('|');
+      const values = [];
+      
+      // Manual trim and filter
+      for (let j = 0; j < parts.length; j++) {
+        const trimmed = parts[j].trim();
+        if (trimmed || j < parts.length - 1) {
+          values.push(trimmed);
         }
-        
-        // Create row
-        const row = document.createElement('tr');
-        
-        for (let j = 0; j < values.length; j++) {
-          const td = document.createElement('td');
-          const value = values[j];
-          td.textContent = value;
-          if (value.length > 30) {
-            td.title = value;
-          }
-          row.appendChild(td);
-        }
-        
-        fragment.appendChild(row);
       }
       
-      tbody.appendChild(fragment);
-      table.appendChild(tbody);
-      dataContainer.appendChild(table);
+      // Remove trailing empty values
+      while (values.length > 0 && values[values.length - 1] === '') {
+        values.pop();
+      }
       
-      const renderTime = performance.now() - startTime;
-      console.log(`Rendered ${totalLines} lines in ${renderTime.toFixed(2)}ms`);
-    } else {
-      // Large file - use chunked rendering
-      let currentIndex = 0;
+      // Create row HTML as string (much faster)
+      let rowHTML = '<tr>';
+      for (let j = 0; j < values.length; j++) {
+        const value = values[j];
+        const title = value.length > 30 ? ` title="${value.replace(/"/g, '&quot;')}"` : '';
+        rowHTML += `<td${title}>${value}</td>`;
+      }
+      rowHTML += '</tr>';
       
-      const renderChunk = () => {
-        const fragment = document.createDocumentFragment();
-        const endIndex = Math.min(currentIndex + CHUNK_SIZE, totalLines);
-        
-        for (let i = currentIndex; i < endIndex; i++) {
-          const line = this.currentLines[i];
-          if (!line.trim()) continue;
-          
-          const values = line.split('|').map(v => v.trim());
-          
-          // Remove empty values from end
-          while (values.length > 0 && values[values.length - 1] === '') {
-            values.pop();
-          }
-          
-          const row = document.createElement('tr');
-          
-          for (let j = 0; j < values.length; j++) {
-            const td = document.createElement('td');
-            const value = values[j];
-            td.textContent = value;
-            if (value.length > 30) {
-              td.title = value;
-            }
-            row.appendChild(td);
-          }
-          
-          fragment.appendChild(row);
-        }
-        
-        tbody.appendChild(fragment);
-        currentIndex = endIndex;
-        
-        if (currentIndex < totalLines) {
-          // Continue rendering
-          setTimeout(renderChunk, 0);
-        } else {
-          // Done
-          table.appendChild(tbody);
-          dataContainer.appendChild(table);
-          
-          const renderTime = performance.now() - startTime;
-          console.log(`Rendered ${totalLines} lines in ${renderTime.toFixed(2)}ms`);
-        }
-      };
-      
-      // Start rendering
-      renderChunk();
+      rows.push(rowHTML);
     }
     
-    // Hide load more button
+    // Batch insert all rows
+    tbody.innerHTML = rows.join('');
+    table.appendChild(tbody);
+    dataContainer.appendChild(table);
+    
+    // Performance metrics
+    const renderTime = performance.now() - startTime;
+    console.log(`Rendered ${totalLines} lines in ${renderTime.toFixed(2)}ms (${(renderTime/totalLines).toFixed(4)}ms per line)`);
+    
+    // Hide load more button if exists
     const loadMoreBtn = document.getElementById('loadMoreBtn');
     if (loadMoreBtn) {
       loadMoreBtn.style.display = 'none';
