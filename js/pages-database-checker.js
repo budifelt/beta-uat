@@ -5,6 +5,7 @@ const MAX_RENDER_ROWS  = 2000; // batas render agar modal tetap ringan
 
 /* ========= Regex ========= */
 const unitRegex  = /^KRHRED(?:_Unit)?_\d+$/i;
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 /* ========= File reader ========= */
 class FileProcessor {
@@ -52,7 +53,7 @@ class FileProcessor {
   }
 }
 
-/* ========= Virtual list ========= */
+/* ========= File reader ========= */
 class VirtualScroller {
   constructor(container, itemHeight = 20){
     this.container = container;
@@ -289,27 +290,84 @@ class DatabaseChecker {
 
     const unitsSet = new Set();
     const emptyDataUnits = new Set();
+    const longKrhredUnits = new Set(); // Unit dengan KRHRED > 60 chars
+    const invalidFormatUnits = new Set(); // Unit dengan format tidak valid
+    const invalidEmailUnits = new Set(); // Unit dengan email tidak valid
+    const longDataUnits = new Set(); // Unit dengan data terlalu panjang
+    const missingFieldUnits = new Set(); // Unit dengan field kosong
+    const duplicateUnits = new Set(); // Unit dengan data duplicate
     const unitDetails = new Map();
     const chunkSize = 1000;
     this._stopRequested = false;
+    
+    // Track duplicates
+    const seenData = new Map(); // key: unit+data, value: count
 
     for (let i=0;i<this.currentLines.length;i+=chunkSize){
-      if (this._stopRequested) break;
-      const chunk = this.currentLines.slice(i, Math.min(i+chunkSize, this.currentLines.length));
-
+if (this._stopRequested) break;
+const chunk = this.currentLines.slice(i, Math.min(i+chunkSize, this.currentLines.length));
       chunk.forEach((line, index)=>{
         const parts = line.split('|');
-        if (parts.length > 2){
-          const unit = (parts[2] || '').trim();
+        if (parts.length >= 4){
+          const id = (parts[0] || '').trim();
+          const email = (parts[1] || '').trim();
+          const type = (parts[2] || '').trim();
           const dataRaw = parts[3] || '';
           const data = dataRaw.trim();
 
-          if (unitRegex.test(unit)){
-            unitsSet.add(unit);
-            if (data === '' || dataRaw !== data){
-              emptyDataUnits.add(unit);
-              if (!unitDetails.has(unit)) unitDetails.set(unit, []);
-              unitDetails.get(unit).push({ lineNumber: i+index+1, lineText: line });
+          // Check missing required fields
+          if (!id || !email || !type) {
+            const missingFields = [];
+            if (!id) missingFields.push('ID');
+            if (!email) missingFields.push('Email');
+            if (!type) missingFields.push('Type');
+            
+            missingFieldUnits.add(type || 'UNKNOWN');
+            if (!unitDetails.has(type || 'UNKNOWN')) unitDetails.set(type || 'UNKNOWN', []);
+            unitDetails.get(type || 'UNKNOWN').push({ 
+              lineNumber: i+index+1, 
+              lineText: line,
+              error: `Missing fields: ${missingFields.join(', ')}`
+            });
+          }
+
+          // Check if it's a KRHRED type
+          if (type.toLowerCase().startsWith('krhred')) {
+            unitsSet.add(type);
+            
+            // Simplified error checking - only add unit to error set once
+            const hasError = 
+              (data === '' || dataRaw !== data) ||
+              (data === '.') ||
+              (data.includes('  ')) ||
+              (type.length > 60) ||
+              (!unitRegex.test(type)) ||
+              (!emailRegex.test(email)) ||
+              (data.length > 60);
+
+            if (hasError) {
+              // Build error message
+              const errors = [];
+              if (data === '' || dataRaw !== data || data === '.' || data.includes('  ')) errors.push('Invalid data');
+              if (type.length > 60) errors.push(`KRHRED too long (${type.length})`);
+              if (!unitRegex.test(type)) errors.push('Invalid format');
+              if (!emailRegex.test(email)) errors.push('Invalid email');
+              if (data.length > 60) errors.push(`Data too long (${data.length})`);
+
+              // Add to appropriate error sets
+              if (data === '' || dataRaw !== data || data === '.' || data.includes('  ')) emptyDataUnits.add(type);
+              if (type.length > 60) longKrhredUnits.add(type);
+              if (!unitRegex.test(type)) invalidFormatUnits.add(type);
+              if (!emailRegex.test(email)) invalidEmailUnits.add(type);
+              if (data.length > 60) longDataUnits.add(type);
+
+              // Store error details (simplified)
+              if (!unitDetails.has(type)) unitDetails.set(type, []);
+              unitDetails.get(type).push({ 
+                lineNumber: i+index+1, 
+                lineText: line,
+                error: errors.join(', ')
+              });
             }
           }
         }
@@ -319,7 +377,9 @@ class DatabaseChecker {
       await new Promise(r=>setTimeout(r,0));
     }
 
-    this.renderResults(unitsSet, emptyDataUnits, unitDetails);
+    // Combine all errors
+    const allErrorUnits = new Set([...emptyDataUnits, ...longKrhredUnits, ...invalidFormatUnits, ...invalidEmailUnits, ...longDataUnits, ...missingFieldUnits]);
+    this.renderResults(unitsSet, allErrorUnits, unitDetails);
     this.showLoading(false); this.isChecking = false; this.updateCheckButton();
   }
 
@@ -415,32 +475,32 @@ class DatabaseChecker {
       this.clearResults();
       this.showLoading(true);
       const file = await fileHandle.getFile();
+      
+      // Update current path
+      const currentPathEl = document.getElementById('currentPath');
+      if (currentPathEl) {
+        currentPathEl.textContent = file.name;
+      }
 
       if (file.size > MAX_MEMORY_USAGE){
         const ok = confirm(`This file is large (${(file.size/1024/1024).toFixed(1)}MB). Continue?`);
         if (!ok){ this.showLoading(false); return; }
       }
 
-      this.currentLines = await this.fp.readFile(file);
-      
-      // Update current path
-      const currentPath = document.getElementById('currentPath');
-      if (currentPath) {
-        currentPath.textContent = fileHandle.name;
-      }
-      
-      // Enable buttons
-      if (this.checkBtn) this.checkBtn.disabled = false;
-      const searchBtn = document.getElementById('openSearchModalBtn');
-      if (searchBtn) searchBtn.disabled = false;
-      const exportBtn = document.getElementById('exportBtn');
-      if (exportBtn) exportBtn.disabled = false;
+      // Use FileProcessor for simpler loading
+      const processor = new FileProcessor();
+      this.currentLines = await processor.readFile(file);
       
       // Display data
       this.displayData();
       
       // Update stats
-      updateQuickStats();
+      updateQuickStatsAsync();
+      
+      // Enable buttons after successful load
+      this.checkBtn.disabled = false;
+      document.getElementById('openSearchModalBtn').disabled = false;
+      document.getElementById('exportBtn').disabled = false;
       
     } catch(err){
       console.error('Error loading file:', err);
@@ -450,126 +510,282 @@ class DatabaseChecker {
     }
   }
 
+  // Stream reading for large files - optimized
+  async streamReadFile(file) {
+    const chunkSize = 128 * 1024; // Increased to 128KB chunks for better performance
+    const reader = file.stream().getReader();
+    const decoder = new TextDecoder();
+    let buffer = '';
+    const lines = [];
+    let totalBytes = 0;
+    const fileSize = file.size;
+    let lastYield = 0;
+    const YIELD_INTERVAL = 50; // Yield every 50ms
+
+    const startTime = performance.now();
+    
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+
+      totalBytes += value.length;
+      const chunk = decoder.decode(value, { stream: true });
+      buffer += chunk;
+
+      // Process lines more efficiently
+      let newlineIndex;
+      while ((newlineIndex = buffer.indexOf('\n')) !== -1) {
+        lines.push(buffer.substring(0, newlineIndex));
+        buffer = buffer.substring(newlineIndex + 1);
+      }
+
+      // Update progress less frequently for better performance
+      if (totalBytes % (512 * 1024) === 0) { // Update every 512KB
+        const progress = Math.round((totalBytes / fileSize) * 100);
+        this.updateProgress(progress);
+      }
+
+      // Smart yielding based on time
+      const now = performance.now();
+      if (now - lastYield > YIELD_INTERVAL) {
+        await new Promise(resolve => setTimeout(resolve, 0));
+        lastYield = now;
+      }
+    }
+
+    // Add remaining buffer
+    if (buffer) {
+      lines.push(buffer);
+    }
+
+    const loadTime = performance.now() - startTime;
+    console.log(`Loaded ${lines.length} lines in ${loadTime.toFixed(2)}ms`);
+    
+    return lines;
+  }
+
+  // Update progress indicator
+  updateProgress(percent) {
+    const progressText = document.getElementById('progressText');
+    if (progressText) {
+      progressText.textContent = `${percent}%`;
+    }
+  }
+
+  // Optimized display with virtual rendering - improved
   displayData(){
     if (!this.currentLines.length) return;
     
-    // Clear empty state
     const dataContainer = document.getElementById('databaseContent');
     if (!dataContainer) return;
+    
+    const startTime = performance.now();
+    
+    // Clear container
+    dataContainer.innerHTML = '';
     
     // Create table
     const table = document.createElement('table');
     table.className = 'database-table';
-    
-    // Parse header
-    const headerLine = this.currentLines[0];
-    const headers = headerLine.split('|').map(h => h.trim());
-    
-    // Create header row
-    const thead = document.createElement('thead');
-    const headerRow = document.createElement('tr');
-    headers.forEach(header => {
-      const th = document.createElement('th');
-      th.textContent = header;
-      headerRow.appendChild(th);
-    });
-    thead.appendChild(headerRow);
-    table.appendChild(thead);
-    
-    // Create body
     const tbody = document.createElement('tbody');
-    const maxRows = Math.min(100, this.currentLines.length); // Show first 100 rows
     
-    for (let i = 1; i < maxRows; i++) {
-      const line = this.currentLines[i];
-      if (!line.trim()) continue;
-      
-      const values = line.split('|').map(v => v.trim());
-      const row = document.createElement('tr');
-      
-      values.forEach(value => {
-        const td = document.createElement('td');
-        td.textContent = value;
-        row.appendChild(td);
-      });
-      
-      tbody.appendChild(row);
-    }
-    table.appendChild(tbody);
+    // Render all lines at once for small files, chunked for large files
+    const totalLines = this.currentLines.length;
+    const CHUNK_SIZE = 5000; // Larger chunks for better performance
     
-    // Clear and set content
-    dataContainer.innerHTML = '';
-    dataContainer.appendChild(table);
-    
-    // Show load more if there are more rows
-    if (this.currentLines.length > 100) {
-      const loadMoreBtn = document.getElementById('loadMoreBtn');
-      if (loadMoreBtn) {
-        loadMoreBtn.style.display = 'inline-flex';
+    if (totalLines <= CHUNK_SIZE) {
+      // Small file - render all at once
+      const fragment = document.createDocumentFragment();
+      
+      for (let i = 0; i < totalLines; i++) {
+        const line = this.currentLines[i];
+        if (!line.trim()) continue;
+        
+        // Fast line processing
+        const values = line.split('|').map(v => v.trim());
+        
+        // Remove empty values from end
+        while (values.length > 0 && values[values.length - 1] === '') {
+          values.pop();
+        }
+        
+        // Create row
+        const row = document.createElement('tr');
+        
+        for (let j = 0; j < values.length; j++) {
+          const td = document.createElement('td');
+          const value = values[j];
+          td.textContent = value;
+          if (value.length > 30) {
+            td.title = value;
+          }
+          row.appendChild(td);
+        }
+        
+        fragment.appendChild(row);
       }
+      
+      tbody.appendChild(fragment);
+      table.appendChild(tbody);
+      dataContainer.appendChild(table);
+      
+      const renderTime = performance.now() - startTime;
+      console.log(`Rendered ${totalLines} lines in ${renderTime.toFixed(2)}ms`);
+    } else {
+      // Large file - use chunked rendering
+      let currentIndex = 0;
+      
+      const renderChunk = () => {
+        const fragment = document.createDocumentFragment();
+        const endIndex = Math.min(currentIndex + CHUNK_SIZE, totalLines);
+        
+        for (let i = currentIndex; i < endIndex; i++) {
+          const line = this.currentLines[i];
+          if (!line.trim()) continue;
+          
+          const values = line.split('|').map(v => v.trim());
+          
+          // Remove empty values from end
+          while (values.length > 0 && values[values.length - 1] === '') {
+            values.pop();
+          }
+          
+          const row = document.createElement('tr');
+          
+          for (let j = 0; j < values.length; j++) {
+            const td = document.createElement('td');
+            const value = values[j];
+            td.textContent = value;
+            if (value.length > 30) {
+              td.title = value;
+            }
+            row.appendChild(td);
+          }
+          
+          fragment.appendChild(row);
+        }
+        
+        tbody.appendChild(fragment);
+        currentIndex = endIndex;
+        
+        if (currentIndex < totalLines) {
+          // Continue rendering
+          setTimeout(renderChunk, 0);
+        } else {
+          // Done
+          table.appendChild(tbody);
+          dataContainer.appendChild(table);
+          
+          const renderTime = performance.now() - startTime;
+          console.log(`Rendered ${totalLines} lines in ${renderTime.toFixed(2)}ms`);
+        }
+      };
+      
+      // Start rendering
+      renderChunk();
     }
     
-    // Setup virtual scroller for remaining data
-    this.processedLinesCount = maxRows;
-    this.vs.setItems(this.currentLines.slice(0, this.processedLinesCount));
-  }
-
-  loadMore(){
-    const next = this.currentLines.slice(this.processedLinesCount, this.processedLinesCount + LINES_PER_PAGE);
-    if (next.length){
-      this.processedLinesCount += next.length;
-      this.vs.setItems(this.currentLines.slice(0, this.processedLinesCount));
-      document.getElementById('loadMoreBtn').style.display =
-        this.processedLinesCount < this.currentLines.length ? 'inline-flex' : 'none';
+    // Hide load more button
+    const loadMoreBtn = document.getElementById('loadMoreBtn');
+    if (loadMoreBtn) {
+      loadMoreBtn.style.display = 'none';
     }
   }
 
-  renderResults(unitsSet, emptyDataUnits, unitDetails){
+  renderResults(unitsSet, errorUnits, unitDetails){
     const resultsContainer = document.getElementById('resultsContainer');
     if (!resultsContainer) return;
-
-    const matches = Array.from(unitsSet).sort((a,b)=>{
-      const na = parseInt(a.match(/\d+/)[0],10);
-      const nb = parseInt(b.match(/\d+/)[0],10);
-      return na - nb;
-    });
 
     const totalDB = this.countUniqueCMPGIDs(this.currentLines);
     
     // Clear and build results HTML
     let html = '<div class="validation-results">';
     
-    // Summary section
+    // Summary section - error count will be calculated later
     html += '<div class="results-summary">';
-    html += `<h4>Found ${matches.length} KRHRED Units</h4>`;
-    html += `<p>Total database entries: ${totalDB}</p>`;
+    html += `<h4>Validation Results</h4>`;
+    html += `<p>Database Total: ${totalDB}</p>`;
     
-    if (matches.length){
-      html += '<div class="units-container">';
-      matches.forEach(unit=>{
-        const isEmpty = emptyDataUnits.has(unit);
-        const statusClass = isEmpty ? 'error' : 'success';
-        html += `<span class="unit-badge ${statusClass}">${unit}</span>`;
+    // Show all KRHRED units found
+    if (unitsSet.size > 0) {
+      html += '<div class="krhred-list">';
+      html += '<h5>KRHRED Units Found:</h5>';
+      const sortedUnits = Array.from(unitsSet).sort((a,b)=>{
+        const aNum = parseInt(a.match(/\d+/)?.[0] || '0', 10);
+        const bNum = parseInt(b.match(/\d+/)?.[0] || '0', 10);
+        return aNum - bNum;
+      });
+      
+      sortedUnits.forEach(unit => {
+        const hasError = errorUnits.has(unit);
+        const statusClass = hasError ? 'error' : 'valid';
+        html += `<span class="krhred-unit ${statusClass}">${unit}</span>`;
       });
       html += '</div>';
     }
     html += '</div>';
     
-    // Details section for empty units
-    if (emptyDataUnits.size > 0){
+    // Error details section - grouped by error type
+    if (errorUnits.size > 0){
       html += '<div class="results-details">';
-      html += '<h4>Units with Empty Data</h4>';
+      html += '<h4>Error Summary</h4>';
       
-      Array.from(emptyDataUnits).sort((a,b)=>{
-        const na = parseInt(a.match(/\d+/)[0],10);
-        const nb = parseInt(b.match(/\d+/)[0],10);
-        return na - nb;
-      }).forEach(unit=>{
-        html += `<div class="error-item">
-          <strong>${unit}</strong>
-          <div class="error-details">No data found</div>
-        </div>`;
+      // Group errors by type with details
+      const errorGroups = {
+        'Missing Required Fields': [],
+        'Invalid Data': [],
+        'KRHRED Too Long (>60 chars)': [],
+        'Invalid KRHRED Format': [],
+        'Invalid Email': [],
+        'Data Too Long (>60 chars)': []
+      };
+      
+      // Collect all errors with their details
+      Array.from(errorUnits).forEach(unit => {
+        const details = unitDetails.get(unit) || [];
+        if (details.length > 0) {
+          details.forEach(item => {
+            const errorType = this.getErrorType(item.error);
+            if (errorGroups[errorType]) {
+              errorGroups[errorType].push({
+                unit: unit,
+                lineNumber: item.lineNumber,
+                lineText: item.lineText,
+                error: item.error
+              });
+            }
+          });
+        }
       });
+      
+      // Count total errors (not units)
+      let totalErrors = 0;
+      Object.values(errorGroups).forEach(errors => {
+        totalErrors += errors.length;
+      });
+      
+      // Add error count to summary
+      html = html.replace(
+        `<p>Database Total: ${totalDB}</p>`,
+        `<p>Database Total: ${totalDB}</p><p class="${totalErrors > 0 ? 'error-count' : 'success-count'}">${totalErrors} total errors</p>`
+      );
+      
+      // Display each error category with all items
+      Object.entries(errorGroups).forEach(([errorType, errors]) => {
+        if (errors.length > 0) {
+          html += `<div class="error-category">
+            <h5><i class="fa-solid fa-exclamation-triangle"></i> ${errorType} (${errors.length})</h5>`;
+          
+          errors.forEach(error => {
+            html += `<div class="error-line">
+              Line ${error.lineNumber}: ${escapeHtml(error.lineText)}
+            </div>`;
+          });
+          
+          html += '</div>';
+        }
+      });
+      
       html += '</div>';
     }
     
@@ -580,12 +796,78 @@ class DatabaseChecker {
     updateQuickStats();
   }
 
+  // Helper to determine error type
+  getErrorType(errorMsg) {
+    if (errorMsg.includes('Missing fields')) {
+      return 'Missing Required Fields';
+    } else if (errorMsg.includes('Invalid data')) {
+      return 'Invalid Data';
+    } else if (errorMsg.includes('KRHRED too long')) {
+      return 'KRHRED Too Long (>60 chars)';
+    } else if (errorMsg.includes('Invalid format')) {
+      return 'Invalid KRHRED Format';
+    } else if (errorMsg.includes('Invalid email')) {
+      return 'Invalid Email';
+    } else if (errorMsg.includes('Data too long')) {
+      return 'Data Too Long (>60 chars)';
+    }
+    return 'Other';
+  }
+
   countUniqueCMPGIDs(lines){
     const s = new Set();
-    for (const line of lines){
-      const cmpg = (line.split('|')[0] || '').trim();
+    
+    // Optimized for large datasets
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+      if (!line || line.length === 0) continue;
+      
+      // Find first pipe character instead of split for better performance
+      const pipeIndex = line.indexOf('|');
+      if (pipeIndex === -1) continue;
+      
+      const cmpg = line.substring(0, pipeIndex).trim();
       if (cmpg) s.add(cmpg);
+      
+      // Yield to browser every 50000 lines to prevent blocking
+      if (i % 50000 === 0 && i > 0) {
+        // This allows UI to remain responsive
+        if (typeof setImmediate !== 'undefined') {
+          setImmediate(() => {});
+        } else {
+          setTimeout(() => {}, 0);
+        }
+      }
     }
+    
+    return s.size;
+  }
+
+  // Async version with chunked processing
+  async countUniqueCMPGIDsAsync(lines) {
+    const s = new Set();
+    const CHUNK_SIZE = 50000; // Process 50k lines at a time
+    
+    for (let i = 0; i < lines.length; i += CHUNK_SIZE) {
+      const chunk = lines.slice(i, i + CHUNK_SIZE);
+      
+      // Process chunk
+      for (const line of chunk) {
+        if (!line || line.length === 0) continue;
+        
+        const pipeIndex = line.indexOf('|');
+        if (pipeIndex === -1) continue;
+        
+        const cmpg = line.substring(0, pipeIndex).trim();
+        if (cmpg) s.add(cmpg);
+      }
+      
+      // Yield to browser after each chunk
+      if (i + CHUNK_SIZE < lines.length) {
+        await new Promise(resolve => setTimeout(resolve, 0));
+      }
+    }
+    
     return s.size;
   }
 }
@@ -647,19 +929,59 @@ function updateQuickStats() {
   const totalRowsEl = document.getElementById('totalRows');
   const errorCountEl = document.getElementById('errorCount');
   
-  // Update based on current data
+  // Update based on current data - count unique CMPG_ID
   if (window.dbChecker && window.dbChecker.currentLines) {
-    totalRowsEl.textContent = window.dbChecker.currentLines.length.toLocaleString();
+    // Use setTimeout to prevent blocking on large datasets
+    setTimeout(() => {
+      const uniqueCMPG = window.dbChecker.countUniqueCMPGIDs(window.dbChecker.currentLines);
+      if (totalRowsEl) {
+        totalRowsEl.textContent = uniqueCMPG.toLocaleString();
+      }
+    }, 0);
+  } else {
+    if (totalRowsEl) {
+      totalRowsEl.textContent = '0';
+    }
   }
   
   // Count errors from results
   const resultsContainer = document.getElementById('resultsContainer');
   if (resultsContainer) {
     const errorElements = resultsContainer.querySelectorAll('.error-item');
-    errorCountEl.textContent = errorElements.length;
+    if (errorCountEl) {
+      errorCountEl.textContent = errorElements.length;
+    }
+  }
+}
+
+// Async version for large datasets
+async function updateQuickStatsAsync() {
+  const totalRowsEl = document.getElementById('totalRows');
+  const errorCountEl = document.getElementById('errorCount');
+  
+  // Update based on current data - count unique CMPG_ID with async yielding
+  if (window.dbChecker && window.dbChecker.currentLines) {
+    const uniqueCMPG = await window.dbChecker.countUniqueCMPGIDsAsync(window.dbChecker.currentLines);
+    if (totalRowsEl) {
+      totalRowsEl.textContent = uniqueCMPG.toLocaleString();
+    }
+  } else {
+    if (totalRowsEl) {
+      totalRowsEl.textContent = '0';
+    }
+  }
+  
+  // Count errors from results
+  const resultsContainer = document.getElementById('resultsContainer');
+  if (resultsContainer) {
+    const errorElements = resultsContainer.querySelectorAll('.error-item');
+    if (errorCountEl) {
+      errorCountEl.textContent = errorElements.length;
+    }
   }
 }
 
 /* ========= Boot ========= */
 const app = new DatabaseChecker();
+window.dbChecker = app; // Make app globally accessible
 window.addEventListener('beforeunload', ()=>app.vs.destroy());
