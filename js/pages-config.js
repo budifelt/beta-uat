@@ -1413,8 +1413,14 @@ if (elements.linkInput) {
     // Skip tooltip validation during page initialization
     if (isPageInitializing) return;
     
-    const linkValue = elements.linkInput.value.trim();
+    let linkValue = elements.linkInput.value.trim();
     const isEmpty = linkValue === '';
+    
+    // Auto-convert https to http while typing
+    if (linkValue.startsWith('https://mail.hsbc.com.hk')) {
+      linkValue = 'http://' + linkValue.substring(8);
+      elements.linkInput.value = linkValue;
+    }
     
     // Clear previous states
     elements.linkInput.classList.remove('error');
@@ -1560,6 +1566,27 @@ if (elements.linkInput) {
     if (wrapper) {
       wrapper.classList.add('focused');
     }
+  });
+  
+  // Add paste event to auto-convert https to http
+  elements.linkInput.addEventListener('paste', (e) => {
+    // Skip during page initialization
+    if (isPageInitializing) return;
+    
+    // Use setTimeout to wait for the paste to complete
+    setTimeout(() => {
+      let linkValue = elements.linkInput.value.trim();
+      
+      // Auto-convert https to http
+      if (linkValue.startsWith('https://mail.hsbc.com.hk')) {
+        linkValue = 'http://' + linkValue.substring(8);
+        elements.linkInput.value = linkValue;
+        
+        // Trigger input event to revalidate
+        const event = new Event('input', { bubbles: true });
+        elements.linkInput.dispatchEvent(event);
+      }
+    }, 10);
   });
   
   elements.linkInput.addEventListener('blur', () => {

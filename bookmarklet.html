@@ -221,19 +221,35 @@
                 </a>
             </div>
 
-            <!-- Typo Checker -->
+            <!-- Typo Scanner -->
             <div class="bookmarklet-card">
                 <div class="bookmarklet-header">
                     <i class="fa-solid fa-spell-check"></i>
                     <h3>Typo Scanner</h3>
                 </div>
                 <p>Scan & highlight typos directly on the page</p>
-                <a href="javascript:(function(){let toastQueue=[];let showingToast=false;function showToast(msg,type){toastQueue.push({msg,type});if(!showingToast){processQueue();}function processQueue(){if(toastQueue.length===0){showingToast=false;return;}showingToast=true;const {msg,type}=toastQueue.shift();const toast=document.createElement('div');toast.style.cssText='position:fixed;top:20px;right:20px;background:#333;color:white;padding:12px 20px;border-radius:4px;z-index:10000;animation:slideIn 0.3s ease';toast.textContent=msg;document.body.appendChild(toast);setTimeout(()=>{toast.style.animation='slideOut 0.3s ease';setTimeout(()=>{toast.remove();processQueue();},300);},3000);}}showToast('Scanning for typos...','info');function getPageText(){let text='';const walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,null,false);let node;while(node=walker.nextNode()){const parent=node.parentNode;const parentClass=parent.className||'';if(parent.tagName!=='SCRIPT'&&parent.tagName!=='STYLE'&&parent.tagName!=='CODE'&&parentClass!=='bookmarklet-btn'){text+=node.textContent+' ';}}return text.trim().replace(/\s+/g,' ').substring(0,2000);}const text=getPageText();const commonTypos={fetc:'fetch',websit:'website',bekeja:'bekerja',meblokir:'memblokir',beberap:'beberapa',foldr:'folder',teh:'the',adn:'and',recieve:'receive',beleive:'believe',occured:'occurred',untill:'until',wich:'which',begining:'beginning',neccessary:'necessary',seperate:'separate',definately:'definitely',comming:'coming',sucess:'success',thier:'their',tommorow:'tomorrow',writting:'writing'};let typosFound=[];const words=text.toLowerCase().split(/\s+/);words.forEach(word=>{const cleanWord=word.replace(/[^\w]/g,'');if(commonTypos[cleanWord]){typosFound.push(cleanWord+' -> '+commonTypos[cleanWord]);}});console.log('Found typos:',typosFound);if(typosFound.length>0){const output='Typos Found:\n\n'+typosFound.join('\n');console.log(output);if(navigator.clipboard){navigator.clipboard.writeText(output).then(()=>{showToast('✅ '+typosFound.slice(0,3).join(', ')+(typosFound.length>3?'... ('+typosFound.length+')':'')+' (copied!)','success');});}else{showToast('Found: '+typosFound.slice(0,3).join(', ')+(typosFound.length>3?'...':''),'warning');}}else{showToast('✅ No typos found!','success');}const style=document.createElement('style');style.textContent='@keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}@keyframes slideOut{from{transform:translateX(0);opacity:1}to{transform:translateX(100%);opacity:0}}';document.head.appendChild(style);})()";" 
+                <a href="javascript:(function(){let toastQueue=[];let showingToast=false;function showToast(msg,type){toastQueue.push({msg,type});if(!showingToast){processQueue();}function processQueue(){if(toastQueue.length===0){showingToast=false;return;}showingToast=true;const {msg,type}=toastQueue.shift();const toast=document.createElement('div');toast.style.cssText='position:fixed;top:20px;right:20px;background:#333;color:white;padding:12px 20px;border-radius:4px;z-index:10000;animation:slideIn 0.3s ease';toast.textContent=msg;document.body.appendChild(toast);setTimeout(()=>{toast.style.animation='slideOut 0.3s ease';setTimeout(()=>{toast.remove();processQueue();},300);},3000);}}showToast('Scanning for typos...','info');function getPageText(){let text='';const walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,null,false);let node;while(node=walker.nextNode()){const parent=node.parentNode;const parentClass=parent.className||'';if(parent.tagName!=='SCRIPT'&&parent.tagName!=='STYLE'&&parent.tagName!=='CODE'&&parentClass!=='bookmarklet-btn'){text+=node.textContent+' ';}}return text.trim().replace(/\s+/g,' ').substring(0,2000);}const text=getPageText();const commonTypos={fetc:'fetch',websit:'website',bekeja:'bekerja',meblokir:'memblokir',beberap:'beberapa',foldr:'folder',teh:'the',adn:'and',recieve:'receive',beleive:'believe',occured:'occurred',untill:'until',wich:'which',begining:'beginning',neccessary:'necessary',seperate:'separate',definately:'definitely',comming:'coming',sucess:'success',thier:'their',tommorow:'tomorrow',writting:'writing'};let typosFound=[];const words=text.toLowerCase().split(/\s+/);words.forEach(word=>{const cleanWord=word.replace(/[^\w]/g,'');if(commonTypos[cleanWord]){typosFound.push(cleanWord+' -> '+commonTypos[cleanWord]);}});console.log('Found typos:',typosFound);if(typosFound.length>0){const output='Typos Found:\n\n'+typosFound.join('\n');console.log(output);if(navigator.clipboard){navigator.clipboard.writeText(output).then(()=>{showToast('✅ Found '+typosFound.length+' typos (copied!)','success');});}else{prompt('Copy typos:',output);showToast('Found '+typosFound.length+' typos','warning');}}else{showToast('✅ No typos found!','success');}const style=document.createElement('style');style.textContent='@keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}@keyframes slideOut{from{transform:translateX(0);opacity:1}to{transform:translateX(100%);opacity:0}}';document.head.appendChild(style);})();" 
                    class="bookmarklet-btn" 
                    draggable="true"
                    data-tool="Typo Scanner">
                     <i class="fa-solid fa-play"></i>
                     <span class="btn-text">Typo Scanner</span>
+                </a>
+            </div>
+
+            <!-- Local to HSBC URL Converter -->
+            <div class="bookmarklet-card">
+                <div class="bookmarklet-header">
+                    <i class="fa-solid fa-arrow-right-arrow-left"></i>
+                    <h3>Local to HSBC URL</h3>
+                </div>
+                <p>Convert localhost URL to HSBC mail server</p>
+                <a href="javascript:(function(){function showToast(msg,type){const toast=document.createElement('div');toast.style.cssText='position:fixed;top:20px;right:20px;background:#333;color:white;padding:12px 20px;border-radius:4px;z-index:10000;animation:slideIn 0.3s ease';toast.textContent=msg;document.body.appendChild(toast);setTimeout(()=>toast.remove(),3000);}const currentUrl=window.location.href;if(currentUrl.includes('127.0.0.1:5500')){const newUrl=currentUrl.replace('http://127.0.0.1:5500','https://mail.hsbc.com.hk/id');window.location.href=newUrl;}else{showToast('❌ URL tidak mengandung 127.0.0.1:5500','error');}const style=document.createElement('style');style.textContent='@keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}';document.head.appendChild(style);})();" 
+                   class="bookmarklet-btn" 
+                   draggable="true"
+                   data-tool="Local to HSBC URL">
+                    <i class="fa-solid fa-play"></i>
+                    <span class="btn-text">Local to HSBC URL</span>
                 </a>
             </div>
         </div>
