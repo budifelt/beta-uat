@@ -16,24 +16,28 @@ jobs:
         with:
           node-version: 20
 
-      - name: Install Minifiers
+      - name: Install Minify Tools
         run: npm install -g html-minifier-terser terser clean-css-cli
 
-      - name: Prepare dist folder
-        run: mkdir dist
-
-      - name: Minify HTML
+      - name: Copy project to dist
         run: |
-          html-minifier-terser index.html -o dist/index.html ^
-          --collapse-whitespace --remove-comments --minify-css true --minify-js true
+          mkdir dist
+          rsync -av --exclude=dist ./ dist/
 
-      - name: Minify CSS
-        run: cleancss -o dist/style.css css/style.css
+      - name: Minify HTML files
+        run: |
+          find dist -type f -name "*.html" -exec html-minifier-terser {} -o {} \
+          --collapse-whitespace --remove-comments --minify-css true --minify-js true \;
 
-      - name: Minify JS
-        run: terser js/script.js -o dist/script.js -c -m
+      - name: Minify CSS files
+        run: |
+          find dist -type f -name "*.css" -exec cleancss -o {} {} \;
 
-      - name: Deploy to GitHub Pages
+      - name: Minify JS files
+        run: |
+          find dist -type f -name "*.js" -exec terser {} -o {} -c -m \;
+
+      - name: Deploy to gh-pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
