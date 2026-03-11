@@ -38,8 +38,6 @@ body {
   color: var(--text);
   background-color: var(--bg);
   min-height: 100vh;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 
 /* Typography */
@@ -65,7 +63,6 @@ p {
 a {
   color: var(--accent-primary);
   text-decoration: none;
-  /* transition: color 0.2s ease; */
 }
 
 a:hover {
@@ -94,6 +91,12 @@ button {
 /* Remove default browser styling - Flat Design */
 * {
   border-radius: 0 !important;
+}
+
+/* Remove all transitions for better performance */
+* {
+  transition: none !important;
+  animation: none !important;
 }
 
 img {

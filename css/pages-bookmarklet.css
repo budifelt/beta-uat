@@ -15,7 +15,7 @@ body {
 }
 
 main {
-  flex: 1;
+  flex: 0 1 auto;
 }
 
 /* ===================================
@@ -23,32 +23,18 @@ main {
    =================================== */
 .page-header {
   text-align: center;
-  margin: var(--space-10) 0 var(--space-12);
+  margin: 20px 0 30px;
   position: relative;
-  padding-top: var(--space-4);
+  padding-top: 20px;
+  flex-shrink: 0;
 }
 
 .page-header::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100px;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, var(--accent-primary, #F18C8E), transparent);
+  display: none;
 }
 
 .page-header::after {
-  content: '';
-  position: absolute;
-  bottom: -20px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 60px;
-  height: 4px;
-  background: var(--accent-primary, #F18C8E);
-  border-radius: 2px;
+  display: none;
 }
 
 .page-header-content {
@@ -57,34 +43,31 @@ main {
 }
 
 .page-header-content h1 {
-  font-size: var(--font-size-5xl);
-  font-weight: var(--font-weight-black);
+  font-size: 32px;
+  font-weight: 700;
   color: var(--text);
-  margin: 0 0 var(--space-4);
+  margin: 0 0 10px;
   letter-spacing: -0.02em;
   line-height: 1.1;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: var(--space-3);
+  gap: 10px;
   flex-wrap: wrap;
-  animation: fadeInDown 0.6s ease-out;
 }
 
 .page-header-content h1 i {
   color: var(--accent-primary, #F18C8E);
-  font-size: var(--font-size-4xl);
+  font-size: 28px;
   flex-shrink: 0;
-  animation: spinIn 0.8s ease-out;
 }
 
 .subtitle {
-  font-size: var(--font-size-lg);
+  font-size: 16px;
   color: var(--text-muted);
   margin: 0;
-  font-weight: var(--font-weight-medium);
+  font-weight: 500;
   line-height: 1.5;
-  animation: fadeInUp 0.6s ease-out 0.2s backwards;
 }
 
 /* ===================================
@@ -93,9 +76,10 @@ main {
 .instructions {
   background: var(--bg-secondary, #FFFFFF);
   border: 2px solid var(--accent-primary, #F18C8E);
-  padding: var(--space-8);
-  margin-bottom: var(--space-12);
-  border-radius: var(--radius-lg, 8px);
+  padding: 20px;
+  margin-bottom: 20px;
+  border-radius: 0;
+  flex-shrink: 0;
 }
 
 .instructions h3 {
@@ -165,7 +149,6 @@ main {
 
 .no-results.show {
   display: block;
-  animation: fadeInUp 0.5s ease-out;
 }
 
 .no-results i {
@@ -180,14 +163,14 @@ main {
    =================================== */
 
 .bookmarklet-section {
-  flex: 1;
+  flex: 0 1 auto;
   background: #ffffff;
-  padding: 60px 20px 80px;
+  padding: 76px 20px 60px; /* 56px nav height + 20px top padding */
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
-  min-height: calc(100vh - 400px);
+  overflow-y: visible;
+  min-height: 0;
 }
 
 /* Container styles moved to line 8 to avoid duplication */
@@ -197,9 +180,12 @@ main {
    =================================== */
 .bookmarklets-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: var(--space-6);
-  margin-top: var(--space-8);
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  width: 100%;
+  max-width: 1200px;
+  margin-bottom: 40px;
+  align-items: stretch;
 }
 
 /* List View */
@@ -247,35 +233,23 @@ main {
 .bookmarklet-card {
   background: var(--bg-secondary, #FFFFFF);
   border: 2px solid var(--border-color, #E5E7EB);
-  border-radius: var(--radius-lg, 8px);
-  padding: var(--space-6, 24px);
-  transition: all var(--transition-normal, 0.2s ease);
+  border-radius: 0;
+  padding: 16px;
   position: relative;
   overflow: hidden;
-  animation: fadeInUp 0.3s ease-out backwards;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 .bookmarklet-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 4px;
-  background: var(--accent-primary, #F18C8E);
-  transform: scaleX(0);
-  transition: transform var(--transition-normal, 0.2s ease);
+  display: none;
 }
 
 .bookmarklet-card:hover {
-  transform: translateY(-4px);
   border-color: var(--accent-primary, #F18C8E);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
 }
 
-.bookmarklet-card:hover::before {
-  transform: scaleX(1);
-}
 
 .bookmarklet-header {
   display: flex;
@@ -307,46 +281,47 @@ main {
 .bookmarklet-card p {
   font-size: var(--font-size-sm);
   color: var(--text-muted);
-  margin: 0 0 var(--space-5);
+  margin: 0 0 16px;
   line-height: var(--line-height-normal);
+  flex: 1;
 }
 
 /* ===================================
    BOOKMARKLET BUTTON
    =================================== */
 .bookmarklet-btn {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   justify-content: center;
-  gap: var(--space-2);
+  gap: 8px;
   width: 100%;
-  padding: var(--space-3, 12px) var(--space-5, 20px);
   background: var(--accent-primary, #F18C8E);
-  color: var(--text-inverse, #ffffff);
+  color: white;
   border: 2px solid var(--accent-primary, #F18C8E);
-  font-size: var(--font-size-sm, 14px);
-  font-weight: var(--font-weight-semibold, 600);
-  text-decoration: none;
+  padding: 12px 16px;
+  border-radius: 0;
+  font-weight: 600;
   cursor: pointer;
-  transition: all var(--transition-normal, 0.2s ease);
-  user-select: none;
-  border-radius: var(--radius-md, 6px);
+  text-decoration: none;
+  font-size: 14px;
+  transition: none;
+  margin-top: auto;
 }
 
 .bookmarklet-btn:hover {
   background: transparent;
   color: var(--accent-primary, #F18C8E);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(241, 140, 142, 0.2);
+  border-color: var(--accent-primary, #F18C8E);
 }
 
 .bookmarklet-btn:active {
-  transform: translateY(0);
-  box-shadow: 0 2px 4px rgba(241, 140, 142, 0.2);
+  background: #FEE2E2;
+  color: var(--accent-primary, #F18C8E);
+  border-color: var(--accent-primary, #F18C8E);
 }
 
 .bookmarklet-btn i {
-  font-size: var(--font-size-base);
+  font-size: 16px;
 }
 
 .bookmarklet-btn .btn-text {
@@ -393,52 +368,52 @@ main {
    SEARCH/FILTER SECTION (Future use)
    =================================== */
 .bookmarklet-filter {
-  background: var(--surface);
-  border: 1px solid var(--border);
+  background: #F9FAFB;
+  border: 2px solid #E5E7EB;
   border-radius: 0;
-  padding: var(--space-4);
-  margin-bottom: var(--space-8);
+  padding: 16px;
+  margin-bottom: 20px;
   display: flex;
-  gap: var(--space-4);
+  gap: 12px;
   align-items: center;
 }
 
 .bookmarklet-search {
   flex: 1;
-  padding: var(--space-3) var(--space-4);
-  border: 1px solid var(--border);
+  padding: 12px 16px;
+  border: 2px solid #E5E7EB;
   border-radius: 0;
-  font-size: var(--font-size-base);
-  background: var(--bg);
-  /* Simplified transition - only border-color */
-  transition: border-color var(--transition-fast);
+  font-size: 14px;
+  background: white;
+  transition: none;
 }
 
 .bookmarklet-search:focus {
   outline: none;
-  border-color: var(--accent-primary);
-  /* Removed box-shadow to reduce GPU load */
+  border-color: var(--accent-primary, #F18C8E);
 }
 
 .bookmarklet-filter-btn {
-  padding: var(--space-3) var(--space-4);
-  background: var(--btn-secondary-bg);
-  color: var(--btn-secondary-text);
-  border: 1px solid var(--border);
+  padding: 12px 16px;
+  background: white;
+  color: #374151;
+  border: 2px solid #E5E7EB;
   border-radius: 0;
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-medium);
+  font-size: 14px;
+  font-weight: 500;
   cursor: pointer;
-  /* Simplified transition - only background and border-color */
-  transition: background var(--transition-fast), border-color var(--transition-fast);
+  transition: none;
   display: flex;
   align-items: center;
-  gap: var(--space-2);
+  gap: 8px;
+  min-width: 100px;
+  justify-content: center;
+  white-space: nowrap;
 }
 
 .bookmarklet-filter-btn:hover {
-  background: var(--hover);
-  border-color: var(--divider);
+  background: #F3F4F6;
+  border-color: #D1D5DB;
 }
 
 /* ===================================
@@ -470,62 +445,65 @@ main {
 }
 
 .copy-btn {
-  margin-top: var(--space-3);
+  margin-top: 12px;
   display: inline-flex;
   align-items: center;
-  gap: var(--space-2);
-  padding: var(--space-2) var(--space-4);
-  background: var(--accent-primary);
-  color: var(--text-inverse);
-  border: none;
+  gap: 8px;
+  padding: 10px 16px;
+  background: var(--accent-primary, #F18C8E);
+  color: white;
+  border: 2px solid var(--accent-primary, #F18C8E);
   border-radius: 0;
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-medium);
+  font-size: 14px;
+  font-weight: 500;
   cursor: pointer;
-  /* Simplified transition - only background */
-  transition: background var(--transition-fast);
+  transition: none;
 }
 
 .copy-btn:hover {
-  background: var(--accent-hover);
-  /* Removed transform to reduce repaints */
+  background: transparent;
+  color: var(--accent-primary, #F18C8E);
+  border-color: var(--accent-primary, #F18C8E);
 }
 
 .copy-btn.copied {
-  background: var(--success);
+  background: #10B981;
+  color: white;
+  border-color: #10B981;
 }
 
 /* ===================================
    RESPONSIVE DESIGN
    =================================== */
 @media (max-width: 768px) {
-  .container {
-    padding: var(--space-6) var(--space-4);
+  .page-header {
+    margin: 15px 0 20px;
   }
   
-  .container h1 {
-    font-size: var(--font-size-4xl);
+  .page-header-content h1 {
+    font-size: 28px;
   }
   
   .subtitle {
-    font-size: var(--font-size-lg);
+    font-size: 14px;
+  }
+  
+  .bookmarklet-section {
+    padding: 66px 15px 40px; /* Adjusted for mobile */
   }
   
   .instructions {
-    padding: var(--space-6);
-  }
-  
-  .instructions h3 {
-    font-size: var(--font-size-xl);
+    padding: 15px;
+    margin-bottom: 15px;
   }
   
   .bookmarklets-grid {
-    grid-template-columns: 1fr;
-    gap: var(--space-4);
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
   }
   
   .bookmarklet-card {
-    padding: var(--space-5);
+    padding: 12px;
   }
   
   .bookmarklet-header i {
@@ -540,16 +518,25 @@ main {
 }
 
 @media (max-width: 480px) {
-  .container h1 {
-    font-size: var(--font-size-3xl);
+  .page-header {
+    margin: 10px 0 15px;
+  }
+  
+  .page-header-content h1 {
+    font-size: 24px;
+  }
+  
+  .subtitle {
+    font-size: 13px;
+  }
+  
+  .bookmarklet-section {
+    padding: 66px 10px 30px; /* Adjusted for small mobile */
   }
   
   .instructions {
-    padding: var(--space-4);
-  }
-  
-  .instructions ol {
-    padding-left: var(--space-4);
+    padding: 12px;
+    margin-bottom: 12px;
   }
   
   .bookmarklet-card {

@@ -193,8 +193,7 @@ main {
   right: 0;
   z-index: var(--z-header);
   background: #ffffff;
-  border-bottom: 1px solid #e5e7eb;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+  border-bottom: 2px solid #e5e7eb;
 }
 
 .nav {
@@ -227,15 +226,12 @@ main {
   text-decoration: none;
   font-weight: 500;
   border-radius: 0;
-  transition: all var(--transition-normal);
   position: relative;
 }
 
 .nav-link:hover {
   color: var(--accent-primary);
   background: rgba(241, 140, 142, 0.1);
-  transform: none;
-  box-shadow: none;
 }
 
 .nav-link[aria-current="page"] {
@@ -258,7 +254,7 @@ main {
 
 .footer {
   background: #f8f9fa;
-  border-top: 1px solid #e5e7eb;
+  border-top: 2px solid #e5e7eb;
   padding: var(--space-5) 0;
   color: var(--text);
   position: fixed;
@@ -266,7 +262,6 @@ main {
   left: 0;
   right: 0;
   z-index: var(--z-footer);
-  box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.08);
 }
 
 .footer-content {
@@ -303,7 +298,6 @@ main {
   color: var(--text-muted);
   text-decoration: none;
   border-radius: 0;
-  transition: all var(--transition-normal);
   position: relative;
   overflow: hidden;
 }
@@ -311,8 +305,6 @@ main {
 .footer-link:hover {
   color: var(--accent-primary);
   background: rgba(241, 140, 142, 0.1);
-  transform: none;
-  box-shadow: none;
 }
 
 .footer-link::before {
@@ -328,7 +320,7 @@ main {
 }
 
 .footer-link i {
-  transition: color var(--transition-fast);
+  color: var(--text-muted);
 }
 
 .footer-copyright {
@@ -340,7 +332,6 @@ main {
 .footer-text {
   font-size: var(--font-size-sm);
   color: var(--text-muted);
-  transition: color var(--transition-normal);
   margin: 0;
   display: flex;
   align-items: center;
@@ -349,13 +340,12 @@ main {
 }
 
 .footer:hover .footer-text {
-  color: var(--text-secondary);
+  color: var(--text-muted);
 }
 
 .footer-text .fa-heart {
   color: var(--accent-primary);
   font-size: var(--font-size-base);
-  animation: none;
 }
 
 .footer-version {
@@ -366,7 +356,6 @@ main {
   margin-left: var(--space-3);
   border: 1px solid #E9ECEF;
   border-radius: 0;
-  transition: all var(--transition-fast);
   font-weight: 600;
 }
 
@@ -374,7 +363,6 @@ main {
   background: var(--red-500);
   color: white;
   border-color: var(--red-500);
-  box-shadow: none;
 }
 
 /* ===================================

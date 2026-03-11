@@ -1,36 +1,35 @@
 /* ===================================
-   TOAST NOTIFICATIONS
+   TOAST NOTIFICATIONS - Disabled for performance
    =================================== */
 .toast-container {
   position: fixed;
   top: calc(56px + var(--space-4));
   right: var(--space-4);
   z-index: var(--z-toast);
-  display: flex;
+  display: none; /* Hide all toasts by default */
   flex-direction: column;
   gap: var(--space-3);
   pointer-events: none;
 }
 
+/* Only show button-related toasts */
+.toast-container.button-toast {
+  display: flex;
+}
+
 .toast {
   background: var(--surface);
-  border: 1px solid var(--border);
+  border: 2px solid var(--border);
   border-radius: 0;
   padding: var(--space-3) var(--space-4);
-  /* Flat design - no shadow */
   display: flex;
   align-items: center;
   gap: var(--space-3);
   min-width: 300px;
   max-width: 400px;
-  transform: translateX(400px);
-  transition: transform var(--transition-normal);
   pointer-events: all;
 }
 
-.toast.show {
-  transform: translateX(0);
-}
 
 .toast.success {
   border-left: 4px solid var(--toast-success);
@@ -92,7 +91,6 @@
   cursor: pointer;
   padding: var(--space-1);
   border-radius: 0;
-  transition: all var(--transition-normal);
 }
 
 .toast-close:hover {

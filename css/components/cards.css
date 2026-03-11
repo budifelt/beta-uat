@@ -3,15 +3,14 @@
    =================================== */
 .card {
   background: var(--surface);
-  border: 1px solid var(--border);
+  border: 2px solid var(--border);
   padding: var(--space-6);
-  transition: all var(--transition-normal);
   position: relative;
   overflow: hidden;
 }
 
 .card:hover {
-  border-color: var(--divider);
+  border-color: var(--accent-primary);
 }
 
 .card-header {
@@ -52,7 +51,6 @@
 /* Card Variants */
 .card-interactive {
   cursor: pointer;
-  transition: all var(--transition-normal);
 }
 
 .card-bordered {
@@ -60,7 +58,7 @@
 }
 
 .card-bordered:hover {
-  border-color: var(--divider);
+  border-color: var(--accent-primary);
 }
 
 .card-outlined {
@@ -105,24 +103,9 @@
 }
 
 .card-loading::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-  animation: shimmer 1.5s infinite;
+  display: none;
 }
 
-@keyframes shimmer {
-  0% {
-    transform: translateX(-100%);
-  }
-  100% {
-    transform: translateX(100%);
-  }
-}
 
 .card-error {
   border-color: var(--btn-danger-bg);

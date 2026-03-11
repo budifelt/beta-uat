@@ -434,17 +434,22 @@ function toggleView() {
         btn.innerHTML = isListView ? 
             '<i class="fa-solid fa-list"></i> List' : 
             '<i class="fa-solid fa-grip"></i> Grid';
-        showToast(`Switched to ${isListView ? 'list' : 'grid'} view`, 'info', 1500);
+        // Removed toast notification for better performance
     }
 }
 
-// Toast notification function
+// Toast notification function - Only for button success
 function showToast(message, type = 'success', duration = 3000) {
+    // Only show toast for button-related success messages
+    if (type !== 'success' || (!message.toLowerCase().includes('copied') && !message.toLowerCase().includes('clipboard'))) {
+        return;
+    }
+    
     // Create toast container if it doesn't exist
     let container = document.querySelector('.toast-container');
     if (!container) {
         container = document.createElement('div');
-        container.className = 'toast-container';
+        container.className = 'toast-container button-toast'; // Add button-toast class
         document.body.appendChild(container);
     }
 
