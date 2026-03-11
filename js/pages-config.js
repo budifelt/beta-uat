@@ -441,127 +441,6 @@ function clearAllUI(opts = { clearStorage: false }) {
   });
 }
 
-// Simple Toast Manager Implementation
-class ToastManager {
-  constructor() {
-    this.container = null;
-    this.init();
-  }
-  
-  init() {
-    // Create toast container if it doesn't exist
-    if (!document.getElementById('toast-container')) {
-      this.container = document.createElement('div');
-      this.container.id = 'toast-container';
-      this.container.style.cssText = `
-        position: fixed;
-        top: 80px;
-        right: 20px;
-        z-index: 10000;
-        pointer-events: none;
-      `;
-      // Append to content area instead of body
-      const contentArea = document.querySelector('.content');
-      if (contentArea) {
-        contentArea.appendChild(this.container);
-      } else {
-        // Fallback to body if content area not found
-        document.body.appendChild(this.container);
-      }
-    } else {
-      this.container = document.getElementById('toast-container');
-    }
-  }
-  
-  show(message, type = 'info', options = {}) {
-    const {
-      duration = 3000,
-      position = 'top-right'
-    } = options;
-    
-    // Update container position based on position option
-    this.updatePosition(position);
-    
-    const toast = document.createElement('div');
-    toast.className = `toast toast-${type}`;
-    toast.style.cssText = `
-      background: ${type === 'success' ? '#22c55e' : type === 'error' ? '#ef4444' : type === 'warning' ? '#eab308' : '#3b82f6'};
-      color: white;
-      padding: 12px 20px;
-      border-radius: 8px;
-      margin-bottom: 10px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      pointer-events: auto;
-      cursor: pointer;
-      transform: translateX(100%);
-      transition: transform 0.3s ease;
-      max-width: 300px;
-      word-wrap: break-word;
-    `;
-    toast.textContent = message;
-    
-    this.container.appendChild(toast);
-    
-    // Animate in
-    requestAnimationFrame(() => {
-      toast.style.transform = 'translateX(0)';
-    });
-    
-    // Remove on click
-    toast.addEventListener('click', () => {
-      this.remove(toast);
-    });
-    
-    // Auto remove
-    setTimeout(() => {
-      this.remove(toast);
-    }, duration);
-  }
-  
-  updatePosition(position) {
-    const positions = {
-      'top-right': 'top: 80px; right: 20px;',
-      'top-left': 'top: 80px; left: 20px;',
-      'bottom-right': 'bottom: 20px; right: 20px;',
-      'bottom-left': 'bottom: 20px; left: 20px;'
-    };
-    
-    this.container.style.cssText = `
-      position: fixed;
-      z-index: 10000;
-      pointer-events: none;
-      ${positions[position] || positions['top-right']}
-    `;
-  }
-  
-  remove(toast) {
-    toast.style.transform = 'translateX(100%)';
-    setTimeout(() => {
-      if (toast.parentNode) {
-        toast.parentNode.removeChild(toast);
-      }
-    }, 300);
-  }
-  
-  success(message, options = {}) {
-    this.show(message, 'success', options);
-  }
-  
-  error(message, options = {}) {
-    this.show(message, 'error', options);
-  }
-  
-  warning(message, options = {}) {
-    this.show(message, 'warning', options);
-  }
-  
-  info(message, options = {}) {
-    this.show(message, 'info', options);
-  }
-}
-
-// Initialize toast manager
-window.toastManager = new ToastManager();
 
 // Apply form field changes to XML before saving
 async function applyFormChangesToXML() {
@@ -2608,6 +2487,8 @@ function initializeResizableSidebar() {
     // Apply min and max width constraints
     if (newWidth >= 200 && newWidth <= 500) {
       sidebar.style.width = newWidth + 'px';
+      sidebar.style.minWidth = newWidth + 'px';
+      sidebar.style.maxWidth = newWidth + 'px';
     }
   });
 
@@ -2667,6 +2548,14 @@ async function loadFileTree(dirHandle) {
   if (!fileTree) return;
   
   fileTree.innerHTML = '';
+  
+  // Reset sidebar to auto-fit when loading new folder
+  const sidebar = document.querySelector('.sidebar');
+  if (sidebar) {
+    sidebar.style.width = 'auto';
+    sidebar.style.minWidth = '200px';
+    sidebar.style.maxWidth = '500px';
+  }
   
   try {
     // Check if this is folder 'X' - if so, show its contents directly
