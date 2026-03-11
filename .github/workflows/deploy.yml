@@ -1,0 +1,40 @@
+name: Build & Deploy Minified Site
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install Minifiers
+        run: npm install -g html-minifier-terser terser clean-css-cli
+
+      - name: Prepare dist folder
+        run: mkdir dist
+
+      - name: Minify HTML
+        run: |
+          html-minifier-terser index.html -o dist/index.html ^
+          --collapse-whitespace --remove-comments --minify-css true --minify-js true
+
+      - name: Minify CSS
+        run: cleancss -o dist/style.css css/style.css
+
+      - name: Minify JS
+        run: terser js/script.js -o dist/script.js -c -m
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
