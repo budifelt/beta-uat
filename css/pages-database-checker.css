@@ -355,6 +355,40 @@ main#main-content {
   overflow: hidden;
   position: relative;
   background: #ffffff;
+  /* Enable GPU acceleration for smoother scrolling */
+  transform: translateZ(0);
+  will-change: transform;
+  /* CSS containment for better performance */
+  contain: strict;
+  /* Optimize for scrolling */
+  overflow-anchor: none;
+}
+
+/* Virtual scroll content optimization */
+.virtual-scroll-content {
+  position: relative;
+  transform: translateZ(0);
+  /* Enable GPU acceleration */
+  contain: layout style paint;
+  /* Optimize for compositing */
+  isolation: isolate;
+}
+
+.virtual-scroll-content > div {
+  /* Enable GPU acceleration for scrollable items */
+  transform: translateZ(0);
+  /* Optimize for frequent updates */
+  will-change: transform;
+  /* Use containment for better performance */
+  contain: layout style paint;
+  /* Optimize text rendering */
+  text-rendering: optimizeSpeed;
+  /* Prevent layout shifts */
+  position: absolute;
+  left: 0;
+  right: 0;
+  /* Optimize for scrolling performance */
+  overflow-anchor: none;
 }
 
 /* Data Scroll Container - With Scrollbar */
