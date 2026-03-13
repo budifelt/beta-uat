@@ -1078,11 +1078,22 @@ main#main-content {
   flex: 1;
 }
 
+.error-line {
+  font-family: 'Consolas', 'Monaco', monospace;
+  font-size: 13px;
+  color: #424242;
+  line-height: 1.4;
+  white-space: pre-wrap; /* Preserve spaces and line breaks */
+  word-break: break-all;
+}
+
 .error-virtual-container .error-item .error-line {
   font-family: 'Consolas', 'Monaco', monospace;
   font-size: 13px;
   color: #424242;
   line-height: 1.4;
+  white-space: pre-wrap; /* Preserve spaces and line breaks */
+  word-break: break-all;
 }
 
 .error-virtual-container .error-item .error-count {

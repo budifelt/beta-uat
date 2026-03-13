@@ -1009,8 +1009,8 @@ class DatabaseChecker {
           emptyDataUnits.add(type);
         }
         
-        // Check KRHRED format (only if not already caught by length check)
-        if (!unitRegex.test(type)) {
+        // Check KRHRED format - only KRHRED_Unit_XX pattern
+        if (!/^KRHRED_Unit_\d+$/i.test(type)) {
           errors.push('Invalid format');
           invalidFormatUnits.add(type);
         }
@@ -1107,19 +1107,9 @@ class DatabaseChecker {
                   results.emptyDataUnits.add(type);
                 }
                 
-                if (type.length > 60) {
-                  errors.push('KRHRED too long (' + type.length + ')');
-                  results.longKrhredUnits.add(type);
-                }
-                
-                if (!regex.test(type)) {
+                if (!/^KRHRED_Unit_\d+$/i.test(type)) {
                   errors.push('Invalid format');
                   results.invalidFormatUnits.add(type);
-                }
-                
-                if (email && !/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/i.test(email)) {
-                  errors.push('Invalid email');
-                  results.invalidEmailUnits.add(type);
                 }
                 
                 if (data.length > 60) {
