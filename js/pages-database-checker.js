@@ -1,9 +1,15 @@
 /* ========= Constants ========= */
-const LINES_PER_PAGE   = 1000;
+const LINES_PER_PAGE   = 500; // Reduced from 1000 for better performance
 const MAX_MEMORY_USAGE = 100 * 1024 * 1024; // 100MB
-const MAX_RENDER_ROWS  = 2000; // batas render agar modal tetap ringan
-const VIRTUAL_BUFFER_SIZE = 50; // Extra rows to render outside viewport
-const OBJECT_POOL_SIZE = 500; // Pool of reusable row elements
+const MAX_RENDER_ROWS  = 1000; // Reduced from 2000
+const VIRTUAL_BUFFER_SIZE = 50; // Increased back to 50 for better visibility
+const OBJECT_POOL_SIZE = 200; // Reduced from 500
+const DEBOUNCE_DELAY = 100; // Added for scroll events
+
+// Make constants configurable for performance mode
+Object.defineProperty(window, 'LINES_PER_PAGE', { value: LINES_PER_PAGE, writable: true });
+Object.defineProperty(window, 'VIRTUAL_BUFFER_SIZE', { value: VIRTUAL_BUFFER_SIZE, writable: true });
+Object.defineProperty(window, 'OBJECT_POOL_SIZE', { value: OBJECT_POOL_SIZE, writable: true });
 
 /* ========= Regex ========= */
 const unitRegex  = /^KRHRED(?:_Unit)?_\d+$/i;
@@ -32,7 +38,7 @@ class FileProcessor {
     this.totalSize = file.size;
 
     // Use streaming with chunked processing for better performance
-    const chunkSize = 64 * 1024; // 64KB chunks
+    const chunkSize = 128 * 1024; // Increased to 128KB for fewer chunks
     const reader  = file.stream().getReader();
     const decoder = new TextDecoder();
     let buffer = '';
@@ -46,6 +52,10 @@ class FileProcessor {
       this.currentLines = new Array(estimatedLines);
       this.currentLines.length = 0;
     }
+
+    // Performance monitoring
+    const startTime = performance.now();
+    let lastYield = 0;
 
     try{
       while(true){
@@ -80,9 +90,11 @@ class FileProcessor {
         this.updateProgress();
         if (onProgress) onProgress(this.loadedSize, this.totalSize);
         
-        // Yield control more frequently for better responsiveness
-        if (lineCount % 10000 === 0) {
+        // Adaptive yielding based on performance
+        const now = performance.now();
+        if (now - lastYield > 16 || lineCount % 10000 === 0) { // Yield every 16ms or 10k lines
           await new Promise(r=>setTimeout(r,0));
+          lastYield = now;
         }
       }
       
@@ -90,6 +102,10 @@ class FileProcessor {
       if (buffer) {
         lines.push(buffer);
       }
+      
+      // Log performance metrics
+      const endTime = performance.now();
+      console.log(`File read performance: ${lines.length} lines in ${(endTime - startTime).toFixed(2)}ms`);
     } finally { 
       reader.releaseLock(); 
     }
@@ -103,17 +119,21 @@ class FileProcessor {
 
 /* ========= File reader ========= */
 class VirtualScroller {
-  constructor(container, itemHeight = 20){
+  constructor(container, itemHeight = 20){ // Reduced from 40 to 20 for compact display
     this.container = container;
-    // Cari virtual-scroll-content atau data-container
-    this.content   = container.querySelector('.virtual-scroll-content') || container.querySelector('.data-container');
+    // Cari virtual-scroll-content atau buat baru setelah header
+    this.content   = container.querySelector('.virtual-scroll-content');
     if (!this.content) {
       // Buat div inner jika tidak ada
       this.content = document.createElement('div');
       this.content.className = 'virtual-scroll-content';
-      container.innerHTML = '';
       container.appendChild(this.content);
     }
+    
+    // Ensure container has proper styles for scrolling
+    container.style.overflow = 'auto';
+    container.style.position = 'relative';
+    
     this.itemHeight= itemHeight;
     this.items     = [];
     this.visible   = new Set();
@@ -122,6 +142,10 @@ class VirtualScroller {
     this.scrollTimeout = null;
     this.setItemsTimeout = null;
     
+    // Performance optimizations
+    this.isScrolling = false;
+    this.scrollEndTimeout = null;
+    
     // Object pool for row elements
     this.elementPool = [];
     this.initObjectPool();
@@ -129,12 +153,77 @@ class VirtualScroller {
     // Use IntersectionObserver for better performance
     this.initIntersectionObserver();
     
-    this.onScroll  = this.onScrollThrottled.bind(this);
+    // Throttled scroll handler
+    this.onScroll = this.throttle(() => {
+      this.isScrolling = true;
+      this.update();
+      
+      // Clear previous timeout
+      if (this.scrollEndTimeout) {
+        clearTimeout(this.scrollEndTimeout);
+      }
+      
+      // Set scroll end detection
+      this.scrollEndTimeout = setTimeout(() => {
+        this.isScrolling = false;
+        this.cleanupInvisibleElements();
+      }, 150);
+    }, DEBOUNCE_DELAY);
+    
     container.addEventListener('scroll', this.onScroll, { passive: true });
     this.observer = new ResizeObserver(()=>{
       if (this.content) this.update();
     });
     this.observer.observe(container);
+  }
+  
+  // Simple throttle function
+  throttle(func, delay) {
+    let timeoutId;
+    let lastExecTime = 0;
+    return function (...args) {
+      const currentTime = Date.now();
+      
+      if (currentTime - lastExecTime > delay) {
+        func.apply(this, args);
+        lastExecTime = currentTime;
+      } else {
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(() => {
+          func.apply(this, args);
+          lastExecTime = Date.now();
+        }, delay - (currentTime - lastExecTime));
+      }
+    };
+  }
+  
+  // Cleanup invisible elements to free memory
+  cleanupInvisibleElements() {
+    if (this.renderedElements.size > OBJECT_POOL_SIZE * 2) {
+      // Remove elements far from viewport
+      const top = this.container.scrollTop;
+      const h = this.container.clientHeight;
+      const viewportStart = Math.floor(top / this.itemHeight) - VIRTUAL_BUFFER_SIZE * 2;
+      const viewportEnd = Math.ceil((top + h) / this.itemHeight) + VIRTUAL_BUFFER_SIZE * 2;
+      
+      const toRemove = [];
+      this.renderedElements.forEach((element, index) => {
+        if (index < viewportStart || index > viewportEnd) {
+          toRemove.push(index);
+        }
+      });
+      
+      toRemove.forEach(idx => {
+        const el = this.renderedElements.get(idx);
+        if (el) {
+          if (el.parentNode) {
+            el.parentNode.removeChild(el);
+          }
+          this.returnElementToPool(el);
+          this.renderedElements.delete(idx);
+        }
+      });
+    }
   }
   
   initObjectPool() {
@@ -143,8 +232,90 @@ class VirtualScroller {
       div.style.position = 'absolute';
       div.style.width = '100%';
       div.style.display = 'none'; // Hide initially
+      div.className = 'data-row';
       this.elementPool.push(div);
     }
+  }
+  
+  // Parse and format a line for Notepad++ style display
+  formatLineToText(line, lineNumber) {
+    // Simple text display with line numbers
+    const lineNumberStr = lineNumber.toString().padStart(6, ' ');
+    
+    // Check if line is too long (> 200 characters)
+    if (line.length > 200) {
+      return this.createTruncatedLine(lineNumberStr, line);
+    }
+    
+    return `${lineNumberStr}: ${line}`;
+  }
+  
+  createTruncatedLine(lineNumberStr, line) {
+    const maxLength = 200;
+    const truncated = line.substring(0, maxLength);
+    const remaining = line.length - maxLength;
+    
+    // Create a container for the line
+    const container = document.createElement('div');
+    container.className = 'line-container';
+    
+    // Line number
+    const lineNumberSpan = document.createElement('span');
+    lineNumberSpan.className = 'line-number';
+    lineNumberSpan.textContent = `${lineNumberStr}: `;
+    
+    // Truncated content
+    const contentSpan = document.createElement('span');
+    contentSpan.className = 'line-content truncated';
+    contentSpan.textContent = truncated;
+    
+    // More indicator
+    const moreSpan = document.createElement('span');
+    moreSpan.className = 'line-more';
+    moreSpan.textContent = `... (${remaining} more chars)`;
+    
+    // Full content (hidden by default)
+    const fullContentSpan = document.createElement('span');
+    fullContentSpan.className = 'line-full';
+    fullContentSpan.textContent = line;
+    fullContentSpan.style.display = 'none';
+    
+    // Expand/Collapse button
+    const expandBtn = document.createElement('button');
+    expandBtn.className = 'expand-btn';
+    expandBtn.innerHTML = '<i class="fa-solid fa-expand"></i>';
+    expandBtn.title = 'Show full line';
+    
+    // Click handler
+    expandBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isExpanded = fullContentSpan.style.display !== 'none';
+      
+      if (isExpanded) {
+        // Collapse
+        contentSpan.style.display = 'inline';
+        moreSpan.style.display = 'inline';
+        fullContentSpan.style.display = 'none';
+        expandBtn.innerHTML = '<i class="fa-solid fa-expand"></i>';
+        expandBtn.title = 'Show full line';
+      } else {
+        // Expand
+        contentSpan.style.display = 'none';
+        moreSpan.style.display = 'none';
+        fullContentSpan.style.display = 'inline';
+        expandBtn.innerHTML = '<i class="fa-solid fa-compress"></i>';
+        expandBtn.title = 'Hide full line';
+      }
+    });
+    
+    // Assemble
+    container.appendChild(lineNumberSpan);
+    container.appendChild(contentSpan);
+    container.appendChild(moreSpan);
+    container.appendChild(fullContentSpan);
+    container.appendChild(expandBtn);
+    
+    return container;
   }
   
   getElementFromPool() {
@@ -204,7 +375,13 @@ class VirtualScroller {
     this.clearAllElements();
     
     this.items = items;
+    // Set full height without header offset since we're not using pagination
     this.content.style.height = `${items.length * this.itemHeight}px`;
+    this.content.style.marginTop = '0px';
+    
+    // Ensure container is scrollable
+    this.container.style.overflow = 'auto';
+    
     this.update();
   }
   
@@ -227,6 +404,14 @@ class VirtualScroller {
     const start = Math.max(0, Math.floor(top / this.itemHeight) - VIRTUAL_BUFFER_SIZE);
     const end   = Math.min(this.items.length, Math.ceil((top + h)/this.itemHeight) + VIRTUAL_BUFFER_SIZE);
 
+    // Skip update if scrolling and range hasn't changed significantly
+    if (this.isScrolling && this._lastUpdateRange && 
+        Math.abs(this._lastUpdateRange.start - start) < 5 && 
+        Math.abs(this._lastUpdateRange.end - end) < 5) {
+      return;
+    }
+    this._lastUpdateRange = { start, end };
+
     // Use DocumentFragment for batch DOM operations
     const frag = document.createDocumentFragment();
     const newSet = new Set();
@@ -242,10 +427,26 @@ class VirtualScroller {
         div.style.display = '';
         div.setAttribute('data-index', i);
         
-        // Lazy content rendering - only set text if in viewport or near it
+        // Lazy content rendering - only set content if in viewport or near it
         const isInViewport = i >= Math.floor(top / this.itemHeight) && i <= Math.ceil((top + h) / this.itemHeight);
         if (isInViewport || !this.intersectionObserver) {
-          div.textContent = this.items[i];
+          // Format as plain text like Notepad++
+          const line = this.items[i];
+          const lineNumber = i + 1;
+          
+          // Check if we need to handle long lines
+          if (line.length > 200) {
+            const formatted = this.formatLineToText(line, lineNumber);
+            // If it's a DOM element (for long lines), append it
+            if (formatted instanceof HTMLElement) {
+              div.innerHTML = '';
+              div.appendChild(formatted);
+            } else {
+              div.textContent = formatted;
+            }
+          } else {
+            div.textContent = this.formatLineToText(line, lineNumber);
+          }
         } else {
           // Defer content rendering
           div.textContent = '';
@@ -273,22 +474,26 @@ class VirtualScroller {
       this.content.appendChild(frag);
     }
     
-    // Remove elements outside viewport
-    toRemove.forEach(idx => {
-      const el = this.renderedElements.get(idx);
-      if (el) {
-        if (this.intersectionObserver) {
-          this.intersectionObserver.unobserve(el);
-        }
-        if (el.parentNode) {
-          el.parentNode.removeChild(el);
-        }
-        this.returnElementToPool(el);
-      }
-    });
-
-    // Clean up map entries for removed elements
-    toRemove.forEach(idx => this.renderedElements.delete(idx));
+    // Remove elements outside viewport - batched
+    if (toRemove.length > 0) {
+      requestAnimationFrame(() => {
+        toRemove.forEach(idx => {
+          const el = this.renderedElements.get(idx);
+          if (el) {
+            if (this.intersectionObserver) {
+              this.intersectionObserver.unobserve(el);
+            }
+            if (el.parentNode) {
+              el.parentNode.removeChild(el);
+            }
+            this.returnElementToPool(el);
+          }
+        });
+        
+        // Clean up map entries for removed elements
+        toRemove.forEach(idx => this.renderedElements.delete(idx));
+      });
+    }
     
     this.visible = newSet;
   }
@@ -337,11 +542,14 @@ class VirtualScroller {
 class DatabaseChecker {
   constructor(){
     this.fp = new FileProcessor();
-    this.vs = new VirtualScroller(document.getElementById('databaseContent'));
     this.currentLines = [];
     this.processedLinesCount = 0;
     this.isChecking = false;
     this.worker = null;
+    
+    // Performance mode detection
+    this.performanceMode = this.detectPerformanceMode();
+    this.applyPerformanceSettings();
     
     // Initialize Web Worker if available
     this.initWorker();
@@ -356,7 +564,55 @@ class DatabaseChecker {
     this.rowsEl       = document.getElementById('krhredRows');
     this.schemaInfoEl = document.getElementById('schemaInfo');
 
+    // Initialize table header FIRST
+    this.initializeTableHeader();
+    
+    // THEN initialize virtual scroller
+    this.vs = new VirtualScroller(document.getElementById('databaseContent'));
+    
+    // Add scroll listener for auto-load with debounce
+    this.autoLoadTimeout = null;
+    this.vs.container.addEventListener('scroll', () => {
+      const container = this.vs.container;
+      if (container.scrollTop + container.clientHeight >= container.scrollHeight - 100) {
+        // Near bottom, check if we should load more
+        if (this.processedLinesCount < this.currentLines.length && !this.autoLoadTimeout) {
+          this.autoLoadTimeout = setTimeout(() => {
+            this.loadMore();
+            this.autoLoadTimeout = null;
+          }, 300);
+        }
+      }
+    });
+
     this.bindEvents();
+  }
+  
+  detectPerformanceMode() {
+    // Simple performance detection based on hardware concurrency and memory
+    const cores = navigator.hardwareConcurrency || 4;
+    const memory = navigator.deviceMemory || 4;
+    
+    // Consider low-end if less than 4 cores or less than 4GB RAM
+    return cores < 4 || memory < 4;
+  }
+  
+  applyPerformanceSettings() {
+    if (this.performanceMode) {
+      // Reduce buffer sizes but still show all data
+      window.VIRTUAL_BUFFER_SIZE = 25; // Increased from 15
+      window.OBJECT_POOL_SIZE = 100;
+      // Keep LINES_PER_PAGE for pagination only if needed
+      
+      // Add performance indicator
+      document.body.classList.add('performance-mode');
+      console.log('Performance mode enabled for low-end device');
+    }
+  }
+  
+  initializeTableHeader() {
+    // No table header needed for Notepad++ style
+    // This method is now empty
   }
   
   initWorker() {
@@ -558,7 +814,9 @@ class DatabaseChecker {
   /* ========= Check database (optimized with full validation) ===== */
   async checkDatabase(){
     if (!this.currentLines.length){ alert('Please load a file first'); return; }
-    this.isChecking = true; this.updateCheckButton(); this.showLoading(true);
+    this.isChecking = true; 
+    this.updateCheckButton(); 
+    this.showLoading(true, 'Validating database...');
 
     const unitsSet = new Set();
     const emptyDataUnits = new Set();
@@ -570,6 +828,10 @@ class DatabaseChecker {
     const unitDetails = new Map();
     const chunkSize = 1000;
     this._stopRequested = false;
+    
+    // Performance tracking
+    const startTime = performance.now();
+    let lastUpdate = 0;
 
     for (let i=0;i<this.currentLines.length;i+=chunkSize){
       if (this._stopRequested) break;
@@ -662,14 +924,33 @@ class DatabaseChecker {
         }
       });
 
-      this.updatePercent(Math.min(i+chunkSize, this.currentLines.length), this.currentLines.length);
+      // Update progress with throttling for better performance
+      const now = performance.now();
+      if (now - lastUpdate > 50 || i + chunkSize >= this.currentLines.length) { // Update every 50ms or at the end
+        this.updatePercent(Math.min(i+chunkSize, this.currentLines.length), this.currentLines.length, 
+                          `Validating... ${Math.min(i+chunkSize, this.currentLines.length).toLocaleString()} rows`);
+        lastUpdate = now;
+      }
+      
       await new Promise(r=>setTimeout(r,0));
     }
+    
+    // Performance logging
+    const endTime = performance.now();
+    console.log(`Validation completed in ${(endTime - startTime).toFixed(2)}ms`);
 
     // Combine all errors
     const allErrorUnits = new Set([...emptyDataUnits, ...longKrhredUnits, ...invalidFormatUnits, ...invalidEmailUnits, ...longDataUnits, ...missingFieldUnits]);
     this.renderResults(unitsSet, allErrorUnits, unitDetails);
-    this.showLoading(false); this.isChecking = false; this.updateCheckButton();
+    
+    // Show completion message
+    this.updatePercent(this.currentLines.length, this.currentLines.length, 'Validation complete!');
+    
+    setTimeout(() => {
+      this.showLoading(false); 
+      this.isChecking = false; 
+      this.updateCheckButton();
+    }, 1500); // Keep the completion message visible for 1.5 seconds
   }
 
   stopChecking(){
@@ -682,22 +963,66 @@ class DatabaseChecker {
   updateCheckButton(){
     if (this.isChecking){
       this.checkBtn.innerHTML = `<i class="fa-solid fa-stop"></i><span>Stop</span>`;
-      document.getElementById('loadingIndicator').style.display = 'none';
+      this.checkBtn.classList.add('btn-danger');
+      this.checkBtn.classList.remove('btn-primary');
     } else {
-      this.checkBtn.innerHTML = `<i class="fa-solid fa-list-check"></i><span>Check</span>`;
-      document.getElementById('loadingIndicator').style.display = 'inline-block';
+      this.checkBtn.innerHTML = `<i class="fa-solid fa-list-check"></i><span>Check Data</span>`;
+      this.checkBtn.classList.remove('btn-danger');
+      this.checkBtn.classList.add('btn-primary');
     }
   }
-  showLoading(show){
+  showLoading(show, message = 'Processing...'){
     const wrap = document.getElementById('loadingWrapper');
-    if (wrap) wrap.style.visibility = show ? 'visible' : 'hidden';
+    const indicator = document.getElementById('loadingIndicator');
+    const progressText = document.getElementById('progressText');
+    
+    if (wrap){
+      if (show) {
+        wrap.style.visibility = 'visible';
+        wrap.style.opacity = '1';
+        indicator.textContent = message;
+        progressText.textContent = '0%';
+        
+        // Add pulse animation
+        indicator.classList.add('pulse');
+      } else {
+        // Fade out effect
+        wrap.style.opacity = '0';
+        setTimeout(() => {
+          if (!this.isChecking) {
+            wrap.style.visibility = 'hidden';
+          }
+        }, 300);
+        
+        // Remove pulse animation
+        indicator.classList.remove('pulse');
+      }
+    }
   }
-  updatePercent(current, total){
+  updatePercent(current, total, message = null){
     const percent = (current/total)*100;
     const wrap = document.getElementById('loadingWrapper');
-    if (wrap){
+    const indicator = document.getElementById('loadingIndicator');
+    const progressText = document.getElementById('progressText');
+    
+    if (wrap && wrap.style.visibility !== 'hidden'){
       wrap.style.visibility = 'visible';
-      document.getElementById('progressText').textContent = `${Math.round(percent)}%`;
+      wrap.style.opacity = '1';
+      progressText.textContent = `${Math.round(percent)}%`;
+      
+      // Update message if provided
+      if (message) {
+        indicator.textContent = message;
+      }
+      
+      // Add completion effect
+      if (percent >= 100) {
+        indicator.classList.add('complete');
+        progressText.textContent = 'Complete!';
+        setTimeout(() => {
+          indicator.classList.remove('complete');
+        }, 1000);
+      }
     }
   }
 
@@ -751,6 +1076,19 @@ class DatabaseChecker {
     const detailsDiv = document.getElementById('krhredDetails');
     if (detailsDiv) detailsDiv.innerHTML = '';
     document.getElementById('loadMoreBtn').style.display = 'none';
+    
+    // Clear data content
+    const container = document.getElementById('databaseContent');
+    container.innerHTML = '';
+    
+    // Add empty state back
+    const emptyState = document.createElement('div');
+    emptyState.className = 'empty-state';
+    emptyState.innerHTML = `
+      <i class="fa-solid fa-database"></i>
+      <p>Open a database file to begin</p>
+    `;
+    container.appendChild(emptyState);
   }
 
   async loadFile(fileHandle){
@@ -764,17 +1102,30 @@ class DatabaseChecker {
         if (!ok){ this.showLoading(false); return; }
       }
 
+      // Clear container completely
+      const container = document.getElementById('databaseContent');
+      container.innerHTML = '';
+      
+      // Reinitialize virtual scroller
+      if (this.vs) {
+        this.vs.destroy();
+      }
+      this.vs = new VirtualScroller(container);
+
       // Load file with optimized streaming
       this.currentLines = await this.fp.readFile(file, (loaded,total)=>this.updatePercent(loaded,total));
-      this.processedLinesCount = Math.min(this.currentLines.length, LINES_PER_PAGE);
+      
+      // Load ALL lines by default, not just LINES_PER_PAGE
+      this.processedLinesCount = this.currentLines.length;
       
       // Use requestAnimationFrame for non-blocking UI updates
       requestAnimationFrame(() => {
-        this.vs.setItems([]); // clear
-        this.vs.setItems(this.currentLines.slice(0, this.processedLinesCount));
+        // Show all lines at once
+        this.vs.setItems(this.currentLines);
         
-        document.getElementById('loadMoreBtn').style.display =
-          this.currentLines.length > LINES_PER_PAGE ? 'inline-flex' : 'none';
+        // Hide load more button since all lines are loaded
+        const loadMoreBtn = document.getElementById('loadMoreBtn');
+        loadMoreBtn.style.display = 'none';
         
         // detect schema once file loaded
         this.detectSchema();
@@ -782,7 +1133,6 @@ class DatabaseChecker {
         // Enable buttons
         this.checkBtn.disabled = false;
         document.getElementById('openSearchModalBtn').disabled = false;
-        document.getElementById('exportBtn').disabled = false;
       });
 
     } catch(err){
@@ -794,121 +1144,212 @@ class DatabaseChecker {
   }
 
   loadMore(){
-    const next = this.currentLines.slice(this.processedLinesCount, this.processedLinesCount + LINES_PER_PAGE);
+    const next = this.currentLines.slice(this.processedLinesCount, this.processedLinesCount + window.LINES_PER_PAGE);
     if (next.length){
+      // Remember current scroll position
+      const container = this.vs.container;
+      const wasAtBottom = container.scrollTop + container.clientHeight >= container.scrollHeight - 10;
+      
+      // Show loading state on button
+      const loadMoreBtn = document.getElementById('loadMoreBtn');
+      loadMoreBtn.disabled = true;
+      loadMoreBtn.innerHTML = `
+        <i class="fa-solid fa-spinner fa-spin"></i>
+        <span>Loading...</span>
+      `;
+      
       this.processedLinesCount += next.length;
       
       // Use requestAnimationFrame for smoother UI updates
       requestAnimationFrame(() => {
+        // Update items without clearing the view
         this.vs.setItems(this.currentLines.slice(0, this.processedLinesCount));
-        document.getElementById('loadMoreBtn').style.display =
-          this.processedLinesCount < this.currentLines.length ? 'inline-flex' : 'none';
+        
+        // If user was at bottom, keep them at bottom
+        if (wasAtBottom) {
+          container.scrollTop = container.scrollHeight;
+        }
+        
+        // Update button with new progress
+        const totalLines = this.currentLines.length;
+        if (this.processedLinesCount >= totalLines) {
+          loadMoreBtn.style.display = 'none';
+        } else {
+          loadMoreBtn.disabled = false;
+          loadMoreBtn.innerHTML = `
+            <i class="fa-solid fa-angles-down"></i>
+            <span>Load More (${this.processedLinesCount}/${totalLines})</span>
+          `;
+        }
       });
     }
   }
 
   renderResults(unitsSet, errorUnits, unitDetails){
+    // Use requestAnimationFrame for non-blocking rendering
+    requestAnimationFrame(() => {
+      this.renderResultsAsync(unitsSet, errorUnits, unitDetails);
+    });
+  }
+  
+  async renderResultsAsync(unitsSet, errorUnits, unitDetails){
     const resultsContainer = document.getElementById('resultsContainer');
     if (!resultsContainer) return;
 
-    const totalDB = this.countUniqueCMPGIDs(this.currentLines);
+    // Show loading state
+    resultsContainer.innerHTML = '<div style="padding: 20px; text-align: center;"><i class="fa-solid fa-spinner fa-spin"></i> Rendering results...</div>';
     
-    // Clear and build results HTML
+    // Use Web Worker or async for counting
+    const totalDB = this.worker && this.currentLines.length > 50000 
+      ? await this.countUniqueCMPGIDsAsync(this.currentLines)
+      : this.countUniqueCMPGIDs(this.currentLines);
+    
+    // Build summary first
+    const summaryHtml = this.buildSummaryHtml(unitsSet, errorUnits, totalDB, unitDetails);
+    
+    // Update container with summary
+    resultsContainer.innerHTML = summaryHtml;
+    
+    // Render error details in chunks if there are many
+    if (errorUnits.size > 0) {
+      // Add details container
+      const detailsContainer = document.createElement('div');
+      detailsContainer.className = 'results-details';
+      detailsContainer.innerHTML = '<h4>Error Summary</h4>';
+      resultsContainer.querySelector('.validation-results').appendChild(detailsContainer);
+      
+      // Render errors in batches
+      await this.renderErrorsInBatches(detailsContainer, errorUnits, unitDetails);
+    }
+    
+    // Update stats asynchronously
+    requestAnimationFrame(() => {
+      updateQuickStats();
+    });
+  }
+  
+  buildSummaryHtml(unitsSet, errorUnits, totalDB, unitDetails) {
     let html = '<div class="validation-results">';
     
-    // Summary section - error count will be calculated later
+    // Calculate total errors
+    let totalErrors = 0;
+    Array.from(unitDetails.values()).forEach(details => {
+      totalErrors += details.length;
+    });
+    
+    // Summary section
     html += '<div class="results-summary">';
     html += `<h4>Validation Results</h4>`;
     html += `<p>Database Total: ${totalDB}</p>`;
+    html += `<p class="${totalErrors > 0 ? 'error-count' : 'success-count'}">${totalErrors} total errors</p>`;
     
-    // Show all KRHRED units found
+    // Show KRHRED units
     if (unitsSet.size > 0) {
       html += '<div class="krhred-list">';
       html += '<h5>KRHRED Units Found:</h5>';
+      
+      // Sort units efficiently
       const sortedUnits = Array.from(unitsSet).sort((a,b)=>{
         const aNum = parseInt(a.match(/\d+/)?.[0] || '0', 10);
         const bNum = parseInt(b.match(/\d+/)?.[0] || '0', 10);
         return aNum - bNum;
       });
       
-      sortedUnits.forEach(unit => {
+      // Build units HTML efficiently
+      const unitsHtml = sortedUnits.map(unit => {
         const hasError = errorUnits.has(unit);
         const statusClass = hasError ? 'error' : 'valid';
-        html += `<span class="krhred-unit ${statusClass}">${unit}</span>`;
-      });
-      html += '</div>';
-    }
-    html += '</div>';
-    
-    // Error details section - grouped by error type
-    if (errorUnits.size > 0){
-      html += '<div class="results-details">';
-      html += '<h4>Error Summary</h4>';
+        return `<span class="krhred-unit ${statusClass}">${unit}</span>`;
+      }).join('');
       
-      // Group errors by type with details
-      const errorGroups = {
-        'Missing Required Fields': [],
-        'Invalid Data': [],
-        'KRHRED Too Long (>60 chars)': [],
-        'Invalid KRHRED Format': [],
-        'Invalid Email': [],
-        'Data Too Long (>60 chars)': []
-      };
-      
-      // Collect all errors with their details
-      Array.from(errorUnits).forEach(unit => {
-        const details = unitDetails.get(unit) || [];
-        if (details.length > 0) {
-          details.forEach(item => {
-            const errorType = this.getErrorType(item.error);
-            if (errorGroups[errorType]) {
-              errorGroups[errorType].push({
-                unit: unit,
-                lineNumber: item.lineNumber,
-                lineText: item.lineText,
-                error: item.error
-              });
-            }
-          });
-        }
-      });
-      
-      // Count total errors (not units)
-      let totalErrors = 0;
-      Object.values(errorGroups).forEach(errors => {
-        totalErrors += errors.length;
-      });
-      
-      // Add error count to summary
-      html = html.replace(
-        `<p>Database Total: ${totalDB}</p>`,
-        `<p>Database Total: ${totalDB}</p><p class="${totalErrors > 0 ? 'error-count' : 'success-count'}">${totalErrors} total errors</p>`
-      );
-      
-      // Display each error category with all items
-      Object.entries(errorGroups).forEach(([errorType, errors]) => {
-        if (errors.length > 0) {
-          html += `<div class="error-category">
-            <h5><i class="fa-solid fa-exclamation-triangle"></i> ${errorType} (${errors.length})</h5>`;
-          
-          errors.forEach(error => {
-            html += `<div class="error-item">
-              <strong>${error.unit}</strong> - Line ${error.lineNumber}: ${escapeHtml(error.lineText)}
-            </div>`;
-          });
-          
-          html += '</div>';
-        }
-      });
-      
+      html += unitsHtml;
       html += '</div>';
     }
     
     html += '</div>';
-    resultsContainer.innerHTML = html;
+    html += '</div>';
     
-    // Update stats
-    updateQuickStats();
+    return html;
+  }
+  
+  async renderErrorsInBatches(container, errorUnits, unitDetails) {
+    // Group errors by type
+    const errorGroups = {
+      'Missing Required Fields': [],
+      'Invalid Data': [],
+      'KRHRED Too Long (>60 chars)': [],
+      'Invalid KRHRED Format': [],
+      'Invalid Email': [],
+      'Data Too Long (>60 chars)': []
+    };
+    
+    // Collect errors
+    Array.from(errorUnits).forEach(unit => {
+      const details = unitDetails.get(unit) || [];
+      details.forEach(item => {
+        const errorType = this.getErrorType(item.error);
+        if (errorGroups[errorType]) {
+          errorGroups[errorType].push({
+            unit: unit,
+            lineNumber: item.lineNumber,
+            lineText: item.lineText,
+            error: item.error
+          });
+        }
+      });
+    });
+    
+    // Render each error category
+    const BATCH_SIZE = 50; // Render 50 errors at a time
+    
+    for (const [errorType, errors] of Object.entries(errorGroups)) {
+      if (errors.length === 0) continue;
+      
+      // Create category container
+      const categoryDiv = document.createElement('div');
+      categoryDiv.className = 'error-category';
+      categoryDiv.innerHTML = `<h5><i class="fa-solid fa-exclamation-triangle"></i> ${errorType} (${errors.length})</h5>`;
+      container.appendChild(categoryDiv);
+      
+      // Render errors in batches
+      for (let i = 0; i < errors.length; i += BATCH_SIZE) {
+        const batch = errors.slice(i, i + BATCH_SIZE);
+        const fragment = document.createDocumentFragment();
+        
+        batch.forEach(error => {
+          const errorDiv = document.createElement('div');
+          errorDiv.className = `error-item ${this.getErrorSeverity(error.error)}`;
+          
+          errorDiv.innerHTML = `
+            <strong>${error.unit}</strong>
+            <div class="error-details">
+              <div class="error-line">Line ${error.lineNumber}: ${escapeHtml(error.lineText)}</div>
+            </div>
+            <div class="error-count">1</div>
+          `;
+          
+          fragment.appendChild(errorDiv);
+        });
+        
+        categoryDiv.appendChild(fragment);
+        
+        // Yield to browser after each batch
+        if (i + BATCH_SIZE < errors.length) {
+          await new Promise(resolve => setTimeout(resolve, 0));
+        }
+      }
+    }
+  }
+  
+  getErrorSeverity(errorMsg) {
+    if (errorMsg.includes('Invalid format')) {
+      return 'severe';
+    } else if (errorMsg.includes('Missing fields')) {
+      return 'severe';
+    } else if (errorMsg.includes('Invalid email')) {
+      return 'warning';
+    }
+    return 'error';
   }
 
   // Helper to determine error type
@@ -1046,66 +1487,45 @@ document.addEventListener('DOMContentLoaded', () => {
 
 /* ========= Quick Stats Update ========= */
 function updateQuickStats() {
+  // Use async version for better performance
+  updateQuickStatsAsync().catch(console.error);
+}
+
+async function updateQuickStatsAsync() {
   const totalRowsEl = document.getElementById('totalRows');
   const errorCountEl = document.getElementById('errorCount');
   
   // Update based on current data - count unique CMPG_ID
   if (window.dbChecker && window.dbChecker.currentLines) {
+    // Show loading state for large datasets
+    if (window.dbChecker.currentLines.length > 100000) {
+      if (totalRowsEl) totalRowsEl.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+    }
+    
     // Use Web Worker if available for large datasets
     if (window.dbChecker.worker && window.dbChecker.currentLines.length > 50000) {
+      // Worker will handle the counting
       window.dbChecker.worker.postMessage({
         type: 'countUniqueCMPGIDs',
         data: { lines: window.dbChecker.currentLines }
       });
     } else {
-      // Fallback to main thread with setTimeout for smaller datasets
-      setTimeout(() => {
-        const uniqueCMPG = window.dbChecker.countUniqueCMPGIDs(window.dbChecker.currentLines);
-        if (totalRowsEl) {
-          totalRowsEl.textContent = uniqueCMPG.toLocaleString();
-        }
-      }, 0);
+      // Use async counting for better performance
+      const uniqueCMPG = await window.dbChecker.countUniqueCMPGIDsAsync(window.dbChecker.currentLines);
+      if (totalRowsEl) {
+        totalRowsEl.textContent = uniqueCMPG.toLocaleString();
+      }
+    }
+    
+    // Count errors from results
+    const resultsContainer = document.getElementById('resultsContainer');
+    if (resultsContainer && errorCountEl) {
+      const errorItems = resultsContainer.querySelectorAll('.error-item');
+      errorCountEl.textContent = errorItems.length.toLocaleString();
     }
   } else {
-    if (totalRowsEl) {
-      totalRowsEl.textContent = '0';
-    }
-  }
-  
-  // Count errors from results
-  const resultsContainer = document.getElementById('resultsContainer');
-  if (resultsContainer) {
-    const errorElements = resultsContainer.querySelectorAll('.error-item');
-    if (errorCountEl) {
-      errorCountEl.textContent = errorElements.length;
-    }
-  }
-}
-
-// Async version for large datasets
-async function updateQuickStatsAsync() {
-  const totalRowsEl = document.getElementById('totalRows');
-  const errorCountEl = document.getElementById('errorCount');
-  
-  // Update based on current data - count unique CMPG_ID with async yielding
-  if (window.dbChecker && window.dbChecker.currentLines) {
-    const uniqueCMPG = await window.dbChecker.countUniqueCMPGIDsAsync(window.dbChecker.currentLines);
-    if (totalRowsEl) {
-      totalRowsEl.textContent = uniqueCMPG.toLocaleString();
-    }
-  } else {
-    if (totalRowsEl) {
-      totalRowsEl.textContent = '0';
-    }
-  }
-  
-  // Count errors from results
-  const resultsContainer = document.getElementById('resultsContainer');
-  if (resultsContainer) {
-    const errorElements = resultsContainer.querySelectorAll('.error-item');
-    if (errorCountEl) {
-      errorCountEl.textContent = errorElements.length;
-    }
+    if (totalRowsEl) totalRowsEl.textContent = '0';
+    if (errorCountEl) errorCountEl.textContent = '0';
   }
 }
 

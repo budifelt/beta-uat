@@ -185,8 +185,17 @@
     <div class="toolbar">
 
       <div class="toolbar-left">
+        <div class="title-with-loading">
+          <h1>Database Validation</h1>
+          
+          <div id="loadingWrapper" class="loading-indicator" style="visibility:hidden;">
 
-        <h1>Database Validation</h1>
+            <div id="loadingIndicator" class="pill">Processing...</div>
+
+            <div id="progressText">0%</div>
+
+          </div>
+        </div>
 
         <div class="breadcrumb">
 
@@ -211,22 +220,6 @@
           <i class="fa-solid fa-magnifying-glass"></i><span>Search</span>
 
         </button>
-
-        <button id="exportBtn" class="btn btn-tertiary" type="button" title="Export Results" disabled>
-
-          <i class="fa-solid fa-download"></i><span>Export</span>
-
-        </button>
-
-        
-
-        <div id="loadingWrapper" class="loading-indicator" style="visibility:hidden;">
-
-          <div id="loadingIndicator" class="pill">Processing...</div>
-
-          <div id="progressText">0%</div>
-
-        </div>
 
       </div>
 
