@@ -175,7 +175,7 @@ class VirtualScroller {
       if (this.items.length > 10000) {
         const scrollTime = performance.now() - scrollStart;
         if (scrollTime > 16) {
-          console.log(`⚠️ Slow scroll update: ${scrollTime.toFixed(2)}ms`);
+          console.log(`\u26a0\ufe0f Slow scroll update: ${scrollTime.toFixed(2)}ms`);
         }
       }
     }, DEBOUNCE_DELAY);
@@ -264,83 +264,8 @@ class VirtualScroller {
   
   // Parse and format a line for Notepad++ style display
   formatLineToText(line, lineNumber) {
-    // Simple text display with line numbers
-    const lineNumberStr = lineNumber.toString().padStart(6, ' ');
-    
-    // Check if line is too long (> 200 characters)
-    if (line.length > 200) {
-      return this.createTruncatedLine(lineNumberStr, line);
-    }
-    
-    return `${lineNumberStr}: ${line}`;
-  }
-  
-  createTruncatedLine(lineNumberStr, line) {
-    const maxLength = 200;
-    const truncated = line.substring(0, maxLength);
-    const remaining = line.length - maxLength;
-    
-    // Create a container for the line
-    const container = document.createElement('div');
-    container.className = 'line-container';
-    
-    // Line number
-    const lineNumberSpan = document.createElement('span');
-    lineNumberSpan.className = 'line-number';
-    lineNumberSpan.textContent = `${lineNumberStr}: `;
-    
-    // Truncated content
-    const contentSpan = document.createElement('span');
-    contentSpan.className = 'line-content truncated';
-    contentSpan.textContent = truncated;
-    
-    // More indicator
-    const moreSpan = document.createElement('span');
-    moreSpan.className = 'line-more';
-    moreSpan.textContent = `... (${remaining} more chars)`;
-    
-    // Full content (hidden by default)
-    const fullContentSpan = document.createElement('span');
-    fullContentSpan.className = 'line-full';
-    fullContentSpan.textContent = line;
-    fullContentSpan.style.display = 'none';
-    
-    // Expand/Collapse button
-    const expandBtn = document.createElement('button');
-    expandBtn.className = 'expand-btn';
-    expandBtn.innerHTML = '<i class="fa-solid fa-expand"></i>';
-    expandBtn.title = 'Show full line';
-    
-    // Click handler
-    expandBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      const isExpanded = fullContentSpan.style.display !== 'none';
-      
-      if (isExpanded) {
-        // Collapse
-        contentSpan.style.display = 'inline';
-        moreSpan.style.display = 'inline';
-        fullContentSpan.style.display = 'none';
-        expandBtn.innerHTML = '<i class="fa-solid fa-expand"></i>';
-        expandBtn.title = 'Show full line';
-      } else {
-        // Expand
-        contentSpan.style.display = 'none';
-        moreSpan.style.display = 'none';
-        fullContentSpan.style.display = 'inline';
-        expandBtn.innerHTML = '<i class="fa-solid fa-compress"></i>';
-        expandBtn.title = 'Hide full line';
-      }
-    });
-    
-    // Assemble
-    container.appendChild(lineNumberSpan);
-    container.appendChild(contentSpan);
-    container.appendChild(moreSpan);
-    container.appendChild(fullContentSpan);
-    container.appendChild(expandBtn);
-    
-    return container;
+    // Return just the line content - line number will be shown via CSS
+    return line;
   }
   
   getElementFromPool() {
@@ -403,8 +328,24 @@ class VirtualScroller {
     this.clearAllElements();
     
     this.items = items;
-    // Set full height without header offset since we're not using pagination
-    const totalHeight = items.length * this.itemHeight;
+    
+    // Calculate dynamic heights based on content
+    const calculateItemHeight = (line) => {
+      if (!line) return this.itemHeight;
+      // Approximate height based on text length (assuming ~100 chars per line for data)
+      const textLength = line.length;
+      const estimatedLines = Math.ceil(textLength / 100);
+      return Math.max(this.itemHeight, estimatedLines * 16); // 16px per line
+    };
+    
+    // Calculate total height
+    let totalHeight = 0;
+    this.itemPositions = [];
+    for (let i = 0; i < items.length; i++) {
+      this.itemPositions.push(totalHeight);
+      totalHeight += calculateItemHeight(items[i]);
+    }
+    
     this.content.style.height = `${totalHeight}px`;
     this.content.style.marginTop = '0px';
     
@@ -423,7 +364,7 @@ class VirtualScroller {
     this.update();
     
     if (items.length > 1000) {
-      console.log(`⏱️ setItems completed in ${(performance.now() - setItemsStart).toFixed(2)}ms for ${items.length} items`);
+      console.log(`\u23f1\ufe0f setItems completed in ${(performance.now() - setItemsStart).toFixed(2)}ms for ${items.length} items`);
     }
   }
   
@@ -455,10 +396,36 @@ class VirtualScroller {
     const top = this.container.scrollTop;
     const h   = this.container.clientHeight || this.container.offsetHeight || 400; // Fallback height
     
-    // Calculate visible range - ensure we show enough items
-    const visibleCount = Math.ceil(h / this.itemHeight);
-    const start = Math.max(0, Math.floor(top / this.itemHeight));
-    const end = Math.min(this.items.length, start + visibleCount + VIRTUAL_BUFFER_SIZE * 2);
+    // Define calculateItemHeight function
+    const calculateItemHeight = (line) => {
+      if (!line) return this.itemHeight;
+      // Approximate height based on text length (assuming ~100 chars per line for data)
+      const textLength = line.length;
+      const estimatedLines = Math.ceil(textLength / 100);
+      return Math.max(this.itemHeight, estimatedLines * 16); // 16px per line
+    };
+    
+    // Find visible items based on positions
+    let start = 0;
+    let end = 0;
+    
+    if (this.itemPositions && this.itemPositions.length > 0) {
+      for (let i = 0; i < this.itemPositions.length; i++) {
+        if (this.itemPositions[i] < top + h) {
+          end = i + 1;
+        }
+        if (this.itemPositions[i] + calculateItemHeight(this.items[i]) < top) {
+          start = i + 1;
+        }
+      }
+    } else {
+      // Fallback to fixed height calculation
+      const visibleCount = Math.ceil(h / this.itemHeight);
+      start = Math.max(0, Math.floor(top / this.itemHeight));
+      end = Math.min(this.items.length, start + visibleCount + VIRTUAL_BUFFER_SIZE * 2);
+    }
+    
+    end = Math.min(this.items.length, end + VIRTUAL_BUFFER_SIZE); // Add buffer
 
     // Clear visible set to force re-render of all visible items
     const oldVisible = this.visible;
@@ -475,7 +442,7 @@ class VirtualScroller {
     // Performance logging for large updates
     const itemsToRender = end - start;
     if (itemsToRender > 100) {
-      console.log(`🔍 VirtualScroller updating: ${itemsToRender} items (range: ${start}-${end})`);
+      console.log(`\ud83d\udd0d VirtualScroller updating: ${itemsToRender} items (range: ${start}-${end})`);
     }
 
     // Use DocumentFragment for batch DOM operations
@@ -500,27 +467,26 @@ class VirtualScroller {
           div.parentNode.removeChild(div);
         }
       }
+      // Set position and height based on calculated values
+      const itemHeight = this.itemPositions ? 
+        calculateItemHeight(this.items[i]) : 
+        this.itemHeight;
       
-      div.style.height = `${this.itemHeight}px`;
-      div.style.top = `${i * this.itemHeight}px`;
-      div.style.display = '';
-      div.setAttribute('data-index', i);
+      const topPosition = this.itemPositions ? 
+        this.itemPositions[i] : 
+        i * this.itemHeight;
       
       // Always set content for visible items
       const line = this.items[i];
       const lineNumber = i + 1;
       
-      // Check if we need to handle long lines
-      if (line && line.length > 200) {
-        const formatted = this.formatLineToText(line, lineNumber);
-        // If it's a DOM element (for long lines), append it
-        if (formatted instanceof HTMLElement) {
-          div.innerHTML = '';
-          div.appendChild(formatted);
-        } else {
-          div.textContent = formatted;
-        }
-      } else if (line) {
+      div.style.height = `${itemHeight}px`;
+      div.style.top = `${topPosition}px`;
+      div.style.display = '';
+      div.setAttribute('data-index', i);
+      div.setAttribute('data-line-number', `${lineNumber}:`);
+      
+      if (line) {
         div.textContent = this.formatLineToText(line, lineNumber);
       }
       
@@ -530,7 +496,7 @@ class VirtualScroller {
 
     // Performance logging
     if (itemsToRender > 100) {
-      console.log(`⏱️ VirtualScroller render: ${renderedCount} new, ${reusedCount} reused in ${(performance.now() - renderStart).toFixed(2)}ms`);
+      console.log(`\u23f1\ufe0f VirtualScroller render: ${renderedCount} new, ${reusedCount} reused in ${(performance.now() - renderStart).toFixed(2)}ms`);
     }
 
     // Find elements to remove (from old visible set)
@@ -620,7 +586,6 @@ class DatabaseChecker {
     this.emailInput   = document.getElementById('emailQuery');
     this.emailInfoEl  = document.getElementById('emailMatchesInfo');
     this.rowsEl       = document.getElementById('krhredRows');
-    this.schemaInfoEl = document.getElementById('schemaInfo');
 
     // Initialize table header FIRST
     this.initializeTableHeader();
@@ -743,7 +708,29 @@ class DatabaseChecker {
     document.getElementById('modalCloseBtn').addEventListener('click', ()=>this.closeSearchModal());
     document.getElementById('modalBackdrop').addEventListener('click', ()=>this.closeSearchModal());
     document.getElementById('searchEmailBtn').addEventListener('click', ()=>this.performEmailSearch());
-    this.emailInput.addEventListener('keydown', (e)=>{ if (e.key === 'Enter') this.performEmailSearch(); });
+    
+    // Debounced search on input
+    this.searchTimeout = null;
+    this.emailInput.addEventListener('input', (e) => {
+      // Don't trigger search on paste
+      if (e.inputType === 'insertFromPaste') {
+        return;
+      }
+      
+      clearTimeout(this.searchTimeout);
+      this.searchTimeout = setTimeout(() => {
+        if (e.target.value.trim()) {
+          this.performEmailSearch();
+        }
+      }, 300);
+    });
+    
+    this.emailInput.addEventListener('keydown', (e)=>{ 
+      if (e.key === 'Enter') {
+        clearTimeout(this.searchTimeout);
+        this.performEmailSearch();
+      }
+    });
 
     // Selection sync (fallback)
     document.addEventListener('click', (e)=>{
@@ -766,7 +753,6 @@ class DatabaseChecker {
   openSearchModal(){
     if (!this.currentLines.length){ alert('Please load a file first'); return; }
     this.detectSchema();
-    this.updateSchemaInfo();
     this.rowsEl.innerHTML = '';
     this.emailInfoEl.textContent = 'Masukkan email lalu tekan Search.';
     this.modal.setAttribute('open','');
@@ -776,10 +762,6 @@ class DatabaseChecker {
   closeSearchModal(){
     this.modal.classList.remove('show');
     this.modal.removeAttribute('open');
-  }
-  updateSchemaInfo(){
-    const {cmpgIdx,emailIdx,unitIdx,textIdx} = this.schema;
-    this.schemaInfoEl.textContent = `Schema: CMPGID[${cmpgIdx}] • EMAIL[${emailIdx}] • KRHRED[${unitIdx}] • TEXT[${textIdx}]`;
   }
 
   /* ===== Schema auto-detect ===== */
@@ -821,52 +803,364 @@ class DatabaseChecker {
     const q = (this.emailInput.value || '').trim().toLowerCase();
     const { emailIdx, unitIdx, textIdx } = this.schema;
 
-    const entries = []; // {unit, text, chars}
-    let totalMatches = 0;
-
-    for (let i=0;i<this.currentLines.length;i++){
-      const parts = this.currentLines[i].split('|');
-      const email = (parts[emailIdx]||'').trim().toLowerCase();
-      const unit  = (parts[unitIdx]  ||'').trim();
-      const text  = (parts[textIdx]  ||'').trim();
-
-      if (q && !email.includes(q)) continue; // filter email jika ada
-      if (!unitRegex.test(unit)) continue;
-
-      totalMatches++;
-      const normalizedUnit = unit.replace(/^krhred(?:_unit)?_/i, 'KRHRED_Unit_');
-      entries.push({ unit: normalizedUnit, text, chars: text.length });
-    }
-
-    // Info
-    this.emailInfoEl.textContent = q
-      ? `Email match: ${totalMatches.toLocaleString()} baris`
-      : `Semua baris: ${this.currentLines.length.toLocaleString()} (berisi KRHRED: ${entries.length.toLocaleString()})`;
-
-    // Render (batasi agar ringan)
+    // Clear previous results immediately
     this.rowsEl.innerHTML = '';
+    this.emailInfoEl.textContent = 'Searching...';
+    
+    // Add loading state
+    const modalContent = document.getElementById('modalResults');
+    modalContent.classList.add('loading');
+
+    // Use requestAnimationFrame for better performance
+    requestAnimationFrame(async () => {
+      const entries = []; // {unit, text, chars}
+      let totalMatches = 0;
+
+      // Batch processing for large datasets
+      const batchSize = 1000;
+      for (let i = 0; i < this.currentLines.length; i += batchSize) {
+        const batch = this.currentLines.slice(i, i + batchSize);
+        
+        for (const line of batch) {
+          const parts = line.split('|');
+          const email = (parts[emailIdx]||'').trim().toLowerCase();
+          const unit  = (parts[unitIdx]  ||'').trim();
+          const text  = (parts[textIdx]  ||'').trim();
+
+          if (q && !email.includes(q)) continue;
+          if (!unitRegex.test(unit)) continue;
+
+          totalMatches++;
+          const normalizedUnit = unit.replace(/^krhred(?:_unit)?_/i, 'KRHRED_Unit_');
+          entries.push({ unit: normalizedUnit, text, chars: text.length });
+        }
+        
+        // Yield to browser periodically
+        if (i % 5000 === 0) {
+          await new Promise(resolve => setTimeout(resolve, 0));
+        }
+      }
+
+      // Store entries for copying
+      this.currentSearchResults = entries;
+      
+      // Group entries by email for counting
+      const codeGroups = new Map();
+      if (q) {
+        const { emailIdx } = this.schema;
+        
+        for (const line of this.currentLines) {
+          const parts = line.split('|');
+          const email = (parts[emailIdx]||'').trim().toLowerCase();
+          const code = parts[0] || '';
+          
+          if (email.includes(q) && !codeGroups.has(code)) {
+            codeGroups.set(code, {
+              email: email,
+              entries: []
+            });
+          }
+        }
+      }
+
+      // Update info
+      if (q) {
+        const uniqueRecords = codeGroups.size;
+        this.emailInfoEl.textContent = `Found ${uniqueRecords} record${uniqueRecords > 1 ? 's' : ''}`;
+      } else {
+        this.emailInfoEl.textContent = `Semua baris: ${this.currentLines.length.toLocaleString()} (berisi KRHRED: ${entries.length.toLocaleString()})`;
+      }
+
+      // Remove loading state
+      modalContent.classList.remove('loading');
+
+      // Render results
+      this.renderSearchResults(entries, q);
+    });
+  }
+
+  async renderSearchResults(entries, q) {
     if (!entries.length){
       this.rowsEl.innerHTML = `<div class="muted">Tidak ada KRHRED untuk filter ini.</div>`;
       return;
     }
 
-    const toRender = entries.slice(0, MAX_RENDER_ROWS);
-    const frag = document.createDocumentFragment();
-    for (const e of toRender){
-      const row = document.createElement('div');
-      row.className = 'krhred-row';
-      row.innerHTML = `<code>attr:${e.unit}</code><span class="input value${e.text.length > 60 ? ' value-long' : ''}">${escapeHtml(e.text)}</span>`;
-      frag.appendChild(row);
+    // Group entries by the code (first part before |)
+    const codeGroups = new Map();
+    
+    if (q) {
+      // Find all unique codes for matching emails
+      const { emailIdx } = this.schema;
+      
+      for (const line of this.currentLines) {
+        const parts = line.split('|');
+        const email = (parts[emailIdx]||'').trim().toLowerCase();
+        const code = parts[0] || '';
+        
+        if (email.includes(q)) {
+          if (!codeGroups.has(code)) {
+            codeGroups.set(code, {
+              email: email,
+              entries: []
+            });
+          }
+        }
+      }
+      
+      // Now add all KRHRED entries for each code
+      const { unitIdx, textIdx } = this.schema;
+      
+      for (const code of codeGroups.keys()) {
+        for (const line of this.currentLines) {
+          const parts = line.split('|');
+          const lineCode = parts[0] || '';
+          const unit = (parts[unitIdx]||'').trim();
+          const text = (parts[textIdx]||'').trim();
+          
+          if (lineCode === code && unitRegex.test(unit)) {
+            const normalizedUnit = unit.replace(/^krhred(?:_unit)?_/i, 'KRHRED_Unit_');
+            codeGroups.get(code).entries.push({
+              unit: normalizedUnit,
+              text: text
+            });
+          }
+        }
+      }
+    } else {
+      // No email search, show all entries grouped by unit
+      const unitGroups = new Map();
+      for (const entry of entries) {
+        if (!unitGroups.has(entry.unit)) {
+          unitGroups.set(entry.unit, []);
+        }
+        unitGroups.get(entry.unit).push(entry);
+      }
+      
+      // Convert to codeGroups format for rendering
+      for (const [unit, unitEntries] of unitGroups) {
+        codeGroups.set(`|${unit}|`, {
+          email: '',
+          entries: unitEntries
+        });
+      }
     }
+
+    const frag = document.createDocumentFragment();
+    
+    // Render each code group
+    for (const [code, group] of codeGroups) {
+      if (group.entries.length === 0) continue;
+      
+      // Create group container
+      const groupDiv = document.createElement('div');
+      groupDiv.className = 'email-group';
+      
+      // Add email header if exists
+      if (group.email) {
+        const emailRow = document.createElement('div');
+        emailRow.className = 'krhred-row email-row';
+        emailRow.innerHTML = `<code>email:</code><input type="email" class="input" value="${escapeHtml(group.email)}" readonly>`;
+        groupDiv.appendChild(emailRow);
+        
+        // Add code row
+        const codeRow = document.createElement('div');
+        codeRow.className = 'krhred-row';
+        codeRow.innerHTML = `<code>code:</code><input type="text" class="input" value="${escapeHtml(code)}" readonly>`;
+        groupDiv.appendChild(codeRow);
+      }
+      
+      // Add entries for this group
+      const toRender = group.entries.slice(0, MAX_RENDER_ROWS);
+      for (const e of toRender){
+        const row = document.createElement('div');
+        row.className = 'krhred-row';
+        row.innerHTML = `<code>attr:${e.unit}</code><textarea class="input value${e.text.length > 60 ? ' value-long' : ''}" data-unit="${e.unit}" readonly>${escapeHtml(e.text)}</textarea>`;
+        groupDiv.appendChild(row);
+      }
+      
+      // Add copy button for this group
+      const copyBtnRow = document.createElement('div');
+      copyBtnRow.className = 'krhred-row copy-row';
+      copyBtnRow.innerHTML = `<button class="copy-group-btn" data-code="${escapeHtml(code)}" onclick="app.copyGroupData('${escapeHtml(code)}')"><i class="fa-solid fa-copy"></i> Copy</button>`;
+      groupDiv.appendChild(copyBtnRow);
+      
+      frag.appendChild(groupDiv);
+    }
+    
     this.rowsEl.appendChild(frag);
 
-    if (entries.length > toRender.length){
+    if (entries.length > MAX_RENDER_ROWS){
       const more = document.createElement('div');
       more.className = 'muted';
       more.style.marginTop = '8px';
-      more.textContent = `Showing ${toRender.length.toLocaleString()} of ${entries.length.toLocaleString()} entries. Refine email filter to narrow results.`;
+      more.textContent = `Showing ${MAX_RENDER_ROWS.toLocaleString()} of ${entries.toLocaleString()} entries. Refine email filter to narrow results.`;
       this.rowsEl.appendChild(more);
     }
+  }
+
+  copyGroupData(code) {
+    // Find the group element
+    const groupDiv = document.querySelector(`[data-code="${code}"]`).closest('.email-group');
+    if (!groupDiv) {
+      this.showToast('Group not found', 'error');
+      return;
+    }
+
+    // Get email and code from the group
+    const emailInput = groupDiv.querySelector('.email-row input');
+    const codeInput = groupDiv.querySelector('.krhred-row:not(.email-row):not(.copy-row) input');
+    const textareas = groupDiv.querySelectorAll('textarea[data-unit]');
+    
+    // Format the results
+    let copyText = '';
+    
+    // Add email if exists
+    if (emailInput && emailInput.value) {
+      copyText += `email:\n${emailInput.value}\n`;
+    }
+    
+    // Add code if exists
+    if (codeInput && codeInput.value) {
+      copyText += `code:\n${codeInput.value}\n`;
+    }
+    
+    // Add all KRHRED attributes
+    for (const textarea of textareas) {
+      const unit = textarea.getAttribute('data-unit');
+      const value = textarea.value;
+      copyText += `attr:${unit}:\n${value}\n`;
+    }
+
+    // Copy to clipboard
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(copyText).then(() => {
+        const btn = groupDiv.querySelector('.copy-group-btn');
+        const originalHTML = btn.innerHTML;
+        btn.innerHTML = '<i class="fa-solid fa-check"></i> Copied!';
+        btn.classList.add('copied');
+        
+        setTimeout(() => {
+          btn.innerHTML = originalHTML;
+          btn.classList.remove('copied');
+        }, 2000);
+        
+        this.showToast('Copied to clipboard!', 'success');
+      }).catch(err => {
+        console.error('Failed to copy:', err);
+        this.fallbackCopyToClipboard(copyText);
+      });
+    } else {
+      this.fallbackCopyToClipboard(copyText);
+    }
+  }
+
+  copyDatabaseResults(){
+    const emailInput = this.rowsEl.querySelector('.email-row input');
+    const inputs = this.rowsEl.querySelectorAll('textarea[data-unit]');
+    
+    if (!emailInput && !inputs.length){
+      this.showToast('No results to copy', 'warning');
+      return;
+    }
+
+    // Format the results as requested
+    let copyText = '';
+    
+    // Add email first if exists
+    if (emailInput && emailInput.value){
+      copyText += `email:\n${emailInput.value}\n`;
+    }
+    
+    // Add all KRHRED attributes
+    for (const input of inputs){
+      const unit = input.getAttribute('data-unit');
+      const value = input.value;
+      copyText += `attr:${unit}:\n${value}\n`;
+    }
+
+    // Copy to clipboard
+    if (navigator.clipboard && window.isSecureContext){
+      navigator.clipboard.writeText(copyText).then(() => {
+        const count = inputs.length + (emailInput && emailInput.value ? 1 : 0);
+        this.showToast(`Copied ${count} entries to clipboard!`, 'success');
+        
+        // Visual feedback on button
+        const btn = document.getElementById('copyDatabaseBtn');
+        const originalHTML = btn.innerHTML;
+        btn.innerHTML = '<i class="fa-solid fa-check"></i><span>Copied!</span>';
+        btn.classList.add('copied');
+        
+        setTimeout(() => {
+          btn.innerHTML = originalHTML;
+          btn.classList.remove('copied');
+        }, 2000);
+      }).catch(err => {
+        console.error('Failed to copy:', err);
+        this.fallbackCopyToClipboard(copyText);
+      });
+    } else {
+      this.fallbackCopyToClipboard(copyText);
+    }
+  }
+
+  fallbackCopyToClipboard(text){
+    const textArea = document.createElement('textarea');
+    textArea.value = text;
+    textArea.style.position = 'fixed';
+    textArea.style.left = '-999999px';
+    textArea.style.top = '-999999px';
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    
+    try {
+      document.execCommand('copy');
+      const count = inputs.length + (emailInput && emailInput.value ? 1 : 0);
+      this.showToast(`Copied ${count} entries to clipboard!`, 'success');
+      
+      // Visual feedback on button
+      const btn = document.getElementById('copyDatabaseBtn');
+      const originalHTML = btn.innerHTML;
+      btn.innerHTML = '<i class="fa-solid fa-check"></i><span>Copied!</span>';
+      btn.classList.add('copied');
+      
+      setTimeout(() => {
+        btn.innerHTML = originalHTML;
+        btn.classList.remove('copied');
+      }, 2000);
+    } catch (err) {
+      console.error('Fallback: Oops, unable to copy', err);
+      this.showToast('Failed to copy to clipboard', 'error');
+    }
+    
+    document.body.removeChild(textArea);
+  }
+
+  showToast(message, type = 'info'){
+    // Create toast element
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${type}`;
+    toast.style.cssText = `
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: ${type === 'success' ? '#28a745' : type === 'error' ? '#dc3545' : type === 'warning' ? '#ffc107' : '#17a2b8'};
+      color: white;
+      padding: 12px 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      z-index: 10000;
+      animation: slideInRight 0.3s ease;
+      font-weight: 500;
+    `;
+    toast.textContent = message;
+    
+    document.body.appendChild(toast);
+    
+    setTimeout(() => {
+      toast.style.animation = 'slideOutRight 0.3s ease';
+      setTimeout(() => toast.remove(), 300);
+    }, 3000);
   }
 
   /* ========= Check database (optimized with full validation) ===== */
@@ -902,12 +1196,12 @@ class DatabaseChecker {
 
     // Use Web Worker for validation if available and dataset is large
     if (this.worker && totalLines > 50000) {
-      console.log('🔍 Using Web Worker for validation');
+      console.log('\ud83d\udd0d Using Web Worker for validation');
       await this.validateWithWorker(unitsSet, emptyDataUnits, 
                                    invalidFormatUnits, invalidEmailUnits, 
                                    longDataUnits, missingFieldUnits, unitDetails);
     } else {
-      console.log(`🔍 Using main thread for validation with chunk size: ${chunkSize}`);
+      console.log(`\ud83d\udd0d Using main thread for validation with chunk size: ${chunkSize}`);
       
       for (let i=0;i<this.currentLines.length;i+=chunkSize){
         if (this._stopRequested) break;
@@ -1009,8 +1303,8 @@ class DatabaseChecker {
           emptyDataUnits.add(type);
         }
         
-        // Check KRHRED format - only KRHRED_Unit_XX pattern
-        if (!/^KRHRED_Unit_\d+$/i.test(type)) {
+        // Check KRHRED format
+        if (!unitRegex.test(type)) {
           errors.push('Invalid format');
           invalidFormatUnits.add(type);
         }
@@ -1107,7 +1401,7 @@ class DatabaseChecker {
                   results.emptyDataUnits.add(type);
                 }
                 
-                if (!/^KRHRED_Unit_\d+$/i.test(type)) {
+                if (!regex.test(type)) {
                   errors.push('Invalid format');
                   results.invalidFormatUnits.add(type);
                 }
@@ -1116,7 +1410,8 @@ class DatabaseChecker {
                   errors.push('Data too long (' + data.length + ')');
                   results.longDataUnits.add(type);
                 }
-                
+
+                // Store error details if any errors found
                 if (errors.length > 0) {
                   if (!results.unitDetails.has(type)) {
                     results.unitDetails.set(type, []);
@@ -1328,7 +1623,7 @@ class DatabaseChecker {
   async loadFile(fileHandle){
     try{
       const loadStart = performance.now();
-      console.log('🔍 File loading started');
+      console.log('\ud83d\udd0d File loading started');
       
       this.clearResults();
       this.showLoading(true);
@@ -1352,7 +1647,7 @@ class DatabaseChecker {
       // Load file with optimized streaming
       const readStart = performance.now();
       this.currentLines = await this.fp.readFile(file, (loaded,total)=>this.updatePercent(loaded,total));
-      console.log(`⏱️ File read completed in ${(performance.now() - readStart).toFixed(2)}ms: ${this.currentLines.length} lines`);
+      console.log(`\u23f1\ufe0f File read completed in ${(performance.now() - readStart).toFixed(2)}ms: ${this.currentLines.length} lines`);
       
       // Load ALL lines by default, not just LINES_PER_PAGE
       this.processedLinesCount = this.currentLines.length;
@@ -1364,7 +1659,7 @@ class DatabaseChecker {
         // Show all lines at once
         this.vs.setItems(this.currentLines);
         
-        console.log(`⏱️ Initial render completed in ${(performance.now() - renderStart).toFixed(2)}ms`);
+        console.log(`\u23f1\ufe0f Initial render completed in ${(performance.now() - renderStart).toFixed(2)}ms`);
         
         // Force the container to update its scrollable area
         setTimeout(() => {
@@ -1392,11 +1687,17 @@ class DatabaseChecker {
         // detect schema once file loaded
         this.detectSchema();
         
+        // Update file path in breadcrumb
+        const currentPath = document.getElementById('currentPath');
+        if (currentPath) {
+          currentPath.textContent = file.name;
+        }
+        
         // Enable buttons
         this.checkBtn.disabled = false;
         document.getElementById('openSearchModalBtn').disabled = false;
         
-        console.log(`⏱️ Total file load time: ${(performance.now() - loadStart).toFixed(2)}ms`);
+        console.log(`\u23f1\ufe0f Total file load time: ${(performance.now() - loadStart).toFixed(2)}ms`);
       });
 
     } catch(err){
@@ -1458,7 +1759,6 @@ class DatabaseChecker {
   
   async renderResultsAsync(unitsSet, errorUnits, unitDetails){
     const renderStart = performance.now();
-    console.log('🔍 renderResultsAsync started');
     
     const resultsContainer = document.getElementById('resultsContainer');
     if (!resultsContainer) return;
@@ -1467,27 +1767,18 @@ class DatabaseChecker {
     resultsContainer.innerHTML = '<div style="padding: 20px; text-align: center;"><i class="fa-solid fa-spinner fa-spin"></i> Rendering results...</div>';
     
     // Use Web Worker or async for counting
-    const countStart = performance.now();
     const totalDB = this.worker && this.currentLines.length > 50000 
       ? await this.countUniqueCMPGIDsAsync(this.currentLines)
       : this.countUniqueCMPGIDs(this.currentLines);
-    console.log(`⏱️ Counting unique CMPGIDs took: ${(performance.now() - countStart).toFixed(2)}ms`);
     
     // Build summary first
-    const summaryStart = performance.now();
     const summaryHtml = this.buildSummaryHtml(unitsSet, errorUnits, totalDB, unitDetails);
-    console.log(`⏱️ Building summary HTML took: ${(performance.now() - summaryStart).toFixed(2)}ms`);
     
     // Update container with summary
-    const domUpdateStart = performance.now();
     resultsContainer.innerHTML = summaryHtml;
-    console.log(`⏱️ DOM update for summary took: ${(performance.now() - domUpdateStart).toFixed(2)}ms`);
     
-    // Render error details in chunks if there are many
+    // Render error details in chunks if there are any
     if (errorUnits.size > 0) {
-      const detailsStart = performance.now();
-      console.log(`🔍 Starting to render ${errorUnits.size} error units`);
-      
       // Add details container
       const detailsContainer = document.createElement('div');
       detailsContainer.className = 'results-details';
@@ -1496,8 +1787,6 @@ class DatabaseChecker {
       
       // Render errors immediately
       await this.renderErrorsInBatches(detailsContainer, errorUnits, unitDetails);
-      
-      console.log(`⏱️ Total error details rendering took: ${(performance.now() - detailsStart).toFixed(2)}ms`);
     }
     
     // Update stats asynchronously
@@ -1505,19 +1794,24 @@ class DatabaseChecker {
       updateQuickStats();
     });
     
-    console.log(`✅ renderResultsAsync completed in ${(performance.now() - renderStart).toFixed(2)}ms`);
+    console.log(`\u2705 renderResultsAsync completed in ${(performance.now() - renderStart).toFixed(2)}ms`);
   }
   
   buildSummaryHtml(unitsSet, errorUnits, totalDB, unitDetails) {
-    const buildStart = performance.now();
-    
     let html = '<div class="validation-results">';
     
-    // Calculate total errors more efficiently
-    let totalErrors = 0;
-    for (const details of unitDetails.values()) {
-      totalErrors += details.length;
-    }
+    // Determine database type
+    const hasKRHRED = unitsSet.size > 0;
+    const databaseType = hasKRHRED ? 'Dynamic Database' : 'Static Database';
+    
+    // Build summary section
+    html += `
+      <div class="results-summary">
+        <h4>Database Summary</h4>
+        <p>Database Type: <span class="info-count">${databaseType}</span></p>
+        <p>Total Database Entries: <span class="info-count">${totalDB.toLocaleString()}</span></p>
+      </div>
+    `;
     
     // Build KRHRED list only if there are valid units
     if (unitsSet.size > 0) {
@@ -1533,16 +1827,11 @@ class DatabaseChecker {
     }
     
     html += '</div>';
-    
-    console.log(`⏱️ buildSummaryHtml internal time: ${(performance.now() - buildStart).toFixed(2)}ms`);
     return html;
   }
   
   async renderErrorsInBatches(container, errorUnits, unitDetails) {
-    // Performance monitoring
     const startTime = performance.now();
-    console.log('🔍 renderErrorsInBatches started');
-    
     // Group errors by type
     const errorGroups = {
       'Missing Required Fields': [],
@@ -1552,7 +1841,6 @@ class DatabaseChecker {
       'Data Too Long (>60 chars)': []
     };
     
-    const groupingStart = performance.now();
     // Collect errors - optimized version
     for (const unit of errorUnits) {
       const details = unitDetails.get(unit);
@@ -1570,7 +1858,6 @@ class DatabaseChecker {
         }
       }
     }
-    console.log(`⏱️ Error grouping took: ${(performance.now() - groupingStart).toFixed(2)}ms`);
     
     // Render each error category
     const BATCH_SIZE = 50; // Render 50 errors at a time
@@ -1581,208 +1868,200 @@ class DatabaseChecker {
       // Create category container
       const categoryDiv = document.createElement('div');
       categoryDiv.className = 'error-category';
-      categoryDiv.innerHTML = `<h5><i class="fa-solid fa-exclamation-triangle"></i> ${errorType} (${errors.length})</h5>`;
-      container.appendChild(categoryDiv);
       
-      // Special handling for Invalid Data - group by krhred
-      if (errorType === 'Invalid Data') {
-        const invalidDataStart = performance.now();
-        console.log(`🔍 Rendering Invalid Data errors: ${errors.length} total`);
+      // Category header with error count
+      const header = document.createElement('h5');
+      header.innerHTML = `<i class="fa-solid fa-exclamation-triangle"></i> ${errorType} <span class="error-count">${errors.length}</span>`;
+      categoryDiv.appendChild(header);
+      
+      // Group all errors by krhred unit (same treatment as Invalid Data)
+      const errorsByUnit = new Map();
+      errors.forEach(error => {
+        if (!errorsByUnit.has(error.unit)) {
+          errorsByUnit.set(error.unit, []);
+        }
+        errorsByUnit.get(error.unit).push(error);
+      });
+      
+      // Check if we need virtual scrolling
+      const totalErrors = errors.length;
+      const useVirtualScroll = totalErrors > 1000;
+      
+      if (useVirtualScroll) {
+        // Create virtual scroller container
+        const virtualContainer = document.createElement('div');
+        virtualContainer.className = 'error-virtual-container';
+        virtualContainer.style.height = '500px';
+        virtualContainer.style.overflow = 'auto';
         
-        // Group by unit
-        const errorsByUnit = new Map();
-        const unitGroupingStart = performance.now();
-        errors.forEach(error => {
-          if (!errorsByUnit.has(error.unit)) {
-            errorsByUnit.set(error.unit, []);
+        // Flatten all errors with unit info
+        const allErrors = [];
+        for (const [unit, unitErrors] of errorsByUnit) {
+          for (const error of unitErrors) {
+            allErrors.push({ ...error, unit });
           }
-          errorsByUnit.get(error.unit).push(error);
-        });
-        console.log(`⏱️ Unit grouping took: ${(performance.now() - unitGroupingStart).toFixed(2)}ms`);
-        
-        // Create virtual scroller container for large error sets
-        const totalErrors = errors.length;
-        const useVirtualScroll = totalErrors > 1000;
-        
-        if (useVirtualScroll) {
-          console.log(`🔍 Using virtual scroll for ${totalErrors} errors`);
-          
-          // Create virtual scroller container
-          const virtualContainer = document.createElement('div');
-          virtualContainer.className = 'error-virtual-container';
-          virtualContainer.style.height = '500px';
-          virtualContainer.style.overflow = 'auto';
-          
-          // Flatten all errors with unit info
-          const allErrors = [];
-          for (const [unit, unitErrors] of errorsByUnit) {
-            for (const error of unitErrors) {
-              allErrors.push({ ...error, unit });
-            }
-          }
-          
-          // Create content container
-          const contentContainer = document.createElement('div');
-          const itemHeight = 50;
-          contentContainer.style.height = `${allErrors.length * itemHeight}px`;
-          contentContainer.style.position = 'relative';
-          
-          virtualContainer.appendChild(contentContainer);
-          categoryDiv.appendChild(virtualContainer);
-          
-          // Track last rendered unit to avoid duplicates
-          let lastRenderedUnit = null;
-          
-          // Render function
-          const renderVisibleItems = () => {
-            const scrollTop = virtualContainer.scrollTop;
-            const startIndex = Math.floor(scrollTop / itemHeight);
-            const endIndex = Math.min(allErrors.length, startIndex + 20); // Render 20 items at a time
-            
-            // Clear only items that are no longer visible
-            const existingItems = contentContainer.querySelectorAll('.error-item, .error-unit-header');
-            existingItems.forEach(item => {
-              const index = parseInt(item.dataset.index);
-              if (index < startIndex || index >= endIndex) {
-                item.remove();
-              }
-            });
-            
-            // Render visible items
-            for (let i = startIndex; i < endIndex; i++) {
-              const error = allErrors[i];
-              
-              // Check if already rendered
-              if (contentContainer.querySelector(`[data-index="${i}"]`)) {
-                continue;
-              }
-              
-              // Check if we need a unit header
-              if (error.unit !== lastRenderedUnit) {
-                const header = document.createElement('div');
-                header.className = 'error-unit-header';
-                header.innerHTML = `<strong>${error.unit}</strong>`;
-                header.style.position = 'absolute';
-                header.style.top = `${i * itemHeight}px`;
-                header.style.left = '0';
-                header.style.right = '0';
-                header.style.height = '30px';
-                header.style.zIndex = '2';
-                header.dataset.index = i;
-                contentContainer.appendChild(header);
-                lastRenderedUnit = error.unit;
-              }
-              
-              // Create error item
-              const errorDiv = document.createElement('div');
-              errorDiv.className = `error-item ${this.getErrorSeverity(error.error)}`;
-              errorDiv.style.position = 'absolute';
-              errorDiv.style.top = `${i * itemHeight + (lastRenderedUnit === error.unit ? 0 : 30)}px`;
-              errorDiv.style.left = '16px';
-              errorDiv.style.right = '16px';
-              errorDiv.style.height = `${itemHeight}px`;
-              errorDiv.dataset.index = i;
-              
-              errorDiv.innerHTML = `
-                <div class="error-details">
-                  <div class="error-line">Line ${error.lineNumber}: ${escapeHtml(error.lineText)}</div>
-                </div>
-                <div class="error-count">1</div>
-              `;
-              
-              contentContainer.appendChild(errorDiv);
-            }
-          };
-          
-          // Initial render
-          renderVisibleItems();
-          
-          // Throttled scroll handler
-          let scrollTimeout;
-          virtualContainer.addEventListener('scroll', () => {
-            clearTimeout(scrollTimeout);
-            scrollTimeout = setTimeout(renderVisibleItems, 10);
-          });
-          
-        } else {
-          // Normal rendering for smaller error sets
-          const fragment = document.createDocumentFragment();
-          let unitCount = 0;
-          
-          for (const [unit, unitErrors] of errorsByUnit) {
-            const unitStart = performance.now();
-            unitCount++;
-            
-            const unitDiv = document.createElement('div');
-            unitDiv.className = 'error-unit-group';
-            
-            // Unit header with error count
-            const unitHeader = document.createElement('div');
-            unitHeader.className = 'error-unit-header';
-            unitHeader.innerHTML = `<strong>${unit}</strong> <span class="error-count-unit">${unitErrors.length} errors</span>`;
-            unitDiv.appendChild(unitHeader);
-            
-            // Show ALL errors for this unit
-            unitErrors.forEach(error => {
-              const errorDiv = document.createElement('div');
-              errorDiv.className = `error-item ${this.getErrorSeverity(error.error)}`;
-              
-              errorDiv.innerHTML = `
-                <div class="error-details">
-                  <div class="error-line">Line ${error.lineNumber}: ${escapeHtml(error.lineText)}</div>
-                </div>
-                <div class="error-count">1</div>
-              `;
-              
-              unitDiv.appendChild(errorDiv);
-            });
-            
-            fragment.appendChild(unitDiv);
-            
-            // Yield after every 5 units to prevent UI freezing
-            if (unitCount % 5 === 0) {
-              await new Promise(resolve => setTimeout(resolve, 0));
-            }
-            
-            console.log(`⏱️ Unit ${unit} (${unitErrors.length} errors) rendered in: ${(performance.now() - unitStart).toFixed(2)}ms`);
-          }
-          
-          categoryDiv.appendChild(fragment);
         }
         
-        console.log(`⏱️ Invalid Data total render time: ${(performance.now() - invalidDataStart).toFixed(2)}ms`);
-      } else {
-        // Render other error types in batches (original behavior)
-        for (let i = 0; i < errors.length; i += BATCH_SIZE) {
-          const batch = errors.slice(i, i + BATCH_SIZE);
-          const fragment = document.createDocumentFragment();
+        // Create content container
+        const baseItemHeight = 50; // Base height, will be adjusted dynamically
+        const contentContainer = document.createElement('div');
+        contentContainer.className = 'error-content-container';
+        contentContainer.style.position = 'relative';
+        
+        // Calculate heights dynamically
+        const calculateItemHeight = (error) => {
+          const textLength = error.lineText ? error.lineText.length : 0;
+          // Approximate height based on text length (assuming ~80 chars per line)
+          const estimatedLines = Math.ceil(textLength / 80);
+          return Math.max(50, 30 + (estimatedLines * 18)); // Min 50px, 18px per line
+        };
+        
+        // Calculate total height
+        let totalHeight = 0;
+        const itemPositions = [];
+        for (let i = 0; i < allErrors.length; i++) {
+          itemPositions.push(totalHeight);
+          totalHeight += calculateItemHeight(allErrors[i]);
+        }
+        contentContainer.style.height = `${totalHeight}px`;
+        
+        virtualContainer.appendChild(contentContainer);
+        categoryDiv.appendChild(virtualContainer);
+        
+        // Track last rendered unit to avoid duplicates
+        let lastRenderedUnit = null;
+        
+        // Render function
+        const renderVisibleItems = () => {
+          const scrollTop = virtualContainer.scrollTop;
           
-          batch.forEach(error => {
+          // Find visible items based on positions
+          let startIndex = 0;
+          let endIndex = 0;
+          
+          for (let i = 0; i < itemPositions.length; i++) {
+            if (itemPositions[i] < scrollTop + virtualContainer.clientHeight) {
+              endIndex = i + 1;
+            }
+            if (itemPositions[i] + calculateItemHeight(allErrors[i]) < scrollTop) {
+              startIndex = i + 1;
+            }
+          }
+          
+          endIndex = Math.min(allErrors.length, startIndex + 20); // Limit to 20 items at once
+          
+          // Clear only items that are no longer visible
+          const existingItems = contentContainer.querySelectorAll('.error-item, .error-unit-header');
+          existingItems.forEach(item => {
+            const index = parseInt(item.dataset.index);
+            if (index < startIndex || index >= endIndex) {
+              item.remove();
+            }
+          });
+          
+          // Render visible items
+          for (let i = startIndex; i < endIndex; i++) {
+            const error = allErrors[i];
+            
+            // Check if already rendered
+            if (contentContainer.querySelector(`[data-index="${i}"]`)) {
+              continue;
+            }
+            
+            // Check if we need a unit header
+            if (error.unit !== lastRenderedUnit) {
+              const header = document.createElement('div');
+              header.className = 'error-unit-header';
+              header.innerHTML = `<strong>${error.unit}</strong>`;
+              header.style.position = 'absolute';
+              header.style.top = `${itemPositions[i]}px`;
+              header.style.left = '0';
+              header.style.right = '0';
+              header.style.height = '30px';
+              header.style.zIndex = '2';
+              header.dataset.index = i;
+              contentContainer.appendChild(header);
+              lastRenderedUnit = error.unit;
+            }
+            
+            // Create error item
+            const errorDiv = document.createElement('div');
+            errorDiv.className = `error-item ${this.getErrorSeverity(error.error)}`;
+            errorDiv.style.position = 'absolute';
+            errorDiv.style.top = `${itemPositions[i] + (lastRenderedUnit === error.unit ? 0 : 30)}px`;
+            errorDiv.style.left = '16px';
+            errorDiv.style.right = '16px';
+            const itemHeight = calculateItemHeight(error);
+            errorDiv.style.height = `${itemHeight}px`;
+            errorDiv.dataset.index = i;
+            
+            errorDiv.innerHTML = `
+              <div class="error-details">
+                <div class="error-line" data-line-prefix="Line ${error.lineNumber}:">${escapeHtml(error.lineText)}</div>
+              </div>
+            `;
+            
+            contentContainer.appendChild(errorDiv);
+          }
+        };
+        
+        // Initial render
+        renderVisibleItems();
+        
+        // Throttled scroll handler
+        let scrollTimeout;
+        virtualContainer.addEventListener('scroll', () => {
+          clearTimeout(scrollTimeout);
+          scrollTimeout = setTimeout(renderVisibleItems, 10);
+        });
+        
+      } else {
+        // Normal rendering for smaller error sets
+        const fragment = document.createDocumentFragment();
+        let unitCount = 0;
+        
+        for (const [unit, unitErrors] of errorsByUnit) {
+          unitCount++;
+          
+          const unitDiv = document.createElement('div');
+          unitDiv.className = 'error-unit-group';
+          
+          // Unit header with error count
+          const unitHeader = document.createElement('div');
+          unitHeader.className = 'error-unit-header';
+          unitHeader.innerHTML = `<strong>${unit}</strong> <span class="error-count-unit">${unitErrors.length} errors</span>`;
+          unitDiv.appendChild(unitHeader);
+          
+          // Show ALL errors for this unit
+          unitErrors.forEach(error => {
             const errorDiv = document.createElement('div');
             errorDiv.className = `error-item ${this.getErrorSeverity(error.error)}`;
             
             errorDiv.innerHTML = `
-              <strong>${error.unit}</strong>
               <div class="error-details">
-                <div class="error-line">Line ${error.lineNumber}: ${escapeHtml(error.lineText)}</div>
+                <div class="error-line" data-line-prefix="Line ${error.lineNumber}:">${escapeHtml(error.lineText)}</div>
               </div>
-              <div class="error-count">1</div>
             `;
             
-            fragment.appendChild(errorDiv);
+            unitDiv.appendChild(errorDiv);
           });
           
-          categoryDiv.appendChild(fragment);
+          fragment.appendChild(unitDiv);
           
-          // Yield to browser after each batch
-          if (i + BATCH_SIZE < errors.length) {
+          // Yield after every 5 units to prevent UI freezing
+          if (unitCount % 5 === 0) {
             await new Promise(resolve => setTimeout(resolve, 0));
           }
         }
+        
+        categoryDiv.appendChild(fragment);
       }
+      
+      // Append the category to container
+      container.appendChild(categoryDiv);
     }
     
-    console.log(`✅ renderErrorsInBatches completed in ${(performance.now() - startTime).toFixed(2)}ms`);
+    console.log(`\u2705 renderErrorsInBatches completed in ${(performance.now() - startTime).toFixed(2)}ms`);
   }
   
   getErrorSeverity(errorMsg) {

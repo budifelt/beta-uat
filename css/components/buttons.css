@@ -291,9 +291,12 @@
 }
 
 .file-tree .folder > .label::before {
-  content: '▶';
+  content: '\f105';
+  font-family: 'Font Awesome 6 Free';
+  font-weight: 900;
   margin-right: var(--space-1);
   font-size: 8px;
+  transition: transform 0.2s ease;
 }
 
 .file-tree .folder.open > .label::before {

@@ -596,11 +596,15 @@ body.initializing .content .field [class*="tooltip"] {
 }
 
 .CodeMirror-foldgutter-open:after {
-  content: "▼";
+  content: "\f107";
+  font-family: 'Font Awesome 6 Free';
+  font-weight: 900;
 }
 
 .CodeMirror-foldgutter-folded:after {
-  content: "▶";
+  content: "\f105";
+  font-family: 'Font Awesome 6 Free';
+  font-weight: 900;
 }
 
 /* Search dialog */

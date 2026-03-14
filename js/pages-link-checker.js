@@ -132,7 +132,7 @@ function makeItemEl(rec){
     rec.status==='live' ? 'badge-live' :
     rec.status==='err'  ? 'badge-err'  : 'badge-wait'
   );
-  badge.textContent = (rec.status==='live'?'✅ ':'❌ ') + (rec.status?.toUpperCase() || 'WAIT') +
+  badge.innerHTML = (rec.status==='live'?'<i class="fa-solid fa-check"></i> ':'<i class="fa-solid fa-xmark"></i> ') + (rec.status?.toUpperCase() || 'WAIT') +
                       (rec.code ? ` (${rec.code})` : '');
 
   const open = document.createElement('a');
@@ -334,7 +334,7 @@ const clearBulk = document.getElementById('clearBulk');
 const tbody = document.querySelector('#tbl tbody');
 
 function rowTpl(u, status){
-  const icon = status==='LIVE' ? '✅' : status==='WAIT' ? '⏳' : '❌';
+  const icon = status==='LIVE' ? '<i class="fa-solid fa-check"></i>' : status==='WAIT' ? '<i class="fa-solid fa-hourglass-half"></i>' : '<i class="fa-solid fa-xmark"></i>';
   return `<tr><td style="word-break:break-all">${u}</td><td>${icon} ${status}</td></tr>`;
 }
 runBulk?.addEventListener('click', async()=>{
@@ -349,10 +349,10 @@ runBulk?.addEventListener('click', async()=>{
     upsertRecord(rec);
     try{
       const out = await checkOnce(u, mode, (state, code)=> updateBadge(rec.id, state, code));
-      tbody.rows[i].cells[1].innerText = out.ok ? '✅ LIVE' : `❌ ${out.status||'ERR'}`;
+      tbody.rows[i].cells[1].innerHTML = out.ok ? '<i class="fa-solid fa-check"></i> LIVE' : `<i class="fa-solid fa-xmark"></i> ${out.status||'ERR'}`;
       ensureTitle(rec.id);
     }catch{
-      tbody.rows[i].cells[1].innerText = '❌ ERR';
+      tbody.rows[i].cells[1].innerHTML = '<i class="fa-solid fa-xmark"></i> ERR';
       updateBadge(rec.id, 'err', 'ERR');
       ensureTitle(rec.id);
     }

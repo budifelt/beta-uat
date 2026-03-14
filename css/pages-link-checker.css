@@ -61,7 +61,7 @@
   color: var(--accent-primary);
 }
 
-#tbl tr:has(td:contains("❌")) td:last-child {
+#tbl tr:has(td:contains("\u274c")) td:last-child {
   color: var(--error);
 }
 

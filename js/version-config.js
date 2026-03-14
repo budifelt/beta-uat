@@ -14,7 +14,7 @@ function generateBuildNumber() {
 }
 
 // Version Configuration
-// ⚠️ UBAH BAGIAN INI SAAT UPDATE VERSI MANUAL ⚠️
+// \u26a0\ufe0f UBAH BAGIAN INI SAAT UPDATE VERSI MANUAL \u26a0\ufe0f
 const VERSION_CONFIG = {
   version: '4.6.0',                    // ← GANTI VERSI DI SINI (contoh: '1.2.0', '2.0.0')
   buildDate: new Date().toISOString(),        // ← OTOMATIS, tidak perlu diganti
@@ -25,7 +25,7 @@ const VERSION_CONFIG = {
 };
 
 // Auto-update version system
-// ⚠️ UBAH BAGIAN INI UNTUK KONTROL AUTO-UPDATE ⚠️
+// \u26a0\ufe0f UBAH BAGIAN INI UNTUK KONTROL AUTO-UPDATE \u26a0\ufe0f
 let AUTO_UPDATE_ENABLED = false;                 // ← GANTI JIKA INI MATIKAN AUTO-UPDATE (true/false)
 let AUTO_UPDATE_INTERVAL = 60000;              // ← GANTI INTERVAL AUTO-UPDATE (ms) - 60000 = 1 menit
 
@@ -58,14 +58,14 @@ function autoUpdateVersion() {
   VERSION_CONFIG.buildNumber = generateBuildNumber();
   
   updateAllVersionDisplays();
-  console.log(`🔄 Auto-updated to v${newVersion} at ${new Date().toLocaleTimeString()}`);
+  console.log(`\ud83d\udd04 Auto-updated to v${newVersion} at ${new Date().toLocaleTimeString()}`);
 }
 
 // Start auto-update system
 function startAutoUpdate() {
   if (AUTO_UPDATE_ENABLED && !window.autoUpdateInterval) {
     window.autoUpdateInterval = setInterval(autoUpdateVersion, AUTO_UPDATE_INTERVAL);
-    console.log('🔄 Auto-update system started (every 1 minute)');
+    console.log('\ud83d\udd04 Auto-update system started (every 1 minute)');
   }
 }
 
@@ -75,7 +75,7 @@ function stopAutoUpdate() {
     clearInterval(window.autoUpdateInterval);
     window.autoUpdateInterval = null;
     AUTO_UPDATE_ENABLED = false;
-    console.log('⏹️ Auto-update system stopped');
+    console.log('\u23f9\ufe0f Auto-update system stopped');
   }
 }
 
@@ -204,7 +204,7 @@ window.updateVersion = function(newVersion, buildDate = null, disableAutoUpdate 
   }
   
   updateAllVersionDisplays();
-  console.log(`🔄 Version updated to v${newVersion}`);
+  console.log(`\ud83d\udd04 Version updated to v${newVersion}`);
 };
 
 // Global functions for auto-update control

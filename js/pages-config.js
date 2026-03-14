@@ -6,7 +6,7 @@ function getXmlSubject() {
 }
 
 function setTooltipsEnabled(enabled) {
-  console.log('🔧 TOOLTIPS ENABLED:', enabled);
+  console.log('\ud83d\udd27 TOOLTIPS ENABLED:', enabled);
   document.body.classList.toggle('tooltips-disabled', !enabled);
 }
 
@@ -823,7 +823,7 @@ const debouncedUpdateCampaignCount = debounce(updateCampaignCountIndicator, 100)
 if (elements.campaignIdInput) {
   elements.campaignIdInput.addEventListener('input', (event) => {
     // DEBUG: Log input event
-    console.log('🔥 CAMPAIGN ID INPUT EVENT:', {
+    console.log('\ud83d\udd25 CAMPAIGN ID INPUT EVENT:', {
       value: elements.campaignIdInput.value,
       isInitializing: isPageInitializing,
       isTrusted: event.isTrusted,
@@ -1337,7 +1337,7 @@ if (elements.linkInput) {
             validationTooltip.style.opacity = '1';
             
             // DEBUG: Log link validation tooltip
-            console.log('🔗 LINK VALIDATION TOOLTIP SHOWN:', {
+            console.log('\ud83d\udd17 LINK VALIDATION TOOLTIP SHOWN:', {
               error: linkValidation.error,
               isPageInitializing,
               bodyClasses: document.body.className
@@ -1517,7 +1517,7 @@ function saveState() {
 }
 
 function loadState() {
-  console.log('🔄 LOAD STATE START:', { isPageInitializing });
+  console.log('\ud83d\udd04 LOAD STATE START:', { isPageInitializing });
   
   const saved = localStorage.getItem('config_state');
   if (!saved) { 
@@ -1530,7 +1530,7 @@ function loadState() {
     
     // Always load form values even without xmlDoc
     if (elements.campaignIdInput) {
-      console.log('📝 SETTING FORM VALUES:', {
+      console.log('\ud83d\udcdd SETTING FORM VALUES:', {
         campaignId: state.campaignId,
         subject: state.subject,
         link: state.link,
@@ -1610,7 +1610,7 @@ let campaignIdTooltipTimeout = null;
 
 function showCampaignIdTooltip(message, type = 'validation', options = {}) {
   // DEBUG: Log exactly when this is called
-  console.log('🚨 TOOLTIP SHOW CALLED:', {
+  console.log('\ud83d\udea8 TOOLTIP SHOW CALLED:', {
     message,
     type,
     isPageInitializing,
@@ -1683,7 +1683,7 @@ function showCampaignIdTooltip(message, type = 'validation', options = {}) {
   tooltip.style.opacity = '1';
   
   // DEBUG: Log when tooltip is actually shown
-  console.log('✅ TOOLTIP ACTUALLY SHOWN:', {
+  console.log('\u2705 TOOLTIP ACTUALLY SHOWN:', {
     message,
     opacity: tooltip.style.opacity,
     display: window.getComputedStyle(tooltip).display,
@@ -2291,7 +2291,7 @@ window.addEventListener('load', () => {
     isPageInitializing = false;
     
     // DO NOT ENABLE TOOLTIPS HERE - only enable when XML file is opened
-    console.log('🏁 WINDOW LOAD COMPLETE - TOOLTIPS STILL DISABLED');
+    console.log('\ud83c\udfc1 WINDOW LOAD COMPLETE - TOOLTIPS STILL DISABLED');
   }, 150);
 
   // Add save button event listener after DOM is loaded
@@ -2365,7 +2365,7 @@ window.addEventListener('load', () => {
 
 // Clear content section when no folder/file is active
 function clearContentWhenNoFolder() {
-  console.log('🗂️ CLEAR CONTENT - DISABLING TOOLTIPS');
+  console.log('\ud83d\udcc1 CLEAR CONTENT - DISABLING TOOLTIPS');
   setTooltipsEnabled(false);
   // Clear all tooltip states/classes first to avoid stale visible bars.
   clearAllTooltips();
@@ -2685,7 +2685,7 @@ function toggleFolder(folderItem) {
 
 // Select and load file
 async function selectFile(fileItem, fileHandle) {
-  console.log('📂 SELECT FILE CALLED - ENABLING TOOLTIPS');
+  console.log('\ud83d\udcc2 SELECT FILE CALLED - ENABLING TOOLTIPS');
   
   // ENABLE TOOLTIPS when XML file is opened
   setTooltipsEnabled(true);
@@ -2717,7 +2717,7 @@ async function selectFile(fileItem, fileHandle) {
     
     // Trigger validation after loading file - ALWAYS run when file is opened
     setTimeout(() => {
-      console.log('🔍 TRIGGERING VALIDATION AFTER FILE LOAD');
+      console.log('\ud83d\udd0d TRIGGERING VALIDATION AFTER FILE LOAD');
       validateFormFields();
     }, 100);
 
@@ -2915,7 +2915,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.body.classList.remove('initializing');
   isPageInitializing = false;
   
-  console.log('🏁 PAGE INITIALIZATION COMPLETE - TOOLTIPS REMAIN DISABLED');
+  console.log('\ud83c\udfc1 PAGE INITIALIZATION COMPLETE - TOOLTIPS REMAIN DISABLED');
   
   if (typeof decorateButtons === 'function') decorateButtons();
 });
