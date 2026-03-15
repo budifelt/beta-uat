@@ -277,7 +277,7 @@ const originalUrlInput = document.getElementById('originalUrlInput');
   stopBtn.addEventListener('click', () => {
     if (abortController) {
       abortController.abort();
-      showToast('Operation stopped', 'warning');
+      console.log('Operation stopped');
       hideProgress();
     }
   });
@@ -321,7 +321,7 @@ const originalUrlInput = document.getElementById('originalUrlInput');
     console.log('Has valid KRHRED:', hasValidKrhred);
     
     if (!hasValidKrhred) {
-      showToast('No KRHRED values to apply. Please fill in KRHRED values first.', 'warning');
+      console.log('No KRHRED values to apply. Please fill in KRHRED values first.');
       return;
     }
     
@@ -359,7 +359,7 @@ const originalUrlInput = document.getElementById('originalUrlInput');
     const url = URL.createObjectURL(blob);
     window.open(url, '_blank');
     
-    showToast('Layout checked successfully! Opening in new tab...', 'success');
+    console.log('Layout checked successfully! Opening in new tab...');
   });
 
   addKrhredBtn.addEventListener('click', () => {
@@ -418,7 +418,7 @@ const originalUrlInput = document.getElementById('originalUrlInput');
     });
 
     // Show success message
-    showToast(`Unit ${newNum} added successfully!`, 'success');
+    console.log(`Unit ${newNum} added successfully!`);
   });
 
   // Input color feedback for existing inputs
@@ -462,7 +462,7 @@ const originalUrlInput = document.getElementById('originalUrlInput');
   manualPasteBtn.addEventListener('click', () => {
     const url = originalUrlInput.value.trim();
     if (!url) {
-      showToast('Please enter a URL first.', 'error');
+      console.log('Please enter a URL first.');
       return;
     }
     
@@ -473,7 +473,7 @@ const originalUrlInput = document.getElementById('originalUrlInput');
     setTimeout(() => {
       window.open(url, '_blank');
       localStorage.setItem('layoutCheckerURL', url);
-      showToast('Page opened in new tab. Please copy source code (Ctrl+U or Right-click → View Page Source) and paste it here.', 'info');
+      console.log('Page opened in new tab. Please copy source code (Ctrl+U or Right-click → View Page Source) and paste it here.');
       setTimeout(() => {
         hideProgress();
       }, 1000);
@@ -484,7 +484,7 @@ const originalUrlInput = document.getElementById('originalUrlInput');
   textModeBtn.addEventListener('click', async () => {
     const url = originalUrlInput.value.trim();
     if (!url) {
-      showToast('Please enter a URL first.', 'error');
+      console.log('Please enter a URL first.');
       return;
     }
     
@@ -507,16 +507,16 @@ const originalUrlInput = document.getElementById('originalUrlInput');
       
       if (content && content.includes('<html')) {
         editor.setValue(content);
-        showToast('Content loaded successfully!', 'success');
+        console.log('Content loaded successfully!');
         generateKrhredColumns(content);
       } else {
-        showToast('Unable to fetch content as plain text. Please use Manual Paste option.', 'warning');
+        console.log('Unable to fetch content as plain text. Please use Manual Paste option.');
       }
     } catch (error) {
       if (error.name === 'AbortError') {
-        showToast('Fetch cancelled', 'info');
+        console.log('Fetch cancelled');
       } else {
-        showToast('Failed to fetch content. Please use Manual Paste option.', 'error');
+        console.log('Failed to fetch content. Please use Manual Paste option.');
       }
     } finally {
       hideProgress();
@@ -647,9 +647,9 @@ const originalUrlInput = document.getElementById('originalUrlInput');
     if (showNotification) {
       if (matches.length > 0) {
         console.log(`Generated ${matches.length} krhred_unit columns:`, matches);
-        showToast(`HTML fetched! Found ${matches.length} KRHRED units: ${matches.join(', ')}`, 'success');
+        console.log(`HTML fetched! Found ${matches.length} KRHRED units: ${matches.join(', ')}`);
       } else {
-        showToast('HTML fetched! No KRHRED units found. Showing default layout.', 'info');
+        console.log('HTML fetched! No KRHRED units found. Showing default layout.');
       }
     }
   }
@@ -658,7 +658,7 @@ const originalUrlInput = document.getElementById('originalUrlInput');
   downloadBtn.addEventListener('click', async () => {
     const url = originalUrlInput.value.trim();
     if (!url) {
-      showToast('Please enter a URL first.', 'error');
+      console.log('Please enter a URL first.');
       return;
     }
 
@@ -701,7 +701,7 @@ const originalUrlInput = document.getElementById('originalUrlInput');
           const contentType = response.headers.get('content-type');
           if (contentType && contentType.includes('text/html')) {
             htmlContent = await response.text();
-            showToast('Direct connection successful!', 'success');
+            console.log('Direct connection successful!');
           }
         }
       } catch (error) {
@@ -799,7 +799,7 @@ const originalUrlInput = document.getElementById('originalUrlInput');
 
     } catch (error) {
       console.error('Error fetching HTML:', error);
-      showToast('Failed to fetch HTML content. Please try again or use Manual Paste option.', 'error');
+      console.log('Failed to fetch HTML content. Please try again or use Manual Paste option.');
     } finally {
       downloadBtn.disabled = false;
       downloadBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="margin-right: 4px;"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>Download';
@@ -818,7 +818,7 @@ const originalUrlInput = document.getElementById('originalUrlInput');
     console.log('KRHRED text preview:', krhredText.substring(0, 200));
     
     if (!krhredText) {
-      showToast('Please paste krhred values first.', 'error');
+      console.log('Please paste krhred values first.');
       return;
     }
 
@@ -854,16 +854,16 @@ const originalUrlInput = document.getElementById('originalUrlInput');
       }
     });
     
-    showToast('KRHRED values applied successfully!', 'success');
+    console.log('KRHRED values applied successfully!');
   });
 
   // Clear All functionality
   clearAllBtn.addEventListener('click', () => {
     if (confirm('Are you sure you want to clear all KRHRED values?')) {
       performClearAll();
-      showToast('KRHRED values cleared successfully!', 'success');
+      console.log('KRHRED values cleared successfully!');
     } else {
-      showToast('Clear action cancelled.', 'info');
+      console.log('Clear action cancelled.');
     }
   });
 
@@ -905,12 +905,12 @@ const originalUrlInput = document.getElementById('originalUrlInput');
         e.preventDefault();
         if (confirm('You have unsaved data. Are you sure you want to refresh and clear everything?')) {
           performClearAll();
-          showToast('Data cleared. Refreshing page...', 'info');
+          console.log('Data cleared. Refreshing page...');
           setTimeout(() => {
             window.location.reload();
           }, 1000);
         } else {
-          showToast('Refresh cancelled.', 'info');
+          console.log('Refresh cancelled.');
         }
       }
     }
@@ -929,7 +929,7 @@ const originalUrlInput = document.getElementById('originalUrlInput');
         downloadBtn.style.display = 'flex';
         manualPasteBtn.style.display = 'flex';
       }
-      showToast('Source code automatically pasted from previous page!', 'success');
+      console.log('Source code automatically pasted from previous page!');
     }
     localStorage.removeItem('layoutCheckerSource');
     localStorage.removeItem('layoutCheckerURL');
