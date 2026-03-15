@@ -233,10 +233,12 @@ const originalUrlInput = document.getElementById('originalUrlInput');
   const downloadBtn = document.getElementById('downloadBtn');
   const manualPasteBtn = document.getElementById('manualPasteBtn');
   const textModeBtn = document.getElementById('textModeBtn');
+  const checkLayoutBtn = document.getElementById('checkLayoutBtn');
   const clearAllBtn = document.getElementById('clearAllBtn');
   const progressContainer = document.getElementById('progressContainer');
   const progressText = document.getElementById('progressText');
   const stopBtn = document.getElementById('stopBtn');
+  const krhredUnitsContainer = document.getElementById('krhredUnitsContainer');
   
   // AbortController for stopping operations
   let abortController = null;
@@ -292,8 +294,14 @@ const originalUrlInput = document.getElementById('originalUrlInput');
 
   // Helper function to validate URLholders <%[KRHRED_Unit_XX]|%> with textbox values or remove if empty
   checkLayoutBtn.addEventListener('click', () => {
-    const content = editor.getValue();
+    console.log('Check Layout button clicked');
+    let content = editor.getValue();
+    console.log('Editor content length:', content.length);
+    console.log('Editor content preview:', content.substring(0, 200));
+    
     const inputs = krhredUnitsContainer.querySelectorAll('input[id^="krhred_unit_"]');
+    console.log('KRHRED inputs found:', inputs.length);
+    
     let hasValidKrhred = false;
     
     inputs.forEach(input => {
@@ -302,11 +310,15 @@ const originalUrlInput = document.getElementById('originalUrlInput');
       if (input.value && input.value.trim() !== '') {
         content = content.replace(regex, input.value);
         hasValidKrhred = true;
+        console.log(`Replaced KRHRED_Unit_${num} with: ${input.value}`);
       } else {
         // Remove empty KRHRED placeholders completely
         content = content.replace(regex, '');
+        console.log(`Removed empty KRHRED_Unit_${num}`);
       }
     });
+    
+    console.log('Has valid KRHRED:', hasValidKrhred);
     
     if (!hasValidKrhred) {
       showToast('No KRHRED values to apply. Please fill in KRHRED values first.', 'warning');
@@ -315,6 +327,7 @@ const originalUrlInput = document.getElementById('originalUrlInput');
     
     // Fix image URLs to absolute URLs if original URL is provided
     const originalUrlValue = document.getElementById('originalUrlInput').value.trim();
+    console.log('Original URL:', originalUrlValue);
     
     // Convert relative image URLs to absolute URLs
     let processedContent = content;
@@ -327,32 +340,26 @@ const originalUrlInput = document.getElementById('originalUrlInput');
         processedContent = content.replace(/src="(?!https?:\/\/)([^"]+)"/g, (match, p1) => {
           const relativePath = p1.replace(/"/g, '');
           // Don't convert if already absolute, data URL, or protocol-relative
-          if (!relativePath.match(/^(https?:\/\/|data:|\/\/)/)) {
-            return `src="${baseUrlString}${relativePath}"`;
+          if (relativePath.startsWith('data:') || relativePath.startsWith('//')) {
+            return match;
           }
-          return match;
+          return `src="${baseUrlString}${relativePath}"`;
         });
-        
-        // Convert href attributes
-        processedContent = processedContent.replace(/href="(?!https?:\/\/)([^"]+)"/g, (match, p1) => {
-          const relativePath = p1.replace(/"/g, '');
-          // Don't convert if already absolute, data URL, or protocol-relative
-          if (!relativePath.match(/^(https?:\/\/|data:|\/\/)/)) {
-            return `href="${baseUrlString}${relativePath}"`;
-          }
-          return match;
-        });
-      } catch (error) {
-        console.log('Error processing URLs:', error);
+        console.log('Processed content with absolute URLs');
+      } catch (e) {
+        console.error('Error processing URLs:', e);
         processedContent = content; // Fallback to original content
       }
     }
+    
+    console.log('Opening processed content in new tab');
     
     // Save content as a Blob and open in new tab
     const blob = new Blob([processedContent], { type: 'text/html' });
     const url = URL.createObjectURL(blob);
     window.open(url, '_blank');
-    if (statusDiv) { statusDiv.textContent = ''; statusDiv.id = ''; }
+    
+    showToast('Layout checked successfully! Opening in new tab...', 'success');
   });
 
   addKrhredBtn.addEventListener('click', () => {
