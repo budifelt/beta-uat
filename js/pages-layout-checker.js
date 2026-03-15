@@ -1,3 +1,221 @@
+/* ===================================
+   TOAST UTILITY - Merged from toast.js
+   =================================== */
+
+/* ===================================
+   SHARED TOAST UTILITY
+   =================================== */
+
+// Global Toast Manager Class
+class ToastManager {
+  constructor() {
+    this.container = null;
+    this.init();
+  }
+  
+  init() {
+    // Create toast container if it doesn't exist
+    if (!document.getElementById('toast-container')) {
+      this.container = document.createElement('div');
+      this.container.id = 'toast-container';
+      this.container.style.cssText = `
+        position: fixed;
+        top: 80px;
+        right: 20px;
+        z-index: 10000;
+        pointer-events: none;
+      `;
+      // Append to layout area
+      const layoutArea = document.querySelector('main.layout');
+      if (layoutArea) {
+        layoutArea.appendChild(this.container);
+      } else {
+        // Fallback to body
+        document.body.appendChild(this.container);
+      }
+    } else {
+      this.container = document.getElementById('toast-container');
+    }
+  }
+  
+  show(message, type = 'info', options = {}) {
+    const {
+      duration = 3000,
+      position = 'top-right'
+    } = options;
+    
+    // Update container position
+    this.updatePosition(position);
+    
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${type}`;
+    toast.style.cssText = `
+      background: ${type === 'success' ? '#22c55e' : type === 'error' ? '#ef4444' : type === 'warning' ? '#eab308' : '#3b82f6'};
+      color: white;
+      padding: 12px 20px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      pointer-events: auto;
+      cursor: pointer;
+      transform: translateX(100%);
+      transition: transform 0.3s ease;
+      max-width: 300px;
+      word-wrap: break-word;
+    `;
+    toast.textContent = message;
+    
+    this.container.appendChild(toast);
+    
+    // Animate in
+    requestAnimationFrame(() => {
+      toast.style.transform = 'translateX(0)';
+    });
+    
+    // Remove on click
+    toast.addEventListener('click', () => {
+      this.remove(toast);
+    });
+    
+    // Auto remove
+    setTimeout(() => {
+      this.remove(toast);
+    }, duration);
+  }
+  
+  updatePosition(position) {
+    const positions = {
+      'top-right': 'top: 80px; right: 20px;',
+      'top-left': 'top: 80px; left: 20px;',
+      'bottom-right': 'bottom: 20px; right: 20px;',
+      'bottom-left': 'bottom: 20px; left: 20px;'
+    };
+    
+    this.container.style.cssText = `
+      position: fixed;
+      z-index: 10000;
+      pointer-events: none;
+      ${positions[position] || positions['top-right']}
+    `;
+  }
+  
+  remove(toast) {
+    toast.style.transform = 'translateX(100%)';
+    setTimeout(() => {
+      if (toast.parentNode) {
+        toast.parentNode.removeChild(toast);
+      }
+    }, 300);
+  }
+  
+  success(message, options = {}) {
+    this.show(message, 'success', options);
+  }
+  
+  error(message, options = {}) {
+    this.show(message, 'error', options);
+  }
+  
+  warning(message, options = {}) {
+    this.show(message, 'warning', options);
+  }
+  
+  info(message, options = {}) {
+    this.show(message, 'info', options);
+  }
+}
+
+// Shared showToast function
+function showToast(message, type = 'info', title = '') {
+  // Use global toast system if available
+  if (type === 'success' && window.toastSuccess) {
+    window.toastSuccess(message, title);
+    return;
+  } else if (type === 'error' && window.toastError) {
+    window.toastError(message, title);
+    return;
+  } else if (type === 'warning' && window.toastWarning) {
+    window.toastWarning(message, title);
+    return;
+  } else if (window.toastInfo) {
+    window.toastInfo(message, title);
+    return;
+  }
+  
+  // Fallback - create simple toast
+  const toast = document.createElement('div');
+  toast.style.cssText = `
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: ${type === 'success' ? '#4CAF50' : type === 'error' ? '#f44336' : '#2196F3'};
+    color: white;
+    padding: 12px 20px;
+    border-radius: 5px;
+    z-index: 10000;
+    font-size: 14px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  `;
+  toast.textContent = message;
+  document.body.appendChild(toast);
+  
+  // Animate in
+  setTimeout(() => toast.style.opacity = '1', 100);
+  
+  // Remove after 3 seconds
+  setTimeout(() => {
+    toast.style.opacity = '0';
+    setTimeout(() => {
+      if (toast.parentNode) {
+        toast.parentNode.removeChild(toast);
+      }
+    }, 300);
+  }, 3000);
+}
+
+// Initialize global toast manager
+window.toastManager = new ToastManager();
+
+// Global toast functions for compatibility
+window.toastSuccess = function(message, title = '') {
+  if (window.toastManager) {
+    window.toastManager.success(message);
+  }
+};
+
+window.toastError = function(message, title = '') {
+  if (window.toastManager) {
+    window.toastManager.error(message);
+  }
+};
+
+window.toastWarning = function(message, title = '') {
+  if (window.toastManager) {
+    window.toastManager.warning(message);
+  }
+};
+
+window.toastInfo = function(message, title = '') {
+  if (window.toastManager) {
+    window.toastManager.info(message);
+  }
+};
+
+// Export for module usage
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = { ToastManager, showToast };
+}
+
+
+// Initialize Toast Manager
+document.addEventListener('DOMContentLoaded', () => {
+  window.toastManager = new ToastManager();
+});
+
+/* ===================================
+   ORIGINAL CODE
+   =================================== */
+
 
 // ---- Extracted scripts from inline <script> blocks ----
 // Initialize CodeMirror editor for htmlInput textarea
@@ -16,7 +234,13 @@ const originalUrlInput = document.getElementById('originalUrlInput');
   const manualPasteBtn = document.getElementById('manualPasteBtn');
   const textModeBtn = document.getElementById('textModeBtn');
   const clearAllBtn = document.getElementById('clearAllBtn');
-  // const toggleKrhredBtn = document.getElementById('toggleKrhredBtn'); // REMOVED
+  const progressContainer = document.getElementById('progressContainer');
+  const progressText = document.getElementById('progressText');
+  const stopBtn = document.getElementById('stopBtn');
+  
+  // AbortController for stopping operations
+  let abortController = null;
+  let currentOperation = null;
 
   // Toast notification - using global toast manager
   function showToast(message, type = 'info') {
@@ -33,6 +257,29 @@ const originalUrlInput = document.getElementById('originalUrlInput');
     }
   }
 
+  // Progress indicator functions
+  function showProgress(text, operation) {
+    progressText.textContent = text;
+    progressContainer.classList.remove('hidden');
+    currentOperation = operation;
+    abortController = new AbortController();
+  }
+
+  function hideProgress() {
+    progressContainer.classList.add('hidden');
+    currentOperation = null;
+    abortController = null;
+  }
+
+  // Stop button functionality
+  stopBtn.addEventListener('click', () => {
+    if (abortController) {
+      abortController.abort();
+      showToast('Operation stopped', 'warning');
+      hideProgress();
+    }
+  });
+
   // Helper function to validate URL
   function isValidUrl(url) {
     try {
@@ -44,6 +291,8 @@ const originalUrlInput = document.getElementById('originalUrlInput');
   }
 
   // Helper function to validate URLholders <%[KRHRED_Unit_XX]|%> with textbox values or remove if empty
+  checkLayoutBtn.addEventListener('click', () => {
+    const content = editor.getValue();
     const inputs = krhredUnitsContainer.querySelectorAll('input[id^="krhred_unit_"]');
     let hasValidKrhred = false;
     
@@ -213,10 +462,20 @@ const originalUrlInput = document.getElementById('originalUrlInput');
       return;
     }
     
-    // Open URL in new tab and show instructions
-    window.open(url, '_blank');
-    localStorage.setItem('layoutCheckerURL', url);
-    showToast('Page opened in new tab. Please copy source code (Ctrl+U or Right-click → View Page Source) and paste it here.', 'info');
+    // Show progress
+    showProgress('Opening page in new tab...', 'open-tab');
+    
+    // Open URL in new tab after a short delay
+    setTimeout(() => {
+      window.open(url, '_blank');
+      localStorage.setItem('layoutCheckerURL', url);
+      showToast('Page opened in new tab. Please copy source code (Ctrl+U or Right-click → View Page Source) and paste it here.', 'info');
+      
+      // Hide progress after opening
+      setTimeout(() => {
+        hideProgress();
+      }, 1000);
+    }, 500);
     
     // Focus HTML editor
     editor.focus();
@@ -249,37 +508,46 @@ const originalUrlInput = document.getElementById('originalUrlInput');
   // });
 
   // Text mode button functionality
-  textModeBtn.addEventListener('click', () => {
+  textModeBtn.addEventListener('click', async () => {
     const url = originalUrlInput.value.trim();
     if (!url) {
       showToast('Please enter a URL first.', 'error');
       return;
     }
     
-    // Try to fetch as plain text (some servers allow this)
-    showToast('Attempting to fetch as plain text...', 'info');
+    // Show progress
+    showProgress('Fetching as plain text...', 'fetch-text');
     
-    fetch(url, {
-      headers: {
-        'Accept': 'text/plain,text/html,*/*;q=0.8'
+    try {
+      const response = await fetch(url, {
+        headers: {
+          'Accept': 'text/plain,text/html,*/*;q=0.8'
+        },
+        signal: abortController.signal
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to fetch');
       }
-    }).then(response => {
-      if (response.ok) {
-        return response.text();
-      }
-      throw new Error('Failed to fetch');
-    }).then(content => {
+      
+      const content = await response.text();
+      
       if (content && content.includes('<html')) {
         editor.setValue(content);
-        // generateKrhredColumns will be called by editor.on('change') event
-        showToast('Content fetched successfully in text mode!', 'success');
+        showToast('Content loaded successfully!', 'success');
+        generateKrhredColumns(content);
       } else {
-        throw new Error('Invalid content received');
+        showToast('Unable to fetch content as plain text. Please use Manual Paste option.', 'warning');
       }
-    }).catch(error => {
-      showToast('Text mode failed. Please use manual paste option.', 'warning');
-      console.log('Text mode error:', error);
-    });
+    } catch (error) {
+      if (error.name === 'AbortError') {
+        showToast('Fetch cancelled', 'info');
+      } else {
+        showToast('Failed to fetch content. Please use Manual Paste option.', 'error');
+      }
+    } finally {
+      hideProgress();
+    }
   });
 
   // Helper function to validate URL
@@ -420,7 +688,10 @@ const originalUrlInput = document.getElementById('originalUrlInput');
     }
 
     try {
-      // Show loading state
+      // Show progress
+      showProgress('Fetching HTML content...', 'download');
+      
+      // Disable button during fetch
       downloadBtn.disabled = true;
       downloadBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="margin-right: 4px; animation: spin 1s linear infinite;"><path d="M12,4V2A10,10 0 0,0 2,12H4A8,8 0 0,1 12,4Z"/></svg>Fetching...';
 
@@ -443,29 +714,27 @@ const originalUrlInput = document.getElementById('originalUrlInput');
       // Try direct fetch first with timeout
       try {
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
-        
-        const response = await fetch(url, {
-          mode: 'cors',
-          signal: controller.signal,
-          headers: {
-            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
-          }
+        const timeoutId = setTimeout(() => controller.abort(), 5000);
+
+        const response = await fetch(url, { 
+          signal: abortController ? abortController.signal : controller.signal
         });
         
         clearTimeout(timeoutId);
         
         if (response.ok) {
-          htmlContent = await response.text();
-          usedProxy = 'direct';
+          const contentType = response.headers.get('content-type');
+          if (contentType && contentType.includes('text/html')) {
+            htmlContent = await response.text();
+            showToast('Direct connection successful!', 'success');
+          }
         }
-      } catch (directError) {
-        console.log('Direct fetch failed, trying proxies...');
-        lastError = directError;
+      } catch (error) {
+        lastError = error;
+        // Continue to try proxies
       }
 
-      // If direct fetch failed, try CORS proxies sequentially (not parallel to avoid rate limits)
+      // If direct fetch failed, try CORS proxies sequentially
       if (!htmlContent) {
         for (let i = 0; i < corsProxies.length; i++) {
           const proxy = corsProxies[i];
@@ -568,6 +837,7 @@ const originalUrlInput = document.getElementById('originalUrlInput');
     } finally {
       downloadBtn.disabled = false;
       downloadBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="margin-right: 4px;"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>Download';
+      hideProgress();
     }
   });
 
@@ -687,10 +957,10 @@ const originalUrlInput = document.getElementById('originalUrlInput');
     document.getElementById('manualPasteBtn').style.display = 'none';
     document.getElementById('textModeBtn').style.display = 'none';
 
-    // Remove saved state
-    localStorage.removeItem('layoutChecker_state');
-    localStorage.removeItem('layoutCheckerSource');
-    localStorage.removeItem('layoutCheckerURL');
+    // Remove saved state - DISABLED
+    // localStorage.removeItem('layoutChecker_state');
+    // localStorage.removeItem('layoutCheckerSource');
+    // localStorage.removeItem('layoutCheckerURL');
   }
 
   // Handle F5 refresh with confirmation
@@ -753,345 +1023,70 @@ const originalUrlInput = document.getElementById('originalUrlInput');
     localStorage.removeItem('layoutCheckerURL');
   });
 
-  // State persistence - simple approach
-  function saveState() {
-    const state = {
-      htmlContent: editor.getValue(),
-      originalUrl: document.getElementById('originalUrlInput').value,
-      krhredValues: {}
-    };
-    const krhredInputs = document.querySelectorAll('input[id^="krhred_unit_"]');
-    krhredInputs.forEach(input => {
-      state.krhredValues[input.id] = input.value;
-    });
-    localStorage.setItem('layoutChecker_state', JSON.stringify(state));
-  }
+  // State persistence - DISABLED
+  // function saveState() {
+  //   const state = {
+  //     htmlContent: editor.getValue(),
+  //     originalUrl: document.getElementById('originalUrlInput').value,
+  //     krhredValues: {}
+  //   };
+  //   const krhredInputs = document.querySelectorAll('input[id^="krhred_unit_"]');
+  //   krhredInputs.forEach(input => {
+  //     state.krhredValues[input.id] = input.value;
+  //   });
+  //   localStorage.setItem('layoutChecker_state', JSON.stringify(state));
+  // }
 
-  function loadState() {
-    const saved = localStorage.getItem('layoutChecker_state');
-    if (saved) {
-      try {
-        const state = JSON.parse(saved);
-        if (state.htmlContent) { 
-          editor.setValue(state.htmlContent);
-          // generateKrhredColumns will be called by editor.on('change') event
-        }
-        if (state.originalUrl) {
-          document.getElementById('originalUrlInput').value = state.originalUrl;
-          document.getElementById('downloadBtn').style.display = 'flex';
-          document.getElementById('manualPasteBtn').style.display = 'flex';
-        }
-        if (state.krhredValues) {
-          Object.keys(state.krhredValues).forEach(inputId => {
-            const input = document.getElementById(inputId);
-            if (input) {
-              input.value = state.krhredValues[inputId];
-              input.dispatchEvent(new Event('input'));
-            }
-          });
-        }
-      } catch (e) {
-        console.error('Error loading state:', e);
-      }
-    }
-  }
+  // function loadState() {
+  //   const saved = localStorage.getItem('layoutChecker_state');
+  //   if (saved) {
+  //     try {
+  //       const state = JSON.parse(saved);
+  //       if (state.htmlContent) { 
+  //         editor.setValue(state.htmlContent);
+  //         // generateKrhredColumns will be called by editor.on('change') event
+  //       }
+  //       if (state.originalUrl) {
+  //         document.getElementById('originalUrlInput').value = state.originalUrl;
+  //         document.getElementById('downloadBtn').style.display = 'flex';
+  //         document.getElementById('manualPasteBtn').style.display = 'flex';
+  //       }
+  //       if (state.krhredValues) {
+  //         Object.keys(state.krhredValues).forEach(inputId => {
+  //           const input = document.getElementById(inputId);
+  //           if (input) {
+  //             input.value = state.krhredValues[inputId];
+  //             input.dispatchEvent(new Event('input'));
+  //           }
+  //         });
+  //       }
+  //     } catch (e) {
+  //       console.error('Error loading state:', e);
+  //     }
+  //   }
+  // }
 
-  // Auto-save on input changes
+  // Auto-save on input changes - DISABLED
   editor.on('change', () => {
     const content = editor.getValue();
     if (content.trim()) {
       generateKrhredColumns(content);
     }
-    saveState();
+    // saveState(); // DISABLED
   });
-  document.getElementById('originalUrlInput').addEventListener('input', saveState);
-  document.getElementById('krhredInput').addEventListener('input', saveState);
+  // document.getElementById('originalUrlInput').addEventListener('input', saveState); // DISABLED
+  // document.getElementById('krhredInput').addEventListener('input', saveState); // DISABLED
 
-  // Profile dropdown functionality
-  function toggleProfileMenu() {
-    const menu = document.getElementById('profile-menu');
-    if (menu.style.visibility === 'visible') {
-      menu.style.opacity = '0';
-      menu.style.visibility = 'hidden';
-      menu.style.transform = 'translateY(-10px)';
-    } else {
-      menu.style.opacity = '1';
-      menu.style.visibility = 'visible';
-      menu.style.transform = 'translateY(0)';
-    }
-  }
-  
-  // Note: Login modal functions are now handled by modal-manager.js
 
-  // Tab switching functionality
-  function showLoginTab() {
-    // Hide create user tab
-    document.getElementById('create-user-tab').classList.remove('active');
-    document.getElementById('create-user-tab-btn').classList.remove('active');
-    
-    // Show login tab
-    document.getElementById('login-tab').classList.add('active');
-    document.getElementById('login-tab-btn').classList.add('active');
-  }
-
-  function showCreateUserTab() {
-    // Hide login tab
-    document.getElementById('login-tab').classList.remove('active');
-    document.getElementById('login-tab-btn').classList.remove('active');
-    
-    // Show create user tab
-    document.getElementById('create-user-tab').classList.add('active');
-    document.getElementById('create-user-tab-btn').classList.add('active');
-  }
-
-  // Settings modal functionality - Optimized
-  function showSettingsModal() {
-    const modal = document.getElementById('modal-settings');
-    const modalContent = modal.querySelector('div');
-    
-    // Show modal with animation
-    modal.style.display = 'flex';
-    requestAnimationFrame(() => {
-      modal.style.opacity = '1';
-      modal.style.visibility = 'visible';
-      modalContent.style.transform = 'scale(1)';
-    });
-    
-    loadSettingsData();
-    showSettingsSection('general'); // Show general section by default
-  }
-
-  function hideSettingsModal() {
-    const modal = document.getElementById('modal-settings');
-    const modalContent = modal.querySelector('div');
-    
-    // Hide modal with animation
-    modal.style.opacity = '0';
-    modal.style.visibility = 'hidden';
-    modalContent.style.transform = 'scale(0.95)';
-    
-    setTimeout(() => {
-      modal.style.display = 'none';
-    }, 200);
-  }
-
-  // Show specific settings section - Optimized
-  function showSettingsSection(section) {
-    // Use requestAnimationFrame for smooth transitions
-    requestAnimationFrame(() => {
-      // Hide all content sections
-      const contents = document.querySelectorAll('.settings-section');
-      contents.forEach(content => {
-        content.style.display = 'none';
-        content.style.opacity = '0';
-      });
-      
-      // Remove active class from all tabs
-      const tabs = document.querySelectorAll('.settings-tab-btn');
-      tabs.forEach(tab => tab.classList.remove('active'));
-      
-      // Show selected section and activate tab
-      const selectedContent = document.getElementById(section + '-content');
-      const selectedTab = document.getElementById('tab-' + section);
-      
-      if (selectedContent) {
-        selectedContent.style.display = 'block';
-        requestAnimationFrame(() => {
-          selectedContent.style.opacity = '1';
-        });
-      }
-      
-      if (selectedTab) {
-        selectedTab.classList.add('active');
-      }
-      
-      // Update title with icon
-      const titles = {
-        'general': { icon: 'fa-globe', text: 'Pengaturan Umum' },
-        'appearance': { icon: 'fa-palette', text: 'Pengaturan Tampilan' },
-        'account': { icon: 'fa-user', text: 'Pengaturan Akun' },
-        'notifications': { icon: 'fa-bell', text: 'Pengaturan Notifikasi' },
-        'privacy': { icon: 'fa-shield-halved', text: 'Pengaturan Privasi' },
-        'advanced': { icon: 'fa-cog', text: 'Pengaturan Lanjutan' }
-      };
-      
-      // Define buttons for each section
-      const buttons = {
-        'general': { icon: 'fa-palette', action: 'showSettingsSection(\'appearance\')' },
-        'appearance': { icon: 'fa-user', action: 'showSettingsSection(\'account\')' },
-        'account': { icon: 'fa-bell', action: 'showSettingsSection(\'notifications\')' },
-        'notifications': { icon: 'fa-shield-halved', action: 'showSettingsSection(\'privacy\')' },
-        'privacy': { icon: 'fa-cog', action: 'showSettingsSection(\'advanced\')' },
-        'advanced': { icon: 'fa-cog', action: 'showSettingsSection(\'general\')' }
-      };
-      
-      // Keep close button as is, don't change it
-      // The close button will always be available in the header
-      
-      const titleElement = document.getElementById('settings-title');
-      if (titleElement && titles[section]) {
-        console.log('Updating title for section:', section);
-        console.log('New title:', titles[section]);
-        titleElement.innerHTML = `<i class="fa-solid ${titles[section].icon}"></i> ${titles[section].text}`;
-        console.log('Title updated to:', titleElement.innerHTML);
-      } else {
-        console.log('Title element not found or section not in titles:', section, titleElement);
-      }
-    });
-  }
-
-  // Handle login
-  function handleLogin(event) {
-    event.preventDefault();
-    
-    const username = document.getElementById('login-username').value;
-    const password = document.getElementById('login-password').value;
-    
-    // Simple authentication logic (you can replace with real authentication)
-    if (username && password) {
-      // Store user data
-      const userData = {
-        username: username,
-        name: username.charAt(0).toUpperCase() + username.slice(1),
-        role: 'user',
-        loginTime: new Date().toISOString()
-      };
-      
-      localStorage.setItem('currentUser', JSON.stringify(userData));
-      localStorage.setItem('authToken', 'mock-token-' + Date.now());
-      
-      // Update UI
-      updateProfileDisplay();
-      hideLoginModal();
-      
-      showToast(`Welcome back, ${userData.name}!`, 'success');
-    } else {
-      showToast('Please enter username and password', 'error');
-    }
-  }
-
-  // Handle logout
-  function handleLogout() {
-    const currentUser = localStorage.getItem('currentUser');
-    if (currentUser) {
-      const user = JSON.parse(currentUser);
-      showToast(`Goodbye, ${user.name || user.username}!`, 'info');
-    }
-    
-    // Clear any stored user data
-    localStorage.removeItem('currentUser');
-    localStorage.removeItem('authToken');
-    
-    // Update UI
-    updateProfileDisplay();
-    
-    // Close dropdown if open
-    const menu = document.getElementById('profile-menu');
-    menu.style.opacity = '0';
-    menu.style.visibility = 'hidden';
-    menu.style.transform = 'translateY(-10px)';
-  }
-
-  // Close dropdown when clicking outside
-  document.addEventListener('click', (e) => {
-    const dropdown = document.querySelector('.profile-section');
-    if (!dropdown.contains(e.target)) {
-      const menu = document.getElementById('profile-menu');
-      if (menu) {
-        menu.style.opacity = '0';
-        menu.style.visibility = 'hidden';
-        menu.style.transform = 'translateY(-10px)';
-      }
-    }
-  });
-
-  // Check for logged in user and update profile display
-  function updateProfileDisplay() {
-    const currentUser = localStorage.getItem('currentUser');
-    const loginBtn = document.getElementById('login-btn');
-    const profileDropdown = document.getElementById('profile-dropdown');
-    const profileName = document.getElementById('profile-name');
-    const menuProfileName = document.getElementById('menu-profile-name');
-    
-    if (currentUser) {
-      try {
-        const user = JSON.parse(currentUser);
-        
-        // Show profile dropdown, hide login button
-        if (loginBtn) loginBtn.style.display = 'none';
-        if (profileDropdown) {
-          profileDropdown.style.display = 'block';
-          profileDropdown.classList.remove('hidden');
-        }
-        
-        // Update profile names
-        if (profileName) profileName.textContent = user.name || user.username || 'User';
-        if (menuProfileName) menuProfileName.textContent = user.name || user.username || 'User';
-      } catch (e) {
-        console.log('Error parsing user data:', e);
-        // Fallback to guest state
-        if (loginBtn) loginBtn.style.display = 'flex';
-        if (profileDropdown) {
-          profileDropdown.style.display = 'none';
-          profileDropdown.classList.add('hidden');
-        }
-      }
-    } else {
-      // Show login button, hide profile dropdown
-      if (loginBtn) loginBtn.style.display = 'flex';
-      if (profileDropdown) {
-        profileDropdown.style.display = 'none';
-        profileDropdown.classList.add('hidden');
-      }
-      
-      // Reset profile names
-      if (profileName) profileName.textContent = 'Guest';
-      if (menuProfileName) menuProfileName.textContent = 'Guest Account';
-    }
-  }
-
-  // Initialize profile display on page load
-  updateProfileDisplay();
-
-  // Auto-save for existing krhred inputs
+  // Auto-save for existing krhred inputs - DISABLED
   const existingKrhredInputs = document.querySelectorAll('input[id^="krhred_unit_"]');
   existingKrhredInputs.forEach(input => {
-    input.addEventListener('input', saveState);
+    // input.addEventListener('input', saveState); // DISABLED
   });
 
-  // Make sure settings functions are available globally
-  if (typeof window !== 'undefined') {
-    window.showSettingsSection = showSettingsSection;
-    window.hideSettingsModal = hideSettingsModal;
-    
-    // Define missing functions
-    window.saveSettings = function() {
-      console.log('Saving settings...');
-      // Add save logic here
-      hideSettingsModal();
-    };
-    
-    window.resetSettings = function() {
-      console.log('Resetting settings...');
-      // Add reset logic here
-      if (confirm('Are you sure you want to reset all settings to default?')) {
-        // Reset logic
-        showSettingsSection('general');
-      }
-    };
-  }
 
-  // Initialize settings on page load
-  document.addEventListener('DOMContentLoaded', function() {
-    console.log('DOM loaded, initializing settings...');
-    // Show general section by default if settings modal exists
-    if (document.getElementById('modal-settings')) {
-      showSettingsSection('general');
-    }
-  });
+  // Load state when page loads - DISABLED
+  // window.addEventListener('load', loadState); // DISABLED
 
-  // Load state when page loads
-  window.addEventListener('load', loadState);
-
-  // Save state before leaving page
-  window.addEventListener('beforeunload', saveState);
+  // Save state before leaving page - DISABLED
+  // window.addEventListener('beforeunload', saveState); // DISABLED

@@ -1,11 +1,14 @@
 
 // ---- Extracted scripts from inline <script> blocks ----
-const calendarDays = document.getElementById('calendar-days');
+document.addEventListener('DOMContentLoaded', () => {
+    // Get DOM elements
+    const calendarDays = document.getElementById('calendar-days');
     const monthYear = document.getElementById('month-year');
     const prevMonthButton = document.getElementById('prev-month');
     const nextMonthButton = document.getElementById('next-month');
-    const starsContainer = document.getElementById('stars');
+    const todayButton = document.getElementById('today-btn');
     const holidayDescription = document.getElementById('holiday-description');
+    const starsContainer = document.getElementById('stars');
 
     let currentDate = new Date();
     let currentMonth = currentDate.getMonth();
@@ -19,29 +22,86 @@ const calendarDays = document.getElementById('calendar-days');
     const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
 
     // Define holidays with date keys and descriptions
-    const holidays = {
+    window.holidays = {
       // Format: 'YYYY-MM-DD': 'Holiday Description'
+      
+      // 2024 National Holidays
       '2024-01-01': 'Tahun Baru Masehi',
-      '2024-02-10': 'Hari Raya Imlek',
+      '2024-02-10': 'Tahun Baru Imlek',
       '2024-03-11': 'Hari Suci Nyepi',
       '2024-04-10': 'Wafat Isa Almasih',
       '2024-05-01': 'Hari Buruh Internasional',
       '2024-05-09': 'Kenaikan Yesus Kristus',
       '2024-05-23': 'Hari Raya Waisak',
       '2024-06-01': 'Hari Lahir Pancasila',
-      '2024-06-17': 'Hari Raya Idul Fitri',
+      '2024-06-10': 'Hari Raya Idul Fitri',
+      '2024-06-11': 'Hari Raya Idul Fitri',
+      '2024-07-17': 'Hari Raya Idul Adha',
       '2024-08-17': 'Hari Kemerdekaan RI',
-      '2024-11-01': 'Hari Raya Idul Adha',
-      '2024-12-25': 'Hari Natal'
+      '2024-12-25': 'Hari Raya Natal',
+      
+      // 2025 National Holidays
+      '2025-01-01': 'Tahun Baru Masehi',
+      '2025-01-28': 'Tahun Baru Imlek',
+      '2025-03-29': 'Hari Suci Nyepi',
+      '2025-04-18': 'Wafat Isa Almasih',
+      '2025-05-01': 'Hari Buruh Internasional',
+      '2025-05-12': 'Kenaikan Yesus Kristus',
+      '2025-05-29': 'Hari Raya Waisak',
+      '2025-06-01': 'Hari Lahir Pancasila',
+      '2025-03-31': 'Hari Raya Idul Fitri',
+      '2025-04-01': 'Hari Raya Idul Fitri',
+      '2025-06-06': 'Hari Raya Idul Adha',
+      '2025-08-17': 'Hari Kemerdekaan RI',
+      '2025-12-25': 'Hari Raya Natal',
+      
+      // 2026 National Holidays (Projected/Estimate)
+      '2026-01-01': 'Tahun Baru Masehi',
+      '2026-01-29': 'Tahun Baru Imlek 2577',
+      '2026-03-09': 'Hari Suci Nyepi',
+      '2026-04-03': 'Wafat Isa Almasih',
+      '2026-05-01': 'Hari Buruh Internasional',
+      '2026-05-21': 'Kenaikan Yesus Kristus',
+      '2026-06-01': 'Hari Lahir Pancasila',
+      '2026-03-20': 'Hari Raya Idul Fitri 1447 H',
+      '2026-03-21': 'Hari Raya Idul Fitri 1447 H',
+      '2026-05-26': 'Hari Raya Idul Adha 1447 H',
+      '2026-08-17': 'Hari Kemerdekaan RI ke-71',
+      '2026-12-25': 'Hari Raya Natal',
+      '2026-12-31': 'Tahun Baru Masehi (Libur Bersama)',
+      
+      // Joint Holidays 2024
+      '2024-02-09': 'Cuti Bersama Tahun Baru Imlek',
+      '2024-03-12': 'Cuti Bersama Hari Suci Nyepi',
+      '2024-04-08': 'Cuti Bersama Wafat Isa Almasih',
+      '2024-04-09': 'Cuti Bersama Wafat Isa Almasih',
+      '2024-04-11': 'Cuti Bersama Kenaikan Yesus',
+      '2024-05-08': 'Cuti Bersama Idul Fitri',
+      '2024-05-24': 'Cuti Bersama Waisak',
+      '2025-06-02': 'Cuti Bersama Idul Fitri',
+      '2025-06-05': 'Cuti Bersama Idul Fitri',
+      '2025-06-07': 'Cuti Bersama Idul Adha',
+      '2025-06-30': 'Cuti Bersama Hari Raya Idul Adha',
+      '2025-12-26': 'Cuti Bersama Hari Raya Natal',
+      
+      // Joint Holidays 2026 (Projected)
+      '2026-01-30': 'Cuti Bersama Tahun Baru Imlek',
+      '2026-03-10': 'Cuti Bersama Hari Suci Nyepi',
+      '2026-03-19': 'Cuti Bersama Idul Fitri',
+      '2026-03-22': 'Cuti Bersama Idul Fitri',
+      '2026-05-25': 'Cuti Bersama Idul Adha',
+      '2026-05-27': 'Cuti Bersama Idul Adha',
+      '2026-08-18': 'Cuti Bersama Hari Kemerdekaan',
     };
 
     function createStars() {
-      for (let i = 0; i < 50; i++) {
+      // Reduced star count for better performance
+      for (let i = 0; i < 20; i++) {
         const star = document.createElement('div');
         star.classList.add('star');
         star.style.left = `${Math.random() * 100}%`;
         star.style.top = `${Math.random() * 100}%`;
-        star.style.animationDuration = `${Math.random() * 10 + 5}s`;
+        star.style.animationDuration = `${Math.random() * 5 + 5}s`;
         starsContainer.appendChild(star);
       }
     }
@@ -102,7 +162,7 @@ const calendarDays = document.getElementById('calendar-days');
     }
 
     // Helper to format date as YYYY-MM-DD
-    function formatDate(year, month, day) {
+    function formatDateForCalendar(year, month, day) {
       const mm = (month + 1).toString().padStart(2, '0');
       const dd = day.toString().padStart(2, '0');
       return `${year}-${mm}-${dd}`;
@@ -118,6 +178,15 @@ const calendarDays = document.getElementById('calendar-days');
 
       monthYear.textContent = `${months[month]} ${year}`;
       calendarDays.innerHTML = '';
+
+      // Add weekday headers
+      const weekdayHeaders = ['MIN', 'SEN', 'SEL', 'RAB', 'KAM', 'JUM', 'SAB'];
+      weekdayHeaders.forEach(day => {
+        const headerElement = document.createElement('div');
+        headerElement.classList.add('weekday-header');
+        headerElement.textContent = day;
+        calendarDays.appendChild(headerElement);
+      });
 
       // Add days from previous month
       const prevMonthLastDay = new Date(year, month, 0).getDate();
@@ -153,7 +222,7 @@ const calendarDays = document.getElementById('calendar-days');
         dayElement.appendChild(dayNumber);
         dayElement.appendChild(dayName);
 
-        const dateKey = formatDate(year, month, day);
+        const dateKey = formatDateForCalendar(year, month, day);
 
         // Load saved state from IndexedDB and apply class
         const savedState = await getDayState(db, dateKey);
@@ -170,8 +239,13 @@ const calendarDays = document.getElementById('calendar-days');
           dayElement.classList.add('today');
         }
 
+        // Check if the day is a holiday
         if (holidays[dateKey]) {
           dayElement.classList.add('holiday');
+          // Check if it's a joint holiday
+          if (holidays[dateKey].includes('Cuti Bersama')) {
+            dayElement.classList.add('joint-holiday');
+          }
           dayElement.addEventListener('click', () => {
             holidayDescription.textContent = holidays[dateKey];
           });
@@ -196,8 +270,9 @@ const calendarDays = document.getElementById('calendar-days');
               await putDayState(db, dateKey, null);
               holidayDescription.textContent = '';
             }
-            // Update total WFO count display live on click
-            updateTotalWfoCount();
+            // Update total count display live on click
+            updateTotalCount();
+            updateStatistics();
           });
         }
 
@@ -224,27 +299,92 @@ const calendarDays = document.getElementById('calendar-days');
         calendarDays.appendChild(dayElement);
       }
 
-      // Add total WFO count display below calendar
-      let totalCountElement = document.getElementById('total-wfo-count');
+      // Add total count display below calendar
+      let totalCountElement = document.getElementById('total-count');
       if (!totalCountElement) {
         totalCountElement = document.createElement('div');
-        totalCountElement.id = 'total-wfo-count';
-        totalCountElement.style.marginTop = '10px';
-        totalCountElement.style.fontWeight = 'bold';
-        totalCountElement.style.color = '#4caf50';
+        totalCountElement.id = 'total-count';
+        totalCountElement.className = 'total-count';
         calendarDays.parentNode.appendChild(totalCountElement);
       }
-      // Update total count text
-      const wfoDays = document.querySelectorAll('.day.wfh').length;
-      totalCountElement.textContent = `Total WFO Days: ${wfoDays}`;
+      
+      // Calculate counts
+      const wfhDays = document.querySelectorAll('.day.wfh').length;
+      const wfoDays = document.querySelectorAll('.day.other').length;
+      
+      // Update total count HTML
+      totalCountElement.innerHTML = `
+        <div class="count-item wfh">
+          <div class="count-label">WFH Days</div>
+          <div class="count-number">${wfhDays}</div>
+        </div>
+        <div class="count-item wfo">
+          <div class="count-label">WFO Days</div>
+          <div class="count-number">${wfoDays}</div>
+        </div>
+      `;
+      
+      // Update statistics
+      updateStatistics();
     }
 
-    // Initialize total WFO count on page load
-    function updateTotalWfoCount() {
-      const totalCountElement = document.getElementById('total-wfo-count');
+    // Update total count display
+    function updateTotalCount() {
+      const totalCountElement = document.getElementById('total-count');
       if (!totalCountElement) return;
-      const wfoDays = document.querySelectorAll('.day.wfh').length;
-      totalCountElement.textContent = `Total WFO Days: ${wfoDays}`;
+      
+      const wfhDays = document.querySelectorAll('.day.wfh').length;
+      const wfoDays = document.querySelectorAll('.day.other').length;
+      
+      totalCountElement.innerHTML = `
+        <div class="count-item wfh">
+          <div class="count-label">WFH Days</div>
+          <div class="count-number">${wfhDays}</div>
+        </div>
+        <div class="count-item wfo">
+          <div class="count-label">WFO Days</div>
+          <div class="count-number">${wfoDays}</div>
+        </div>
+      `;
+    }
+
+    // Update summary statistics
+    function updateStatistics() {
+      const totalDaysElement = document.getElementById('total-days');
+      const workDaysElement = document.getElementById('work-days');
+      const holidaysCountElement = document.getElementById('holidays-count');
+      const wfhPercentageElement = document.getElementById('wfh-percentage');
+      
+      if (!totalDaysElement) return;
+      
+      // Calculate total days in month
+      const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+      totalDaysElement.textContent = daysInMonth;
+      
+      // Calculate work days (excluding weekends)
+      let workDays = 0;
+      let holidays = 0;
+      for (let day = 1; day <= daysInMonth; day++) {
+        const date = new Date(currentYear, currentMonth, day);
+        const dayOfWeek = date.getDay();
+        if (dayOfWeek !== 0 && dayOfWeek !== 6) {
+          workDays++;
+        }
+        
+        // Count holidays
+        const dateKey = formatDateForCalendar(currentYear, currentMonth, day);
+        if (window.holidays && window.holidays[dateKey]) {
+          holidays++;
+        }
+      }
+      
+      workDaysElement.textContent = workDays;
+      holidaysCountElement.textContent = holidays;
+      
+      // Calculate WFH percentage
+      const wfhDays = document.querySelectorAll('.day.wfh').length;
+      const percentage = workDays > 0 ? Math.round((wfhDays / workDays) * 100) : 0;
+      wfhPercentageElement.textContent = `${percentage}%`;
     }
 
     prevMonthButton.addEventListener('click', () => {
@@ -267,4 +407,14 @@ const calendarDays = document.getElementById('calendar-days');
       holidayDescription.textContent = '';
     });
 
+    // Today button event listener
+    todayButton.addEventListener('click', () => {
+      const today = new Date();
+      currentMonth = today.getMonth();
+      currentYear = today.getFullYear();
+      renderCalendar(currentMonth, currentYear);
+      holidayDescription.textContent = '';
+    });
+
     renderCalendar(currentMonth, currentYear);
+});

@@ -1,5 +1,582 @@
 /* ===================================
-   PAGES INDEX
+   LAYOUT CHECKER - MODERN FLAT DESIGN
+   =================================== */
+
+/* Modern Flat Design Variables for Layout Checker */
+:root {
+  /* Layout Checker Specific Colors - Using Theme Colors Directly */
+  --lc-primary: var(--red-500);
+  --lc-primary-dark: var(--red-600);
+  --lc-primary-light: var(--red-50);
+  
+  /* Semantic Colors - Using Theme Colors Directly */
+  --lc-success: var(--success);
+  --lc-warning: var(--warning);
+  --lc-error: var(--error);
+  --lc-info: var(--info);
+  
+  /* Essential Spacing Only */
+  --lc-space-1: 4px;
+  --lc-space-2: 8px;
+  --lc-space-3: 12px;
+  --lc-space-4: 16px;
+  --lc-space-5: 20px;
+  --lc-space-6: 24px;
+  --lc-space-8: 32px;
+  --lc-space-10: 40px;
+  
+  /* Override Theme Typography for Layout Checker */
+  --lc-font-size-xs: 12px;
+  --lc-font-size-sm: 14px;
+  --lc-font-size-base: 16px;
+  --lc-font-size-lg: 18px;
+  --lc-font-size-xl: 20px;
+  --lc-font-size-2xl: 24px;
+  --lc-font-size-3xl: 30px;
+  --lc-font-size-4xl: 36px;
+  --lc-font-size-5xl: 48px;
+  
+  /* Border Radius - True Flat Style */
+  --lc-radius-none: 0;
+  --lc-radius-base: 0;
+  
+  /* Fast Transitions Only */
+  --lc-transition-fast: 150ms ease;
+}
+
+/* ===================================
+   LAYOUT CHECKER SPECIFIC STYLES
+   =================================== */
+
+/* Container - Enhanced Layout */
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 var(--lc-space-6);
+}
+
+/* Hero Section - Pure Flat Design */
+.lc-hero {
+  font-size: var(--lc-font-size-5xl);
+  font-weight: var(--font-weight-bold, 700);
+  color: var(--text);
+  margin: 0 0 var(--lc-space-2);
+  letter-spacing: -0.025em;
+  line-height: var(--line-height-tight, 1.25);
+  text-align: center;
+}
+
+.lc-hero i {
+  color: var(--lc-primary);
+  font-size: var(--lc-font-size-4xl);
+  margin-right: var(--lc-space-2);
+  vertical-align: middle;
+}
+
+.lc-subtitle {
+  font-size: var(--font-size-base, 1rem);
+  color: var(--text-muted);
+  margin: 0 0 var(--lc-space-8);
+  font-weight: var(--font-weight-normal, 400);
+  line-height: var(--line-height-relaxed, 1.625);
+  text-align: center;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Input Group - Optimized Layout */
+.lc-input-group {
+  display: flex;
+  gap: var(--lc-space-2);
+  margin-bottom: var(--lc-space-8);
+  flex-wrap: wrap;
+  align-items: stretch;
+  justify-content: center;
+  max-width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.lc-input {
+  flex: 1;
+  min-width: 300px;
+  max-width: 450px;
+  padding: var(--lc-space-3) var(--lc-space-4);
+  border: 1px solid var(--gray-200);
+  background: var(--surface);
+  color: var(--text);
+  font-size: var(--font-size-base, 1rem);
+  font-family: var(--font-family-base, system-ui, sans-serif);
+  font-weight: var(--font-weight-normal, 400);
+  transition: all var(--lc-transition-fast);
+  border-radius: var(--lc-radius-none);
+  height: 48px;
+}
+
+.lc-input:focus {
+  outline: none;
+  border-color: var(--lc-primary);
+  background: var(--surface);
+  box-shadow: 0 0 0 3px rgba(241, 140, 142, 0.1);
+}
+
+.lc-input:hover:not(:focus) {
+  border-color: var(--gray-300);
+  background: var(--hover);
+}
+
+.lc-input::placeholder {
+  color: var(--text-muted);
+  font-weight: var(--font-weight-normal, 400);
+}
+
+/* Progress Indicator - Enhanced Design */
+.lc-progress-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: var(--lc-space-8);
+  animation: fadeIn 0.3s ease;
+}
+
+.lc-progress-content {
+  display: flex;
+  align-items: center;
+  gap: var(--lc-space-3);
+  padding: var(--lc-space-3) var(--lc-space-4);
+  background: var(--surface);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--lc-radius-none);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.lc-progress-icon {
+  display: flex;
+  align-items: center;
+}
+
+.lc-progress-icon svg.spin {
+  animation: spin 1s linear infinite;
+  color: var(--lc-primary);
+}
+
+.lc-progress-text {
+  font-size: var(--font-size-sm, 0.875rem);
+  color: var(--text);
+  font-weight: var(--font-weight-medium, 500);
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Buttons - Pure Flat Design */
+.lc-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--lc-space-2);
+  padding: var(--lc-space-3) var(--lc-space-4);
+  font-size: var(--font-size-sm, 0.875rem);
+  font-weight: var(--font-weight-semibold, 600);
+  font-family: var(--font-family-base, system-ui, sans-serif);
+  border: none;
+  border-radius: var(--lc-radius-none);
+  cursor: pointer;
+  transition: all var(--lc-transition-fast);
+  text-decoration: none;
+  white-space: nowrap;
+  min-height: 48px;
+  min-width: 120px;
+  user-select: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.lc-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  transition: left 0.5s;
+}
+
+.lc-btn:hover::before {
+  left: 100%;
+}
+
+.lc-btn:active {
+  transform: scale(0.98);
+}
+
+.lc-btn svg {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+}
+
+/* Button Variants */
+.lc-btn-primary {
+  background: var(--lc-primary);
+  color: var(--bg);
+}
+
+.lc-btn-primary:hover {
+  background: var(--lc-primary-dark);
+}
+
+.lc-btn-success {
+  background: var(--lc-success);
+  color: var(--bg);
+}
+
+.lc-btn-success:hover {
+  background: var(--success-hover);
+}
+
+.lc-btn-warning {
+  background: var(--lc-warning);
+  color: var(--bg);
+}
+
+.lc-btn-warning:hover {
+  background: var(--warning-hover);
+}
+
+.lc-btn-error {
+  background: var(--lc-error);
+  color: var(--bg);
+}
+
+.lc-btn-error:hover {
+  background: var(--error-hover);
+}
+
+.lc-btn-info {
+  background: var(--lc-info);
+  color: var(--bg);
+}
+
+.lc-btn-info:hover {
+  background: var(--info-hover);
+}
+
+/* Main Layout - Optimized Grid */
+.lc-main-layout {
+  display: grid;
+  grid-template-columns: 380px 1fr;
+  gap: var(--lc-space-8);
+  min-height: 650px;
+  margin-top: var(--lc-space-8);
+  max-width: 1400px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Sidebar - Enhanced Card Design */
+.lc-sidebar {
+  background: var(--surface);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--lc-radius-none);
+  padding: var(--lc-space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--lc-space-5);
+  height: fit-content;
+  position: sticky;
+  top: var(--lc-space-6);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.lc-label {
+  display: block;
+  font-size: var(--font-size-sm, 0.875rem);
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--text);
+  margin-bottom: var(--lc-space-2);
+  letter-spacing: 0.025em;
+}
+
+.lc-textarea {
+  width: 100%;
+  min-height: 180px;
+  padding: var(--lc-space-3);
+  border: 1px solid var(--gray-200);
+  background: var(--surface);
+  color: var(--text);
+  font-size: var(--font-size-sm, 0.875rem);
+  font-family: var(--font-family-base, system-ui, sans-serif);
+  font-weight: var(--font-weight-normal, 400);
+  resize: vertical;
+  transition: all var(--lc-transition-fast);
+  border-radius: var(--lc-radius-none);
+  line-height: var(--line-height-relaxed, 1.625);
+}
+
+.lc-textarea:focus {
+  outline: none;
+  border-color: var(--lc-primary);
+  background: var(--surface);
+  box-shadow: 0 0 0 3px rgba(241, 140, 142, 0.1);
+}
+
+.lc-textarea:hover:not(:focus) {
+  border-color: var(--gray-300);
+  background: var(--hover);
+}
+
+.lc-textarea-sm {
+  min-height: 150px;
+}
+
+.lc-button-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--lc-space-2);
+}
+
+.lc-button-group .lc-btn {
+  width: 100%;
+  justify-content: center;
+}
+
+/* Content Area - Enhanced Design */
+.lc-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--lc-space-8);
+}
+
+.lc-content-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--lc-space-6);
+}
+
+/* KRHRED Units - Enhanced Card Design */
+.lc-units-container {
+  background: var(--surface);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--lc-radius-none);
+  padding: var(--lc-space-6);
+  margin-top: var(--lc-space-6);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.lc-units-header {
+  margin-bottom: var(--lc-space-4);
+  padding-bottom: var(--lc-space-3);
+  border-bottom: 1px solid var(--gray-200);
+}
+
+.lc-units-label {
+  display: block;
+  font-size: var(--font-size-base, 1rem);
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--text);
+  margin-bottom: 0;
+  letter-spacing: 0.025em;
+}
+
+.lc-input-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--lc-space-3);
+}
+
+.lc-input-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.lc-input-field {
+  padding: var(--lc-space-2) var(--lc-space-3);
+  border: 1px solid var(--gray-200);
+  background: var(--surface);
+  color: var(--text);
+  font-size: var(--font-size-sm, 0.875rem);
+  font-family: var(--font-family-base, system-ui, sans-serif);
+  font-weight: var(--font-weight-medium, 500);
+  transition: all var(--lc-transition-fast);
+  text-align: center;
+  border-radius: var(--lc-radius-none);
+  height: 44px;
+}
+
+.lc-input-field:focus {
+  outline: none;
+  border-color: var(--lc-primary);
+  background: var(--surface);
+  box-shadow: 0 0 0 3px rgba(241, 140, 142, 0.1);
+}
+
+.lc-input-field:hover:not(:focus) {
+  border-color: var(--gray-300);
+  background: var(--hover);
+}
+
+.lc-input-field::placeholder {
+  color: var(--text-muted);
+}
+
+/* CodeMirror - Enhanced Editor */
+.CodeMirror {
+  border: 1px solid var(--gray-200) !important;
+  border-radius: var(--lc-radius-none) !important;
+  font-size: var(--font-size-sm, 0.875rem) !important;
+  font-family: var(--font-family-mono, 'Consolas', monospace) !important;
+  height: 400px;
+  transition: all var(--lc-transition-fast);
+}
+
+.CodeMirror:hover {
+  border-color: var(--gray-300) !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+}
+
+.CodeMirror-focused {
+  outline: none;
+  border-color: var(--lc-primary) !important;
+  box-shadow: 0 0 0 3px rgba(241, 140, 142, 0.1) !important;
+}
+
+/* Focus Styles */
+.lc-btn:focus-visible,
+.lc-input:focus-visible,
+.lc-textarea:focus-visible,
+.lc-input-field:focus-visible {
+  outline: none;
+}
+
+/* Disabled State */
+.lc-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Button Sizes */
+.lc-btn-sm {
+  padding: var(--lc-space-2) var(--lc-space-3);
+  font-size: var(--font-size-xs, 12px);
+  min-height: 32px;
+  min-width: auto;
+}
+
+/* Loading State */
+.lc-btn.loading {
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+.lc-btn.loading::after {
+  content: '';
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  margin: auto;
+  border: 2px solid transparent;
+  border-top-color: currentColor;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+/* Success State */
+.lc-btn.success {
+  background: var(--lc-success) !important;
+  animation: successPulse 0.5s ease;
+}
+
+@keyframes successPulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+/* Utility Classes */
+.hidden {
+  display: none !important;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .lc-main-layout {
+    grid-template-columns: 1fr;
+    gap: var(--lc-space-6);
+  }
+  
+  .lc-sidebar {
+    position: static;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+}
+
+@media (max-width: 768px) {
+  .lc-input-group {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--lc-space-3);
+  }
+  
+  .lc-input {
+    min-width: 100%;
+    max-width: 100%;
+  }
+  
+  .lc-input-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .lc-hero {
+    font-size: var(--lc-font-size-3xl);
+  }
+  
+  .lc-hero i {
+    display: block;
+    margin-right: 0;
+    margin-bottom: var(--lc-space-2);
+  }
+}
+
+@media (max-width: 480px) {
+  .lc-button-group {
+    gap: var(--lc-space-3);
+  }
+  
+  .lc-btn {
+    min-width: 100%;
+  }
+  
+  .lc-units-container {
+    padding: var(--lc-space-4);
+  }
+  
+  .lc-sidebar {
+    padding: var(--lc-space-4);
+  }
+}
+
+/* ===================================
+   PAGES LAYOUT CHECKER
    =================================== */
 /* ===================================
    BASE.CSS
@@ -112,6 +689,15 @@ img {
 }
 
 /* Focus Styles */
+/* Override focus styles for layout checker elements */
+.lc-input:focus-visible,
+.lc-textarea:focus-visible,
+.lc-input-field:focus-visible {
+  outline: none !important;
+  outline-offset: 0 !important;
+}
+
+/* Global focus styles for other elements */
 :focus-visible {
   outline: 2px solid var(--focus);
   outline-offset: 2px;
@@ -143,14 +729,8 @@ img {
    =================================== */
 
 /* ===================================
-   CONTAINER
+   UTILITIES & HELPERS
    =================================== */
-.container {
-  width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0;
-}
 
 .container-fluid {
   width: 100%;
@@ -228,7 +808,6 @@ img {
    =================================== */
 .block { display: block; }
 .inline-block { display: inline-block; }
-.hidden { display: none; }
 
 /* ===================================
    POSITION UTILITIES
@@ -849,161 +1428,9 @@ html {
   scrollbar-color: var(--gray-300) var(--gray-100);
 }
 
-
 /* ===================================
-   BUTTONS.CSS
+   COMPONENTS.CSS
    =================================== */
-
-/* ===================================
-   FLAT BUTTONS - RED PRIMARY THEME
-   =================================== */
-
-/* Base Button - Flat Design */
-.btn {
-  background: var(--red-500);
-  color: white;
-  border: none;
-  border-radius: 0;
-  padding: 10px 20px;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  min-height: 40px;
-  outline: none;
-  position: relative;
-  overflow: hidden;
-}
-
-.btn:hover {
-  background: #dc2626;
-}
-
-.btn:active {
-  background: #b91c1c;
-}
-
-/* Remove all pseudo-elements and decorative effects */
-.btn::before,
-.btn::after {
-  display: none !important;
-}
-
-.btn:hover::before,
-.btn:hover::after,
-.btn:active::before,
-.btn:active::after {
-  display: none !important;
-}
-
-/* Button States */
-.btn:focus-visible {
-  outline: 2px solid var(--red-500);
-  outline-offset: 2px;
-}
-
-.btn:disabled {
-  background: var(--border);
-  color: var(--text-muted);
-  cursor: not-allowed;
-  opacity: 0.6;
-}
-
-/* Button Variants - Flat Design */
-.btn-secondary {
-  background: #f3f4f6;
-  color: #374151;
-  border: 1px solid #e5e7eb;
-}
-
-.btn-secondary:hover {
-  background: var(--red-500);
-  color: white;
-  border-color: var(--red-500);
-}
-
-.btn-tertiary {
-  background: transparent;
-  color: var(--red-500);
-  border: 2px solid var(--red-500);
-}
-
-.btn-tertiary:hover {
-  background: var(--red-500);
-  color: white;
-}
-
-/* Size Variants */
-.btn-small {
-  padding: 8px 16px;
-  font-size: 13px;
-  min-height: 32px;
-  border-radius: 0;
-}
-
-.btn-large {
-  padding: 14px 28px;
-  font-size: 16px;
-  min-height: 48px;
-  border-radius: 0;
-}
-
-/* Icon Button */
-.btn-icon {
-  padding: 10px;
-  min-height: 40px;
-  min-width: 40px;
-  border-radius: 0;
-}
-
-.btn-icon.btn-small {
-  padding: 8px;
-  min-height: 32px;
-  min-width: 32px;
-}
-
-.btn-icon.btn-large {
-  padding: 14px;
-  min-height: 48px;
-  min-width: 48px;
-}
-
-/* Specific Button Overrides - Flat Design */
-.content .buttons .btn {
-  background: var(--red-500);
-  color: white;
-  border: none;
-  border-radius: 0;
-  padding: 12px 24px;
-  font-weight: 600;
-  transition: background-color 0.15s ease;
-}
-
-.content .buttons .btn:hover {
-  background: #dc2626;
-}
-
-.content-actions .btn {
-  background: var(--red-500);
-  color: white;
-  border: none;
-  border-radius: 0;
-  padding: 12px 24px;
-  font-weight: 600;
-  transition: background-color 0.15s ease;
-}
-
-.content-actions .btn:hover {
-  background: #dc2626;
-}
-
-/* Button Icon Styling */
-.btn i {
-  font-size: 16px;
-}
 
 /* ===================================
    SIDEBAR - FLAT DESIGN
@@ -1508,10 +1935,6 @@ html {
   opacity: 0.6;
 }
 
-.form-input:invalid {
-  border-color: var(--accent-primary);
-}
-
 .form-input.success {
   border-color: #15803D;
 }
@@ -1943,409 +2366,3 @@ html {
 }
 
 
-/* ===================================
-   PAGES INDEX
-   =================================== */
-
-/* ===================================
-   INDEX PAGE CSS - Optimized Flat Design for Low-Spec Laptops
-   =================================== */
-
-/* ===================================
-   ACCESSIBILITY
-   =================================== */
-.skip-link {
-  position: absolute;
-  top: -40px;
-  left: 6px;
-  background: var(--primary, #F18C8E);
-  color: white;
-  padding: 8px 12px;
-  text-decoration: none;
-  border-radius: 6px;
-  z-index: 1000;
-  transition: none;
-  font-weight: 500;
-}
-
-.skip-link:focus {
-  top: 6px;
-  box-shadow: 0 2px 8px rgba(241, 140, 142, 0.3);
-}
-
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
-}
-
-/* ===================================
-   HERO SECTION - Enhanced Flat Design
-   =================================== */
-main#main-content {
-  margin: 0;
-  padding: 0;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-
-.hero {
-  background: #F18C8E;
-  padding: 30px 20px;
-  position: relative;
-  flex-shrink: 0;
-}
-
-.hero-content {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 40px;
-  position: relative;
-  z-index: 1;
-  max-width: 1000px;
-  margin: 0 auto;
-  width: 100%;
-}
-
-.hero-text {
-  max-width: 500px;
-}
-
-.hero-title {
-  font-size: 32px;
-  font-weight: 700;
-  color: #ffffff !important;
-  margin: 0 0 8px;
-  letter-spacing: 0;
-  line-height: 1.2;
-}
-
-.hero-title::after {
-  display: none;
-}
-
-.hero-subtitle {
-  font-size: 16px;
-  color: rgba(255, 255, 255, 0.95);
-  margin: 0 0 16px;
-  font-weight: 400;
-  line-height: 1.4;
-}
-
-.hero-stats {
-  display: flex;
-  gap: 24px;
-  align-items: center;
-}
-
-.stat-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  padding: 16px 16px;
-  background: rgba(255, 255, 255, 0.15);
-  border: 2px solid rgba(255, 255, 255, 0.2);
-  cursor: default;
-}
-
-.stat-item::before {
-  display: none;
-}
-
-.stat-item:hover {
-  background: rgba(255, 255, 255, 0.2);
-}
-
-.stat-number {
-  font-size: 24px;
-  font-weight: 700;
-  color: #ffffff !important;
-  margin-bottom: 4px;
-}
-
-.stat-label {
-  font-size: 13px;
-  color: rgba(255, 255, 255, 0.9);
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-/* ===================================
-   CONTENT SECTION - Enhanced Layout
-   =================================== */
-.content {
-  flex: 1;
-  background: #ffffff;
-  padding: 30px 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  overflow: auto;
-  min-height: 0;
-}
-
-.tools-container {
-  width: 100%;
-  max-width: 1000px;
-  margin: 0 auto;
-}
-
-.tools-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
-  width: 100%;
-  max-width: 1200px;
-  align-items: stretch;
-}
-
-/* ===================================
-   TOOL ITEMS - Enhanced Ultra Flat Design
-   =================================== */
-.tool-item {
-  background: #ffffff;
-  border: 2px solid #E5E7EB;
-  padding: 20px;
-  position: relative;
-  overflow: hidden;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-}
-
-.tool-item::before {
-  display: none;
-}
-
-.tool-item::after {
-  display: none;
-}
-
-.tool-item:hover {
-  border-color: #F18C8E;
-  background: #FFF5F3;
-}
-
-.tool-link {
-  text-decoration: none;
-  color: inherit;
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  position: relative;
-  z-index: 1;
-}
-
-.tool-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 48px;
-  height: 48px;
-  background: #F3F4F6;
-  margin-bottom: 12px;
-  flex-shrink: 0;
-}
-
-.tool-icon i {
-  font-size: 20px;
-  color: #F18C8E;
-}
-
-.tool-info {
-  margin-top: 16px;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
-
-.tool-info h3 {
-  font-size: 16px;
-  font-weight: 600;
-  color: #000000;
-  margin: 0 0 6px;
-  line-height: 1.3;
-}
-
-.tool-info p {
-  font-size: 12px;
-  color: #666666;
-  margin: 0;
-  line-height: 1.4;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  flex: 1;
-}
-
-.tool-item:hover .tool-icon {
-  background: #F18C8E;
-}
-
-.tool-item:hover .tool-icon i {
-  color: #ffffff !important;
-}
-
-.tool-item:hover .tool-info h3 {
-  color: #000000;
-}
-
-.tool-item:hover .tool-info p {
-  color: #666666;
-}
-
-
-
-
-
-/* ===================================
-   RESPONSIVE DESIGN - Ultra Enhanced
-   =================================== */
-@media (max-width: 1024px) {
-  .tools-grid {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 16px;
-  }
-  
-  .hero-content {
-    gap: 30px;
-  }
-  
-  .hero::after {
-    width: 200px;
-    height: 200px;
-  }
-}
-
-@media (max-width: 768px) {
-  .hero {
-    padding: 20px 15px;
-  }
-  
-  .hero-content {
-    flex-direction: column;
-    text-align: center;
-    gap: 20px;
-  }
-  
-  .hero-title {
-    font-size: 28px;
-  }
-  
-  .hero-subtitle {
-    font-size: 14px;
-  }
-  
-  .hero-stats {
-    gap: 12px;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-  
-  .stat-item {
-    padding: 12px 8px;
-    min-width: 70px;
-  }
-  
-  .content {
-    padding: 20px 15px;
-  }
-  
-  .tools-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-  }
-  
-  .tool-item {
-    padding: 20px;
-  }
-  
-  .tool-icon {
-    width: 48px;
-    height: 48px;
-  }
-  
-  .tool-icon i {
-    font-size: 20px;
-  }
-  
-  .hero::after {
-    display: none;
-  }
-}
-
-@media (max-width: 480px) {
-  .hero {
-    padding: 15px 10px;
-  }
-  
-  .hero-title {
-    font-size: 24px;
-  }
-  
-  .hero-subtitle {
-    font-size: 13px;
-  }
-  
-  .stat-item {
-    padding: 8px 6px;
-    min-width: 60px;
-  }
-  
-  .content {
-    padding: 15px 10px;
-  }
-  
-  .tools-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
-  }
-  
-  .tool-item {
-    padding: 15px;
-  }
-  
-  .tool-icon {
-    width: 40px;
-    height: 40px;
-  }
-  
-  .tool-icon i {
-    font-size: 18px;
-  }
-  
-  .tool-info h3 {
-    font-size: 14px;
-  }
-  
-  .tool-info p {
-    font-size: 11px;
-  }
-}
-
-/* ===================================
-   FOCUS STYLES - Enhanced
-   =================================== */
-.tool-link:focus {
-  outline: 2px solid #F18C8E;
-  outline-offset: 2px;
-}
-
-.footer-link:focus {
-  outline: 2px solid #F18C8E;
-  outline-offset: 2px;
-}

@@ -1,6 +1,9 @@
 /* ===================================
    THEME - RED & WHITE (with Dark Mode)
    =================================== */
+/* ===================================
+   THEME - RED & WHITE (with Dark Mode)
+   =================================== */
 :root {
   /* ===================================
      BASE PALETTE - Light Mode
@@ -284,3 +287,5 @@ html {
   scrollbar-width: thin;
   scrollbar-color: var(--gray-300) var(--gray-100);
 }
+
+
