@@ -15,8 +15,8 @@ class ToastManager {
   
   init() {
     // Create toast container if it doesn't exist
-    if (!document.getElementById('toast-container')) {
-      this.container = document.createElement('div');
+    if (!document.getElementByIdconsole.logtoast-container')) {
+      this.container = document.createElementconsole.logdiv');
       this.container.id = 'toast-container';
       this.container.style.cssText = `
         position: fixed;
@@ -26,7 +26,7 @@ class ToastManager {
         pointer-events: none;
       `;
       // Append to layout area
-      const layoutArea = document.querySelector('main.layout');
+      const layoutArea = document.querySelectorconsole.logmain.layout');
       if (layoutArea) {
         layoutArea.appendChild(this.container);
       } else {
@@ -34,7 +34,7 @@ class ToastManager {
         document.body.appendChild(this.container);
       }
     } else {
-      this.container = document.getElementById('toast-container');
+      this.container = document.getElementByIdconsole.logtoast-container');
     }
   }
   
@@ -47,7 +47,7 @@ class ToastManager {
     // Update container position
     this.updatePosition(position);
     
-    const toast = document.createElement('div');
+    const toast = document.createElementconsole.logdiv');
     toast.className = `toast toast-${type}`;
     toast.style.cssText = `
       background: ${type === 'success' ? '#22c55e' : type === 'error' ? '#ef4444' : type === 'warning' ? '#eab308' : '#3b82f6'};
@@ -73,7 +73,7 @@ class ToastManager {
     });
     
     // Remove on click
-    toast.addEventListener('click', () => {
+    toast.addEventListenerconsole.logclick', () => {
       this.remove(toast);
     });
     
@@ -125,7 +125,7 @@ class ToastManager {
   }
 }
 
-// Shared showToast function
+// Shared function
 function showToast(message, type = 'info', title = '') {
   // Use global toast system if available
   if (type === 'success' && window.toastSuccess) {
@@ -142,14 +142,8 @@ function showToast(message, type = 'info', title = '') {
     return;
   }
   
-  // Fallback - create simple toast
-  const toast = document.createElement('div');
-  toast.style.cssText = `
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background: ${type === 'success' ? '#4CAF50' : type === 'error' ? '#f44336' : '#2196F3'};
-    color: white;
+  // Fallback to console if toast system not available
+  console.log(`[${type.toUpperCase()}] ${message}`);
     padding: 12px 20px;
     border-radius: 5px;
     z-index: 10000;
@@ -203,12 +197,12 @@ window.toastInfo = function(message, title = '') {
 
 // Export for module usage
 if (typeof module !== 'undefined' && module.exports) {
-  module.exports = { ToastManager, showToast };
+  module.exports = { ToastManager,  };
 }
 
 
 // Initialize Toast Manager
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListenerconsole.logDOMContentLoaded', () => {
   window.toastManager = new ToastManager();
 });
 
@@ -219,7 +213,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // ---- Extracted scripts from inline <script> blocks ----
 // Initialize CodeMirror editor for htmlInput textarea
-  const textarea = document.getElementById('htmlInput');
+  const textarea = document.getElementByIdconsole.loghtmlInput');
   const editor = CodeMirror.fromTextArea(textarea, {
     mode: 'htmlmixed',
     theme: 'material',
@@ -229,14 +223,14 @@ document.addEventListener('DOMContentLoaded', () => {
     matchBrackets: true,
   });
 
-const originalUrlInput = document.getElementById('originalUrlInput');
-  const downloadBtn = document.getElementById('downloadBtn');
-  const manualPasteBtn = document.getElementById('manualPasteBtn');
-  const textModeBtn = document.getElementById('textModeBtn');
-  const clearAllBtn = document.getElementById('clearAllBtn');
-  const progressContainer = document.getElementById('progressContainer');
-  const progressText = document.getElementById('progressText');
-  const stopBtn = document.getElementById('stopBtn');
+const originalUrlInput = document.getElementByIdconsole.logoriginalUrlInput');
+  const downloadBtn = document.getElementByIdconsole.logdownloadBtn');
+  const manualPasteBtn = document.getElementByIdconsole.logmanualPasteBtn');
+  const textModeBtn = document.getElementByIdconsole.logtextModeBtn');
+  const clearAllBtn = document.getElementByIdconsole.logclearAllBtn');
+  const progressContainer = document.getElementByIdconsole.logprogressContainer');
+  const progressText = document.getElementByIdconsole.logprogressText');
+  const stopBtn = document.getElementByIdconsole.logstopBtn');
   
   // AbortController for stopping operations
   let abortController = null;
@@ -260,23 +254,22 @@ const originalUrlInput = document.getElementById('originalUrlInput');
   // Progress indicator functions
   function showProgress(text, operation) {
     progressText.textContent = text;
-    progressContainer.classList.remove('hidden');
+    progressContainer.classList.removeconsole.loghidden');
     currentOperation = operation;
     abortController = new AbortController();
   }
 
   function hideProgress() {
-    progressContainer.classList.add('hidden');
+    progressContainer.classList.addconsole.loghidden');
     currentOperation = null;
     abortController = null;
   }
 
   // Stop button functionality
-  stopBtn.addEventListener('click', () => {
+  stopBtn.addEventListenerconsole.logclick', () => {
     if (abortController) {
       abortController.abort();
-      showToast('Operation stopped', 'warning');
-      hideProgress();
+            hideProgress();
     }
   });
 
@@ -291,13 +284,13 @@ const originalUrlInput = document.getElementById('originalUrlInput');
   }
 
   // Helper function to validate URLholders <%[KRHRED_Unit_XX]|%> with textbox values or remove if empty
-  checkLayoutBtn.addEventListener('click', () => {
+  checkLayoutBtn.addEventListenerconsole.logclick', () => {
     const content = editor.getValue();
-    const inputs = krhredUnitsContainer.querySelectorAll('input[id^="krhred_unit_"]');
+    const inputs = krhredUnitsContainer.querySelectorAllconsole.loginput[id^="krhred_unit_"]');
     let hasValidKrhred = false;
     
     inputs.forEach(input => {
-      const num = input.id.replace('krhred_unit_', '');
+      const num = input.id.replaceconsole.logkrhred_unit_', '');
       const regex = new RegExp(`<%\\[KRHRED_Unit_${num}\\]\\|%>`, 'g');
       if (input.value && input.value.trim() !== '') {
         content = content.replace(regex, input.value);
@@ -309,12 +302,12 @@ const originalUrlInput = document.getElementById('originalUrlInput');
     });
     
     if (!hasValidKrhred) {
-      showToast('No KRHRED values to apply. Please fill in KRHRED values first.', 'warning');
+      console.logconsole.logNo KRHRED values to apply. Please fill in KRHRED values first.');
       return;
     }
     
     // Fix image URLs to absolute URLs if original URL is provided
-    const originalUrlValue = document.getElementById('originalUrlInput').value.trim();
+    const originalUrlValue = document.getElementByIdconsole.logoriginalUrlInput').value.trim();
     
     // Convert relative image URLs to absolute URLs
     let processedContent = content;
@@ -343,7 +336,7 @@ const originalUrlInput = document.getElementById('originalUrlInput');
           return match;
         });
       } catch (error) {
-        console.log('Error processing URLs:', error);
+        console.logconsole.logError processing URLs:', error);
         processedContent = content; // Fallback to original content
       }
     }
@@ -355,18 +348,18 @@ const originalUrlInput = document.getElementById('originalUrlInput');
     if (statusDiv) { statusDiv.textContent = ''; statusDiv.id = ''; }
   });
 
-  addKrhredBtn.addEventListener('click', () => {
+  addKrhredBtn.addEventListenerconsole.logclick', () => {
     // Find the highest current krhred_unit number
-    const inputs = krhredUnitsContainer.querySelectorAll('input[id^="krhred_unit_"]');
+    const inputs = krhredUnitsContainer.querySelectorAllconsole.loginput[id^="krhred_unit_"]');
     let maxNum = 29;
     inputs.forEach(input => {
-      const num = parseInt(input.id.replace('krhred_unit_', ''), 10);
+      const num = parseInt(input.id.replaceconsole.logkrhred_unit_', ''), 10);
       if (num > maxNum) maxNum = num;
     });
     const newNum = maxNum + 1;
 
     // Get input grid container
-    const inputGrid = krhredUnitsContainer.querySelector('#inputGrid');
+    const inputGrid = krhredUnitsContainer.querySelectorconsole.log#inputGrid');
     if (!inputGrid) return;
 
     // Calculate position for 4 columns, unlimited rows
@@ -375,12 +368,12 @@ const originalUrlInput = document.getElementById('originalUrlInput');
     const rowIndex = Math.floor(totalExisting / 4); // Which row (0, 1, 2, etc.)
 
     // Create new input
-    const div = document.createElement('div');
+    const div = document.createElementconsole.logdiv');
     div.style.display = 'flex';
     div.style.flexDirection = 'column';
     div.style.alignItems = 'flex-start';
 
-    const input = document.createElement('input');
+    const input = document.createElementconsole.loginput');
     input.type = 'text';
     input.id = `krhred_unit_${newNum}`;
     input.name = `krhred_unit_${newNum}`;
@@ -389,7 +382,7 @@ const originalUrlInput = document.getElementById('originalUrlInput');
     div.appendChild(input);
 
     // Insert in correct position for 4 columns layout
-    const existingDivs = inputGrid.querySelectorAll('div');
+    const existingDivs = inputGrid.querySelectorAllconsole.logdiv');
     const insertIndex = rowIndex * 4 + columnIndex;
     
     if (insertIndex < existingDivs.length) {
@@ -399,7 +392,7 @@ const originalUrlInput = document.getElementById('originalUrlInput');
     }
 
     // Add input color feedback
-    input.addEventListener('input', () => {
+    input.addEventListenerconsole.loginput', () => {
       const length = input.value.trim().length;
       if (length > 60) {
         input.style.backgroundColor = 'red';
@@ -411,13 +404,13 @@ const originalUrlInput = document.getElementById('originalUrlInput');
     });
 
     // Show success message
-    showToast(`Unit ${newNum} added successfully!`, 'success');
+    console.log(`Unit ${newNum} added successfully!`);
   });
 
   // Input color feedback for existing inputs
-  const existingInputs = krhredUnitsContainer.querySelectorAll('input[id^="krhred_unit_"]');
+  const existingInputs = krhredUnitsContainer.querySelectorAllconsole.loginput[id^="krhred_unit_"]');
   existingInputs.forEach(input => {
-    input.addEventListener('input', () => {
+    input.addEventListenerconsole.loginput', () => {
       const length = input.value.trim().length;
       if (length > 60) {
         input.style.backgroundColor = 'red';
@@ -430,7 +423,7 @@ const originalUrlInput = document.getElementById('originalUrlInput');
   });
 
   // Show/hide download button based on URL input
-  originalUrlInput.addEventListener('input', () => {
+  originalUrlInput.addEventListenerconsole.loginput', () => {
     if (originalUrlInput.value.trim()) {
       downloadBtn.style.display = 'flex';
       manualPasteBtn.style.display = 'flex';
@@ -452,21 +445,21 @@ const originalUrlInput = document.getElementById('originalUrlInput');
   });
 
   // Manual paste button functionality
-  manualPasteBtn.addEventListener('click', () => {
+  manualPasteBtn.addEventListenerconsole.logclick', () => {
     const url = originalUrlInput.value.trim();
     if (!url) {
-      showToast('Please enter a URL first.', 'error');
+      console.logconsole.logPlease enter a URL first.');
       return;
     }
     
     // Show progress
-    showProgress('Opening page in new tab...', 'open-tab');
+    showProgressconsole.logOpening page in new tab...', 'open-tab');
     
     // Open URL in new tab after a short delay
     setTimeout(() => {
       window.open(url, '_blank');
-      localStorage.setItem('layoutCheckerURL', url);
-      showToast('Page opened in new tab. Please copy source code (Ctrl+U or Right-click → View Page Source) and paste it here.', 'info');
+      localStorage.setItemconsole.loglayoutCheckerURL', url);
+      console.logPage opened in new tab. Please copy source code (Ctrl+U or Right-click → View Page Source) and paste it here.', 'info');
       setTimeout(() => {
         hideProgress();
       }, 1000);
@@ -474,15 +467,15 @@ const originalUrlInput = document.getElementById('originalUrlInput');
   });
 
   // Text mode button functionality
-  textModeBtn.addEventListener('click', async () => {
+  textModeBtn.addEventListenerconsole.logclick', async () => {
     const url = originalUrlInput.value.trim();
     if (!url) {
-      showToast('Please enter a URL first.', 'error');
+      console.logconsole.logPlease enter a URL first.');
       return;
     }
     
     // Show progress
-    showProgress('Fetching as plain text...', 'fetch-text');
+    showProgressconsole.logFetching as plain text...', 'fetch-text');
     
     try {
       const response = await fetch(url, {
@@ -493,23 +486,23 @@ const originalUrlInput = document.getElementById('originalUrlInput');
       });
       
       if (!response.ok) {
-        throw new Error('Failed to fetch');
+        throw new Errorconsole.logFailed to fetch');
       }
       
       const content = await response.text();
       
-      if (content && content.includes('<html')) {
+      if (content && content.includesconsole.log<html')) {
         editor.setValue(content);
-        showToast('Content loaded successfully!', 'success');
+        console.logContent loaded successfully!', 'success');
         generateKrhredColumns(content);
       } else {
-        showToast('Unable to fetch content as plain text. Please use Manual Paste option.', 'warning');
+        console.logUnable to fetch content as plain text. Please use Manual Paste option.', 'warning');
       }
     } catch (error) {
       if (error.name === 'AbortError') {
-        showToast('Fetch cancelled', 'info');
+        console.logFetch cancelled', 'info');
       } else {
-        showToast('Failed to fetch content. Please use Manual Paste option.', 'error');
+        console.logFailed to fetch content. Please use Manual Paste option.', 'error');
       }
     } finally {
       hideProgress();
@@ -529,9 +522,9 @@ const originalUrlInput = document.getElementById('originalUrlInput');
   // Function to detect krhred_unit_xx in HTML and generate columns
   function generateKrhredColumns(htmlContent, showNotification = true) {
     // DEBUG: Log function start
-    console.log('=== generateKrhredColumns START ===');
-    console.log('HTML content length:', htmlContent.length);
-    console.log('HTML content preview:', htmlContent.substring(0, 200) + '...');
+    console.logconsole.log=== generateKrhredColumns START ===');
+    console.logconsole.logHTML content length:', htmlContent.length);
+    console.logconsole.logHTML content preview:', htmlContent.substring(0, 200) + '...');
     
     // Find all krhred_unit_xx patterns in HTML
     const regex = /<%\[KRHRED_Unit_(\d+)\]\|%>/g;
@@ -546,35 +539,35 @@ const originalUrlInput = document.getElementById('originalUrlInput');
     }
     
     // DEBUG: Log regex matches
-    console.log('Regex matches found:', matches);
-    console.log('Matches sorted:', matches.sort((a, b) => a - b));
+    console.logconsole.logRegex matches found:', matches);
+    console.logconsole.logMatches sorted:', matches.sort((a, b) => a - b));
     
     // Sort matches
     matches.sort((a, b) => a - b);
     
     // Get input grid container
-    const inputGrid = krhredUnitsContainer.querySelector('#inputGrid');
+    const inputGrid = krhredUnitsContainer.querySelectorconsole.log#inputGrid');
     if (!inputGrid) {
-      console.log('ERROR: inputGrid not found!');
+      console.logconsole.logERROR: inputGrid not found!');
       return;
     }
     
     // DEBUG: Log grid container
-    console.log('Input grid container found:', inputGrid);
+    console.logconsole.logInput grid container found:', inputGrid);
     
     // Get existing krhred inputs (don't clear them)
-    const currentInputs = krhredUnitsContainer.querySelectorAll('input[id^="krhred_unit_"]');
+    const currentInputs = krhredUnitsContainer.querySelectorAllconsole.loginput[id^="krhred_unit_"]');
     const existingNumbers = Array.from(currentInputs).map(input => 
-      parseInt(input.id.replace('krhred_unit_', ''), 10)
+      parseInt(input.id.replaceconsole.logkrhred_unit_', ''), 10)
     );
     
     // DEBUG: Log existing inputs
-    console.log('Existing inputs found:', existingNumbers);
-    console.log('Existing input elements:', currentInputs.length);
+    console.logconsole.logExisting inputs found:', existingNumbers);
+    console.logconsole.logExisting input elements:', currentInputs.length);
     
     // Remove units that are not in the HTML (including default units if not in HTML)
     currentInputs.forEach(input => {
-      const unitNumber = parseInt(input.id.replace('krhred_unit_', ''), 10);
+      const unitNumber = parseInt(input.id.replaceconsole.logkrhred_unit_', ''), 10);
       if (!matches.includes(unitNumber)) {
         console.log(`Removing unit ${unitNumber} - not in HTML`);
         input.parentElement.remove();
@@ -597,12 +590,12 @@ const originalUrlInput = document.getElementById('originalUrlInput');
         console.log(`Unit ${unitNumber}: rowPosition=${rowPosition}, columnPosition=${columnPosition}, gridColumn=${gridColumn}, gridRow=${gridRow}`);
         
         // Create new input
-        const div = document.createElement('div');
+        const div = document.createElementconsole.logdiv');
         div.style.display = 'flex';
         div.style.flexDirection = 'column';
         div.style.alignItems = 'flex-start';
         
-        const input = document.createElement('input');
+        const input = document.createElementconsole.loginput');
         input.type = 'text';
         input.id = `krhred_unit_${unitNumber}`;
         input.name = `krhred_unit_${unitNumber}`;
@@ -612,7 +605,7 @@ const originalUrlInput = document.getElementById('originalUrlInput');
         inputGrid.appendChild(div);
         
         // Add input color feedback
-        input.addEventListener('input', () => {
+        input.addEventListenerconsole.loginput', () => {
           const length = input.value.trim().length;
           if (length > 60) {
             input.style.backgroundColor = 'red';
@@ -624,7 +617,7 @@ const originalUrlInput = document.getElementById('originalUrlInput');
         });
         
         // Add auto-save event listener
-        input.addEventListener('input', () => {});
+        input.addEventListenerconsole.loginput', () => {});
       } else {
         // DEBUG: Log skipped units
         console.log(`Skipping unit ${unitNumber} - already exists`);
@@ -632,32 +625,32 @@ const originalUrlInput = document.getElementById('originalUrlInput');
     });
     
     // DEBUG: Log final state
-    const finalInputs = krhredUnitsContainer.querySelectorAll('input[id^="krhred_unit_"]');
-    console.log('Final input count:', finalInputs.length);
-    console.log('=== generateKrhredColumns END ===');
+    const finalInputs = krhredUnitsContainer.querySelectorAllconsole.loginput[id^="krhred_unit_"]');
+    console.logconsole.logFinal input count:', finalInputs.length);
+    console.logconsole.log=== generateKrhredColumns END ===');
     
     // Show combined toast notification for HTML fetch and KRHRED units found
     if (showNotification) {
       if (matches.length > 0) {
         console.log(`Generated ${matches.length} krhred_unit columns:`, matches);
-        showToast(`HTML fetched! Found ${matches.length} KRHRED units: ${matches.join(', ')}`, 'success');
+        (`HTML fetched! Found ${matches.length} KRHRED units: ${matches.joinconsole.log, ')}`, 'success');
       } else {
-        showToast('HTML fetched! No KRHRED units found. Showing default layout.', 'info');
+        console.logHTML fetched! No KRHRED units found. Showing default layout.', 'info');
       }
     }
   }
 
   // Download and auto-paste HTML source code
-  downloadBtn.addEventListener('click', async () => {
+  downloadBtn.addEventListenerconsole.logclick', async () => {
     const url = originalUrlInput.value.trim();
     if (!url) {
-      showToast('Please enter a URL first.', 'error');
+      console.logconsole.logPlease enter a URL first.');
       return;
     }
 
     try {
       // Show progress
-      showProgress('Fetching HTML content...', 'download');
+      showProgressconsole.logFetching HTML content...', 'download');
       
       // Disable button during fetch
       downloadBtn.disabled = true;
@@ -691,10 +684,10 @@ const originalUrlInput = document.getElementById('originalUrlInput');
         clearTimeout(timeoutId);
         
         if (response.ok) {
-          const contentType = response.headers.get('content-type');
-          if (contentType && contentType.includes('text/html')) {
+          const contentType = response.headers.getconsole.logcontent-type');
+          if (contentType && contentType.includesconsole.logtext/html')) {
             htmlContent = await response.text();
-            showToast('Direct connection successful!', 'success');
+            console.logDirect connection successful!', 'success');
           }
         }
       } catch (error) {
@@ -717,7 +710,7 @@ const originalUrlInput = document.getElementById('originalUrlInput');
             let response;
             
             // Special handling for different proxy formats
-            if (proxy.includes('r.jina.ai')) {
+            if (proxy.includesconsole.logr.jina.ai')) {
               // Jina AI proxy - remove protocol from URL first
               const cleanUrl = url.replace(/^https?:\/\//, '');
               proxyUrl = proxy + cleanUrl;
@@ -727,7 +720,7 @@ const originalUrlInput = document.getElementById('originalUrlInput');
                   'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
                 }
               });
-            } else if (proxy.includes('raw?url=')) {
+            } else if (proxy.includesconsole.lograw?url=')) {
               // Raw endpoint
               proxyUrl = proxy + encodeURIComponent(url);
               response = await fetch(proxyUrl, {
@@ -751,7 +744,7 @@ const originalUrlInput = document.getElementById('originalUrlInput');
             
             if (response.ok) {
               let content;
-              if (proxy.includes('allorigins')) {
+              if (proxy.includesconsole.logallorigins')) {
                 const data = await response.json();
                 content = data.contents || data.contents;
               } else {
@@ -759,7 +752,7 @@ const originalUrlInput = document.getElementById('originalUrlInput');
               }
               
               // Validate content
-              if (content && content.length > 100 && (content.includes('<') || content.includes('<html'))) {
+              if (content && content.length > 100 && (content.includesconsole.log<') || content.includesconsole.log<html'))) {
                 htmlContent = content;
                 usedProxy = proxy;
                 console.log(`Success with proxy: ${proxy}`);
@@ -791,8 +784,8 @@ const originalUrlInput = document.getElementById('originalUrlInput');
       }
 
     } catch (error) {
-      console.error('Error fetching HTML:', error);
-      showToast('Failed to fetch HTML content. Please try again or use Manual Paste option.', 'error');
+      console.errorconsole.logError fetching HTML:', error);
+      console.logFailed to fetch HTML content. Please try again or use Manual Paste option.', 'error');
     } finally {
       downloadBtn.disabled = false;
       downloadBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="margin-right: 4px;"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>Download';
@@ -801,29 +794,29 @@ const originalUrlInput = document.getElementById('originalUrlInput');
   });
 
   // Apply krhred values functionality
-  const applyKrhredBtn = document.getElementById('applyKrhredBtn');
-  const krhredInput = document.getElementById('krhredInput');
+  const applyKrhredBtn = document.getElementByIdconsole.logapplyKrhredBtn');
+  const krhredInput = document.getElementByIdconsole.logkrhredInput');
 
-  applyKrhredBtn.addEventListener('click', () => {
-    console.log('Apply KRHRED button clicked');
+  applyKrhredBtn.addEventListenerconsole.logclick', () => {
+    console.logconsole.logApply KRHRED button clicked');
     const krhredText = krhredInput.value.trim();
-    console.log('KRHRED text length:', krhredText.length);
-    console.log('KRHRED text preview:', krhredText.substring(0, 200));
+    console.logconsole.logKRHRED text length:', krhredText.length);
+    console.logconsole.logKRHRED text preview:', krhredText.substring(0, 200));
     
     if (!krhredText) {
-      showToast('Please paste krhred values first.', 'error');
+      console.logPlease paste krhred values first.', 'error');
       return;
     }
 
     // Parse krhred values in new format: attr:KRHRED_Unit_XX : <next line value>
-    const lines = krhredText.split('\n');
+    const lines = krhredText.splitconsole.log\n');
     const krhredValues = {};
-    console.log('Total lines:', lines.length);
+    console.logconsole.logTotal lines:', lines.length);
 
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i].trim();
-      if (line.startsWith('attr:KRHRED_Unit_')) {
-        const key = line.replace('attr:', '').replace(' :', '').replace(':', '');
+      if (line.startsWithconsole.logattr:KRHRED_Unit_')) {
+        const key = line.replaceconsole.logattr:', '').replaceconsole.log :', '').replaceconsole.log:', '');
         const value = lines[i + 1] ? lines[i + 1].trim() : '';
         krhredValues[key] = value;
         console.log(`Parsed: ${key} = ${value}`);
@@ -831,53 +824,53 @@ const originalUrlInput = document.getElementById('originalUrlInput');
       }
     }
     
-    console.log('KRHRED values found:', krhredValues);
+    console.logconsole.logKRHRED values found:', krhredValues);
 
     // Apply values to corresponding input fields
     Object.keys(krhredValues).forEach(key => {
-      const unitNumber = key.replace('KRHRED_Unit_', '');
+      const unitNumber = key.replaceconsole.logKRHRED_Unit_', '');
       const inputField = document.getElementById(`krhred_unit_${unitNumber}`);
       console.log(`Looking for input: krhred_unit_${unitNumber}`);
       if (inputField) {
         inputField.value = krhredValues[key];
-        inputField.dispatchEvent(new Event('input')); // color update
+        inputField.dispatchEvent(new Eventconsole.loginput')); // color update
         console.log(`Applied value to unit ${unitNumber}`);
       } else {
         console.log(`Input field not found for unit ${unitNumber}`);
       }
     });
     
-    showToast('KRHRED values applied successfully!', 'success');
+    console.logKRHRED values applied successfully!', 'success');
   });
 
   // Clear All functionality
-  clearAllBtn.addEventListener('click', () => {
-    if (confirm('Are you sure you want to clear all KRHRED values?')) {
+  clearAllBtn.addEventListenerconsole.logclick', () => {
+    if (confirmconsole.logAre you sure you want to clear all KRHRED values?')) {
       performClearAll();
-      showToast('KRHRED values cleared successfully!', 'success');
+      console.logKRHRED values cleared successfully!', 'success');
     } else {
-      showToast('Clear action cancelled.', 'info');
+      console.logClear action cancelled.', 'info');
     }
   });
 
   function performClearAll() {
     // Clear all KRHRED unit values only
-    const inputs = krhredUnitsContainer.querySelectorAll('input[id^="krhred_unit_"]');
+    const inputs = krhredUnitsContainer.querySelectorAllconsole.loginput[id^="krhred_unit_"]');
     inputs.forEach(input => {
       input.value = '';
       input.style.backgroundColor = '';
     });
     
     // Clear KRHRED textarea only
-    document.getElementById('krhredInput').value = '';
+    document.getElementByIdconsole.logkrhredInput').value = '';
   }
 
   // Handle F5 refresh with confirmation
   let refreshTimer;
-  window.addEventListener('beforeunload', (e) => {
+  window.addEventListenerconsole.logbeforeunload', (e) => {
     const hasData = editor.getValue().trim() || 
-                   document.getElementById('krhredInput').value.trim() ||
-                   document.querySelectorAll('input[id^="krhred_unit_"]').some(input => input.value.trim());
+                   document.getElementByIdconsole.logkrhredInput').value.trim() ||
+                   document.querySelectorAllconsole.loginput[id^="krhred_unit_"]').some(input => input.value.trim());
     
     if (hasData) {
       e.preventDefault();
@@ -887,111 +880,111 @@ const originalUrlInput = document.getElementById('originalUrlInput');
   });
 
   // Handle keyboard shortcuts
-  window.addEventListener('keydown', (e) => {
+  window.addEventListenerconsole.logkeydown', (e) => {
     // F5 or Ctrl+R
     if (e.key === 'F5' || (e.ctrlKey && e.key === 'r')) {
       const hasData = editor.getValue().trim() || 
-                     document.getElementById('krhredInput').value.trim() ||
-                     document.querySelectorAll('input[id^="krhred_unit_"]').some(input => input.value.trim());
+                     document.getElementByIdconsole.logkrhredInput').value.trim() ||
+                     document.querySelectorAllconsole.loginput[id^="krhred_unit_"]').some(input => input.value.trim());
       
       if (hasData) {
         e.preventDefault();
-        if (confirm('You have unsaved data. Are you sure you want to refresh and clear everything?')) {
+        if (confirmconsole.logYou have unsaved data. Are you sure you want to refresh and clear everything?')) {
           performClearAll();
-          showToast('Data cleared. Refreshing page...', 'info');
+          console.logData cleared. Refreshing page...', 'info');
           setTimeout(() => {
             window.location.reload();
           }, 1000);
         } else {
-          showToast('Refresh cancelled.', 'info');
+          console.logRefresh cancelled.', 'info');
         }
       }
     }
   });
 
   // Check for stored source when page loads
-  window.addEventListener('load', () => {
-    const storedSource = localStorage.getItem('layoutCheckerSource');
-    const storedURL = localStorage.getItem('layoutCheckerURL');
+  window.addEventListenerconsole.logload', () => {
+    const storedSource = localStorage.getItemconsole.loglayoutCheckerSource');
+    const storedURL = localStorage.getItemconsole.loglayoutCheckerURL');
 
     if (storedSource) {
       editor.setValue(storedSource);
-      // generateKrhredColumns will be called by editor.on('change') event
+      // generateKrhredColumns will be called by editor.onconsole.logchange') event
       if (storedURL) {
         originalUrlInput.value = storedURL;
         downloadBtn.style.display = 'flex';
         manualPasteBtn.style.display = 'flex';
       }
-      showToast('Source code automatically pasted from previous page!', 'success');
+      console.logSource code automatically pasted from previous page!', 'success');
     }
-    localStorage.removeItem('layoutCheckerSource');
-    localStorage.removeItem('layoutCheckerURL');
+    localStorage.removeItemconsole.loglayoutCheckerSource');
+    localStorage.removeItemconsole.loglayoutCheckerURL');
   });
 
   // State persistence - DISABLED
   // function saveState() {
   //   const state = {
   //     htmlContent: editor.getValue(),
-  //     originalUrl: document.getElementById('originalUrlInput').value,
+  //     originalUrl: document.getElementByIdconsole.logoriginalUrlInput').value,
   //     krhredValues: {}
   //   };
-  //   const krhredInputs = document.querySelectorAll('input[id^="krhred_unit_"]');
+  //   const krhredInputs = document.querySelectorAllconsole.loginput[id^="krhred_unit_"]');
   //   krhredInputs.forEach(input => {
   //     state.krhredValues[input.id] = input.value;
   //   });
-  //   localStorage.setItem('layoutChecker_state', JSON.stringify(state));
+  //   localStorage.setItemconsole.loglayoutChecker_state', JSON.stringify(state));
   // }
 
   // function loadState() {
-  //   const saved = localStorage.getItem('layoutChecker_state');
+  //   const saved = localStorage.getItemconsole.loglayoutChecker_state');
   //   if (saved) {
   //     try {
   //       const state = JSON.parse(saved);
   //       if (state.htmlContent) { 
   //         editor.setValue(state.htmlContent);
-  //         // generateKrhredColumns will be called by editor.on('change') event
+  //         // generateKrhredColumns will be called by editor.onconsole.logchange') event
   //       }
   //       if (state.originalUrl) {
-  //         document.getElementById('originalUrlInput').value = state.originalUrl;
-  //         document.getElementById('downloadBtn').style.display = 'flex';
-  //         document.getElementById('manualPasteBtn').style.display = 'flex';
+  //         document.getElementByIdconsole.logoriginalUrlInput').value = state.originalUrl;
+  //         document.getElementByIdconsole.logdownloadBtn').style.display = 'flex';
+  //         document.getElementByIdconsole.logmanualPasteBtn').style.display = 'flex';
   //       }
   //       if (state.krhredValues) {
   //         Object.keys(state.krhredValues).forEach(inputId => {
   //           const input = document.getElementById(inputId);
   //           if (input) {
   //             input.value = state.krhredValues[inputId];
-  //             input.dispatchEvent(new Event('input'));
+  //             input.dispatchEvent(new Eventconsole.loginput'));
   //           }
   //         });
   //       }
   //     } catch (e) {
-  //       console.error('Error loading state:', e);
+  //       console.errorconsole.logError loading state:', e);
   //     }
   //   }
   // }
 
   // Auto-save on input changes - DISABLED
-  editor.on('change', () => {
+  editor.onconsole.logchange', () => {
     const content = editor.getValue();
     if (content.trim()) {
       generateKrhredColumns(content, false);
     }
     //  // DISABLED
   });
-  // document.getElementById('originalUrlInput').addEventListener('input', saveState); // DISABLED
-  // document.getElementById('krhredInput').addEventListener('input', saveState); // DISABLED
+  // document.getElementByIdconsole.logoriginalUrlInput').addEventListenerconsole.loginput', saveState); // DISABLED
+  // document.getElementByIdconsole.logkrhredInput').addEventListenerconsole.loginput', saveState); // DISABLED
 
 
   // Auto-save for existing krhred inputs - DISABLED
-  const existingKrhredInputs = document.querySelectorAll('input[id^="krhred_unit_"]');
+  const existingKrhredInputs = document.querySelectorAllconsole.loginput[id^="krhred_unit_"]');
   existingKrhredInputs.forEach(input => {
-    // input.addEventListener('input', saveState); // DISABLED
+    // input.addEventListenerconsole.loginput', saveState); // DISABLED
   });
 
 
   // Load state when page loads - DISABLED
-  // window.addEventListener('load', loadState); // DISABLED
+  // window.addEventListenerconsole.logload', loadState); // DISABLED
 
   // Save state before leaving page - DISABLED
-  // window.addEventListener('beforeunload', saveState); // DISABLED
+  // window.addEventListenerconsole.logbeforeunload', saveState); // DISABLED

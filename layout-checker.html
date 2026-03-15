@@ -52,41 +52,26 @@
 
 <div class="lc-input-group">
   <input type="text" id="originalUrlInput" placeholder="Enter full URL of the HTML file" class="lc-input" />
-  <button id="downloadBtn" class="lc-btn lc-btn-success hidden">
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-      <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
-    </svg>
-    Download
-  </button>
-  <button id="manualPasteBtn" class="lc-btn lc-btn-info hidden">
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-      <path d="M9 3V4H4V6H5V19A2 2 0 0 0 7 21H17A2 2 0 0 0 19 19V6H20V4H15V3H9M7 6H17V19H7V6M9 8V17H11V8H9M13 8V17H15V8H13Z"/>
-    </svg>
-    Open in New Tab
-  </button>
-  <button id="textModeBtn" class="lc-btn lc-btn-warning hidden">
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-      <path d="M14,17H7V15H14M17,13H7V11H17M17,9H7V7H17M19,3H5C3.89,3 3,3.89 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5C3.89,3 3,3.89 3,3Z"/>
-    </svg>
-    Text Mode
-  </button>
-</div>
-
-<!-- Progress Indicator -->
-<div id="progressContainer" class="lc-progress-container hidden">
-  <div class="lc-progress-content">
-    <div class="lc-progress-icon">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" class="spin">
-        <path d="M12,4V2A10,10 0 0,0 2,12H4A8,8 0 0,1 12,4Z"/>
-      </svg>
+  <button id="downloadBtn" class="lc-btn lc-btn-success hidden">Download</button>
+  <button id="manualPasteBtn" class="lc-btn lc-btn-info hidden">Open in New Tab</button>
+  <button id="textModeBtn" class="lc-btn lc-btn-warning hidden">Text Mode</button>
+  
+  <!-- Progress Indicator -->
+  <div id="progressContainer" class="lc-progress-container hidden">
+    <div class="lc-progress-content">
+      <div class="lc-progress-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" class="spin">
+          <path d="M12,4V2A10,10 0 0,0 2,12H4A8,8 0 0,1 12,4Z"/>
+        </svg>
+      </div>
+      <span id="progressText" class="lc-progress-text">Processing...</span>
+      <button id="stopBtn" class="lc-btn lc-btn-error lc-btn-sm">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M18,18H6V6H18V18Z"/>
+        </svg>
+        Stop
+      </button>
     </div>
-    <span id="progressText" class="lc-progress-text">Processing...</span>
-    <button id="stopBtn" class="lc-btn lc-btn-error lc-btn-sm">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-        <path d="M18,18H6V6H18V18Z"/>
-      </svg>
-      Stop
-    </button>
   </div>
 </div>
 
@@ -94,17 +79,12 @@
   <!-- Left Column: KRHRED Values -->
   <div class="lc-sidebar">
     <label for="krhredInput" class="lc-label">KRHRED Values:</label>
-    <textarea id="krhredInput" placeholder="Paste value from brickstreet" class="lc-textarea"></textarea>
+    <textarea id="krhredInput" placeholder="Check database di brickstreet dan generate value sampai muncul, ctrl + A, lalu paste ke sini!" class="lc-textarea"></textarea>
     <div class="lc-button-group">
       <button id="applyKrhredBtn" class="lc-btn lc-btn-success">Apply values</button>
       <button id="checkLayoutBtn" class="lc-btn lc-btn-primary">Check Layout</button>
-      <button id="addKrhredBtn" class="lc-btn lc-btn-info">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
-        </svg>
-        Add Unit
-      </button>
-      <button id="clearAllBtn" class="lc-btn lc-btn-error">Clear All</button>
+      <button id="addKrhredBtn" class="lc-btn lc-btn-info">Add Unit</button>
+      <button id="clearAllBtn" class="lc-btn lc-btn-error">Clear Values</button>
     </div>
   </div>
 
