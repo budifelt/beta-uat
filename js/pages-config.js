@@ -2137,6 +2137,7 @@ function manageTooltipCollision(fieldContainer) {
           });
           
           currentCampaignId = campaignIdValue;
+          updateCampaignCountIndicator(campaignIdValue);
           setStatusIcon('campaignIdCheckmark', 'ok');
           updateCount++;
         } else {
@@ -2370,8 +2371,8 @@ function updateSaveAndApplyButtons() {
   const hasErrors = hasCampaignIdError || hasSubjectError || hasLinkError;
   const allEmpty = isCampaignIdEmpty && isSubjectEmpty && isLinkEmpty;
   
-  // Apply button: disable if errors, all empty, or no changes from original
-  const shouldDisableApply = hasErrors || allEmpty || !hasChanges;
+  // Apply button: disable if errors or all empty (allow applying current values even if no changes)
+  const shouldDisableApply = hasErrors || allEmpty;
   
   // Save button: disable if errors, all empty, or no unsaved changes
   const shouldDisableSave = hasErrors || allEmpty || !hasUnsavedChanges;
