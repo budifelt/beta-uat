@@ -152,6 +152,12 @@ img {
   padding: 0;
 }
 
+/* Footer container should have no padding and correct max-width */
+.footer .container {
+  padding: 0;
+  max-width: 1200px;
+}
+
 .container-fluid {
   width: 100%;
   padding: 0 var(--space-5);
@@ -307,10 +313,9 @@ img {
 .cursor-text { cursor: text; }
 .cursor-help { cursor: help; }
 
-/* Add padding to body to account for fixed header and sticky footer */
+/* Remove padding to body since footer is no longer fixed */
 body {
   padding-top: var(--header-height);
-  padding-bottom: 60px;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -365,13 +370,19 @@ main {
   color: var(--text);
   text-decoration: none;
   font-weight: 500;
-  border-radius: 0;
+  border-radius: 8px;
   position: relative;
+  transition: all 0.3s ease;
 }
 
 .nav-link:hover {
   color: var(--accent-primary);
   background: rgba(241, 140, 142, 0.1);
+  transform: translateY(-1px);
+}
+
+.nav-link:active {
+  transform: translateY(0);
 }
 
 .nav-link[aria-current="page"] {
@@ -1865,8 +1876,8 @@ html, body {
 main .layout {
   display: flex;
   flex-direction: row; /* Override column from layout.css */
-  height: calc(100vh - var(--header-height));
-  overflow: hidden; /* Prevent scroll on main */
+  height: calc(100vh - var(--header-height) - 80px);
+  overflow-y: auto; /* Make layout scrollable */
   /* Hardware acceleration */
   transform: translateZ(0);
   contain: layout;
@@ -1922,7 +1933,6 @@ main .layout {
 /* Right Content - Enhanced */
 .content {
   padding: 0;
-  overflow: hidden;
   background: var(--bg-secondary);
   min-height: 0;
   display: flex;
@@ -2580,6 +2590,10 @@ body.initializing .content .field [class*="tooltip"] {
     padding: 0 var(--space-4);
   }
   
+  .footer .container {
+    padding: 0;
+  }
+  
   .sidebar {
     width: 260px !important;
     min-width: 260px !important;
@@ -2652,8 +2666,11 @@ body.initializing .content .field [class*="tooltip"] {
 @media (max-width: 767px) and (min-width: 480px) {
   main .layout {
     flex-direction: column;
-    height: auto;
-    min-height: calc(100vh - var(--header-height) - 60px);
+    height: calc(100vh - var(--header-height) - 60px);
+  }
+  
+  .footer .container {
+    padding: 0;
   }
   
   .container {
@@ -2760,12 +2777,11 @@ body.initializing .content .field [class*="tooltip"] {
 @media (max-width: 479px) {
   main .layout {
     flex-direction: column;
-    height: auto;
-    min-height: calc(100vh - var(--header-height) - 60px);
+    height: calc(100vh - var(--header-height) - 60px);
   }
   
-  .container {
-    padding: 0 var(--space-2);
+  .footer .container {
+    padding: 0;
   }
   
   .sidebar {
@@ -2874,6 +2890,37 @@ body.initializing .content .field [class*="tooltip"] {
   
   .buttons .btn {
     width: 100%;
+  }
+}
+
+/* Responsive Design - Mobile */
+@media (max-width: 767px) {
+  body {
+    padding-top: var(--header-height);
+  }
+
+  main .layout {
+    flex-direction: column;
+    height: calc(100vh - var(--header-height) - 60px);
+  }
+
+  .config-panel,
+  .preview-panel {
+    height: 50%;
+    min-height: 50%;
+  }
+}
+
+@media (max-width: 479px) {
+  main .layout {
+    flex-direction: column;
+    height: calc(100vh - var(--header-height) - 60px);
+  }
+
+  .config-panel,
+  .preview-panel {
+    height: 50%;
+    min-height: 50%;
   }
 }
 

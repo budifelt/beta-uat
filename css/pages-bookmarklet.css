@@ -307,10 +307,9 @@ img {
 .cursor-text { cursor: text; }
 .cursor-help { cursor: help; }
 
-/* Add padding to body to account for fixed header and sticky footer */
+/* Remove padding to body since footer is no longer fixed */
 body {
   padding-top: var(--header-height);
-  padding-bottom: 60px;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -365,13 +364,19 @@ main {
   color: var(--text);
   text-decoration: none;
   font-weight: 500;
-  border-radius: 0;
+  border-radius: 8px;
   position: relative;
+  transition: all 0.3s ease;
 }
 
 .nav-link:hover {
   color: var(--accent-primary);
   background: rgba(241, 140, 142, 0.1);
+  transform: translateY(-1px);
+}
+
+.nav-link:active {
+  transform: translateY(0);
 }
 
 .nav-link[aria-current="page"] {
@@ -966,6 +971,25 @@ main {
   .bookmarklet-header h3 {
     font-size: var(--font-size-lg);
   }
+  
+  .bookmarklet-filter {
+    flex-wrap: wrap;
+  }
+  
+  .bookmarklet-filter-btn {
+    flex: 1;
+    min-width: 100px;
+  }
+}
+
+@media (max-width: 1023px) and (min-width: 768px) {
+  .bookmarklet-section {
+    padding: 76px 20px 60px;
+  }
+
+  .bookmarklets-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 @media (max-width: 480px) {
@@ -993,6 +1017,23 @@ main {
   .bookmarklet-card {
     padding: var(--space-4);
   }
+  
+  .bookmarklets-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .bookmarklet-filter {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .bookmarklet-filter-btn {
+    width: 100%;
+  }
+  
+  .shortcuts-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* ===================================
@@ -1005,22 +1046,43 @@ main {
   gap: var(--space-3);
 }
 
+.shortcuts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--space-3);
+  margin-top: var(--space-3);
+}
+
 .shortcut-item {
   display: flex;
   align-items: center;
   gap: var(--space-2);
   font-size: var(--font-size-sm);
   color: var(--text-muted);
+  background: var(--surface);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  transition: all 0.2s ease;
+}
+
+.shortcut-item:hover {
+  background: var(--surface-hover);
+  border-color: var(--accent-primary);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
 }
 
 .shortcut-item kbd {
-  background: var(--surface);
+  background: linear-gradient(135deg, var(--surface) 0%, var(--surface-hover) 100%);
   border: 1px solid var(--border);
-  border-radius: 0;
+  border-radius: var(--radius-sm);
   padding: var(--space-1) var(--space-2);
   font-family: var(--font-family-mono, monospace);
   font-size: var(--font-size-xs);
   color: var(--text);
+  font-weight: 600;
+  box-shadow: 0 2px 0 var(--border);
 }
 
 /* ===================================

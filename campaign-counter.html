@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -25,24 +24,21 @@
   <!-- Font Awesome - Non-blocking load -->
   <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"></noscript>
+  
+  <!-- Supabase Client -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
-  <!-- Initial State Script - Removed -->
-  
   <!-- Navigation Bar -->
   <header class="header" role="banner">
     <nav class="nav" role="navigation" aria-label="Main navigation">
-      <!-- Home/Logo Button -->
       <div class="nav-left">
         <a href="index.html" class="nav-link">
-          <i class="fa-solid fa-home" ></i>
+          <i class="fa-solid fa-home"></i>
           <span>Home</span>
         </a>
       </div>
-      
-      <div class="nav-right">
-        <!-- Additional navigation items can be added here -->
-      </div>
+      <div class="nav-right"></div>
     </nav>
   </header>
 
@@ -53,7 +49,6 @@
           <!-- Campaign 1 Tab -->
           <div class="tab-pane active" id="campaign1-tab">
             <div class="counter-container campaign1-counter">
-              <!-- Tab Navigation dalam Counter -->
               <div class="counter-tabs">
                 <button class="tab-btn active" data-tab="campaign1" data-color="primary" title="Name 1 - Double click to edit">
                   <i class="fa-solid fa-chart-line"></i>
@@ -72,7 +67,6 @@
                   <span class="tab-name">Name 4</span>
                 </button>
               </div>
-              
               <h2>Name 1 Counter
                 <button class="edit-icon" onclick="editCounter('campaign1')" title="Edit manually">
                   <i class="fa-solid fa-pen-to-square"></i>
@@ -98,20 +92,16 @@
                 </button>
               </div>
             </div>
-
             <div class="history-container">
               <h2>History</h2>
               <div id="campaign1-history" class="history-list"></div>
-              <button onclick="loadMoreHistory('campaign1')" class="load-more-btn-custom">
-                Load More
-              </button>
+              <button onclick="loadMoreHistory('campaign1')" class="load-more-btn-custom">Load More</button>
             </div>
           </div>
           
           <!-- Campaign 2 Tab -->
           <div class="tab-pane" id="campaign2-tab">
             <div class="counter-container campaign2-counter">
-              <!-- Tab Navigation dalam Counter -->
               <div class="counter-tabs">
                 <button class="tab-btn active" data-tab="campaign1" data-color="primary" title="Name 1 - Double click to edit">
                   <i class="fa-solid fa-chart-line"></i>
@@ -130,7 +120,6 @@
                   <span class="tab-name">Name 4</span>
                 </button>
               </div>
-              
               <h2>Name 2 Counter
                 <button class="edit-icon" onclick="editCounter('campaign2')" title="Edit manually">
                   <i class="fa-solid fa-pen-to-square"></i>
@@ -156,20 +145,16 @@
                 </button>
               </div>
             </div>
-
             <div class="history-container">
               <h2>History</h2>
               <div id="campaign2-history" class="history-list"></div>
-              <button onclick="loadMoreHistory('campaign2')" class="load-more-btn-custom">
-                Load More
-              </button>
+              <button onclick="loadMoreHistory('campaign2')" class="load-more-btn-custom">Load More</button>
             </div>
           </div>
           
           <!-- Campaign 3 Tab -->
           <div class="tab-pane" id="campaign3-tab">
             <div class="counter-container campaign3-counter">
-              <!-- Tab Navigation dalam Counter -->
               <div class="counter-tabs">
                 <button class="tab-btn active" data-tab="campaign1" data-color="primary" title="Name 1 - Double click to edit">
                   <i class="fa-solid fa-chart-line"></i>
@@ -188,7 +173,6 @@
                   <span class="tab-name">Name 4</span>
                 </button>
               </div>
-              
               <h2>Name 3 Counter
                 <button class="edit-icon" onclick="editCounter('campaign3')" title="Edit manually">
                   <i class="fa-solid fa-pen-to-square"></i>
@@ -214,20 +198,16 @@
                 </button>
               </div>
             </div>
-
             <div class="history-container">
               <h2>History</h2>
               <div id="campaign3-history" class="history-list"></div>
-              <button onclick="loadMoreHistory('campaign3')" class="load-more-btn-custom">
-                Load More
-              </button>
+              <button onclick="loadMoreHistory('campaign3')" class="load-more-btn-custom">Load More</button>
             </div>
           </div>
           
           <!-- Campaign 4 Tab -->
           <div class="tab-pane" id="campaign4-tab">
             <div class="counter-container campaign4-counter">
-              <!-- Tab Navigation dalam Counter -->
               <div class="counter-tabs">
                 <button class="tab-btn active" data-tab="campaign1" data-color="primary" title="Name 1 - Double click to edit">
                   <i class="fa-solid fa-chart-line"></i>
@@ -246,7 +226,6 @@
                   <span class="tab-name">Name 4</span>
                 </button>
               </div>
-              
               <h2>Name 4 Counter
                 <button class="edit-icon" onclick="editCounter('campaign4')" title="Edit manually">
                   <i class="fa-solid fa-pen-to-square"></i>
@@ -272,13 +251,10 @@
                 </button>
               </div>
             </div>
-
             <div class="history-container">
               <h2>History</h2>
               <div id="campaign4-history" class="history-list"></div>
-              <button onclick="loadMoreHistory('campaign4')" class="load-more-btn-custom">
-                Load More
-              </button>
+              <button onclick="loadMoreHistory('campaign4')" class="load-more-btn-custom">Load More</button>
             </div>
           </div>
         </div>
@@ -349,7 +325,7 @@
         <div class="footer-left">
           <p class="footer-text">
             &copy; <span id="footer-year">2025</span> eDM Helper <span class="footer-version" data-version>v1.0.0</span>. 
-            Built with <i class="fa-solid fa-heart" ></i> for developers.
+            Built with <i class="fa-solid fa-heart"></i> for developers.
           </p>
         </div>
         <div class="footer-right">
@@ -369,386 +345,8 @@
     </div>
   </footer>
 
-  <!-- Include Settings Modal -->
-  <!-- Page Scripts (Load Last) -->
-
   <script src="js/footer.js" defer></script>
   <script src="js/version-config.js" defer></script>
   <script src="js/pages-campaign-counter.js" defer></script>
-  
-  <script>
-    // Multi-counter system
-    const counters = {
-      campaign1: {
-        value: parseInt(localStorage.getItem('campaign1Counter')) || 1,
-        color: 'primary',
-        name: localStorage.getItem('campaign1TabName') || 'Name 1'
-      },
-      campaign2: {
-        value: parseInt(localStorage.getItem('campaign2Counter')) || 1,
-        color: 'success',
-        name: localStorage.getItem('campaign2TabName') || 'Name 2'
-      },
-      campaign3: {
-        value: parseInt(localStorage.getItem('campaign3Counter')) || 1,
-        color: 'warning',
-        name: localStorage.getItem('campaign3TabName') || 'Name 3'
-      },
-      campaign4: {
-        value: parseInt(localStorage.getItem('campaign4Counter')) || 1,
-        color: 'info',
-        name: localStorage.getItem('campaign4TabName') || 'Name 4'
-      }
-    };
-    
-    let currentTab = 'campaign1';
-    let currentEditCounter = null;
-    let currentEditTab = null;
-    
-    // Initialize on load
-    document.addEventListener('DOMContentLoaded', function() {
-      // Setup tab switching
-      setupTabs();
-      
-      // Load tab names from storage
-      loadTabNames();
-      
-      // Update all counters
-      Object.keys(counters).forEach(type => {
-        updateCounterDisplay(type);
-        updateHistoryDisplay(type);
-      });
-    });
-    
-    // Load tab names from storage
-    function loadTabNames() {
-      Object.keys(counters).forEach(type => {
-        // Update ALL tab names di semua containers
-        document.querySelectorAll(`[data-tab="${type}"] .tab-name`).forEach(tabName => {
-          tabName.textContent = counters[type].name;
-        });
-        
-        // Update ALL counter titles
-        document.querySelectorAll(`#${type}-tab .counter-container h2`).forEach(counterTitle => {
-          counterTitle.innerHTML = `${counters[type].name} Counter
-            <button class="edit-icon" onclick="editCounter('${type}')" title="Edit manually">
-              <i class="fa-solid fa-pen-to-square"></i>
-            </button>`;
-        });
-        
-        // Update ALL tooltips
-        document.querySelectorAll(`[data-tab="${type}"]`).forEach(tabBtn => {
-          tabBtn.title = `${counters[type].name} - Double click to edit`;
-        });
-      });
-    }
-    
-    // Open tab name modal
-    function openTabNameModal(type) {
-      currentEditTab = type;
-      const modal = document.getElementById('tab-name-modal');
-      const input = document.getElementById('tab-name-input');
-      
-      input.value = counters[type].name;
-      modal.style.display = 'flex';
-      input.focus();
-      input.select();
-    }
-    
-    // Close tab name modal
-    function closeTabNameModal() {
-      const modal = document.getElementById('tab-name-modal');
-      modal.style.display = 'none';
-      currentEditTab = null;
-    }
-    
-    // Confirm tab name
-    function confirmTabName() {
-      const input = document.getElementById('tab-name-input');
-      const newName = input.value.trim();
-      
-      if (newName && currentEditTab) {
-        counters[currentEditTab].name = newName;
-        localStorage.setItem(`${currentEditTab}TabName`, newName);
-        
-        // Update ALL tab names di semua containers
-        document.querySelectorAll(`[data-tab="${currentEditTab}"] .tab-name`).forEach(tabName => {
-          tabName.textContent = newName;
-        });
-        
-        // Update ALL counter titles
-        document.querySelectorAll(`#${currentEditTab}-tab .counter-container h2`).forEach(counterTitle => {
-          counterTitle.innerHTML = `${newName} Counter
-            <button class="edit-icon" onclick="editCounter('${currentEditTab}')" title="Edit manually">
-              <i class="fa-solid fa-pen-to-square"></i>
-            </button>`;
-        });
-        
-        // Update ALL tooltips
-        document.querySelectorAll(`[data-tab="${currentEditTab}"]`).forEach(tabBtn => {
-          tabBtn.title = `${newName} - Double click to edit`;
-        });
-        
-        closeTabNameModal();
-      }
-    }
-    
-    // Tab switching
-    function setupTabs() {
-      const tabBtns = document.querySelectorAll('.tab-btn');
-      tabBtns.forEach(btn => {
-        // Single click untuk switch tab
-        btn.addEventListener('click', function() {
-          const tabName = this.dataset.tab;
-          switchTab(tabName);
-          
-          // Update active state di semua tab containers
-          document.querySelectorAll('.counter-tabs').forEach(container => {
-            container.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            container.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
-          });
-        });
-        
-        // Double click untuk edit nama
-        btn.addEventListener('dblclick', function(e) {
-          e.stopPropagation();
-          openTabNameModal(this.dataset.tab);
-        });
-      });
-    }
-    
-    function switchTab(tabName) {
-      // Update panes
-      document.querySelectorAll('.tab-pane').forEach(pane => {
-        pane.classList.remove('active');
-      });
-      document.getElementById(`${tabName}-tab`).classList.add('active');
-      
-      currentTab = tabName;
-    }
-    
-    // Update counter display
-    function updateCounterDisplay(type) {
-      const counter = counters[type];
-      document.getElementById(`${type}-number`).textContent = String(counter.value).padStart(4, '0');
-      
-      // Update progress bar
-      const progress = ((counter.value % 100) / 100) * 100;
-      document.getElementById(`${type}-progress`).style.width = progress + '%';
-      
-      // Update status
-      const updatedEl = document.getElementById(`${type}-updated`);
-      if (updatedEl) {
-        updatedEl.textContent = 'Last updated: ' + formatDateTime(new Date());
-      }
-      
-      // Update cache status
-      const history = JSON.parse(localStorage.getItem(`${type}History`) || '[]');
-      const cacheEl = document.getElementById(`${type}-cache`);
-      if (cacheEl) {
-        cacheEl.textContent = history.length;
-      }
-    }
-    
-    // Add counter
-    function addCounter(type) {
-      counters[type].value++;
-      localStorage.setItem(`${type}Counter`, counters[type].value);
-      updateCounterDisplay(type);
-      addToHistory(type, counters[type].value, 'generated');
-      console.log(`New ${type} ID: ` + String(counters[type].value).padStart(4, '0'));
-    }
-    
-    // Decrement counter
-    function decrementCounter(type) {
-      if (counters[type].value > 1) {
-        counters[type].value--;
-        localStorage.setItem(`${type}Counter`, counters[type].value);
-        updateCounterDisplay(type);
-        addToHistory(type, counters[type].value, 'reverted');
-        console.log(`${type} ID reverted to: ` + String(counters[type].value).padStart(4, '0'));
-      }
-    }
-    
-    // Edit counter
-    function editCounter(type) {
-      if (!counters[type]) {
-        console.error('Counter type not found:', type);
-        return;
-      }
-      currentEditCounter = type;
-      const modal = document.getElementById('edit-modal');
-      const input = document.getElementById('modal-input');
-      const title = document.getElementById('modal-title');
-      
-      input.value = counters[type].value;
-      title.textContent = `Edit ${counters[type].name} ID`;
-      modal.style.display = 'flex';
-      input.focus();
-      input.select();
-    }
-    
-    // Add to history
-    function addToHistory(type, value, action) {
-      const history = JSON.parse(localStorage.getItem(`${type}History`) || '[]');
-      const entry = {
-        id: value,
-        action: action,
-        timestamp: new Date().toISOString(),
-        display: String(value).padStart(4, '0')
-      };
-      
-      history.unshift(entry);
-      if (history.length > 50) history.pop();
-      
-      localStorage.setItem(`${type}History`, JSON.stringify(history));
-      updateHistoryDisplay(type);
-    }
-    
-    // Update history display
-    function updateHistoryDisplay(type) {
-      const historyList = document.getElementById(`${type}-history`);
-      if (!historyList) return;
-      
-      let history = JSON.parse(localStorage.getItem(`${type}History`) || '[]');
-      
-      // Add dummy history if empty (for testing)
-      if (history.length === 0) {
-        history = [
-          {
-            id: counters[type].value,
-            action: 'generated',
-            timestamp: new Date().toISOString(),
-            display: String(counters[type].value).padStart(4, '0')
-          }
-        ];
-        localStorage.setItem(`${type}History`, JSON.stringify(history));
-      }
-      
-      historyList.innerHTML = history.slice(0, 10).map(entry => `
-        <div class="history-item">
-          <i class="fa-solid fa-${entry.action === 'generated' ? 'plus-circle' : entry.action === 'reverted' ? 'rotate-left' : 'edit'}"></i>
-          <div>
-            <strong>${entry.display}</strong>
-            <time>${formatTime(entry.timestamp)}</time>
-          </div>
-        </div>
-      `).join('');
-    }
-    
-    // Format date and time
-    function formatDateTime(date) {
-      const d = new Date(date);
-      
-      // Format: DD/MM/YYYY HH:mm:ss
-      const day = String(d.getDate()).padStart(2, '0');
-      const month = String(d.getMonth() + 1).padStart(2, '0');
-      const year = d.getFullYear();
-      const hours = String(d.getHours()).padStart(2, '0');
-      const minutes = String(d.getMinutes()).padStart(2, '0');
-      const seconds = String(d.getSeconds()).padStart(2, '0');
-      
-      return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
-    }
-    
-    // Format time (for backward compatibility)
-    function formatTime(timestamp) {
-      return formatDateTime(timestamp);
-    }
-    
-    // Load more history
-    function loadMoreHistory(type) {
-      const historyList = document.getElementById(`${type}-history`);
-      const currentCount = historyList.children.length;
-      const history = JSON.parse(localStorage.getItem(`${type}History`) || '[]');
-      
-      const moreItems = history.slice(currentCount, currentCount + 10);
-      moreItems.forEach(entry => {
-        const item = document.createElement('div');
-        item.className = 'history-item';
-        item.innerHTML = `
-          <i class="fa-solid fa-${entry.action === 'generated' ? 'plus-circle' : entry.action === 'reverted' ? 'rotate-left' : 'edit'}"></i>
-          <div>
-            <strong>${entry.display}</strong>
-            <time>${formatTime(entry.timestamp)}</time>
-          </div>
-        `;
-        historyList.appendChild(item);
-      });
-      
-      // Hide button if no more items
-      if (currentCount + 10 >= history.length) {
-        event.target.style.display = 'none';
-      }
-    }
-    
-    // Modal functions
-    function closeEditModal() {
-      const modal = document.getElementById('edit-modal');
-      modal.style.display = 'none';
-      currentEditCounter = null;
-    }
-    
-    function confirmEditCounter() {
-      const input = document.getElementById('modal-input');
-      const newValue = parseInt(input.value);
-      
-      if (newValue >= 1 && newValue <= 9999 && currentEditCounter && counters[currentEditCounter]) {
-        counters[currentEditCounter].value = newValue;
-        localStorage.setItem(`${currentEditCounter}Counter`, counters[currentEditCounter].value);
-        updateCounterDisplay(currentEditCounter);
-        addToHistory(currentEditCounter, counters[currentEditCounter].value, 'manual_edit');
-        console.log(`${counters[currentEditCounter].name} ID updated to ` + String(counters[currentEditCounter].value).padStart(4, '0'));
-        closeEditModal();
-      } else {
-        alert('Please enter a valid number (1-9999)');
-        input.focus();
-      }
-    }
-    
-    // Event listeners
-    document.getElementById('edit-modal').addEventListener('click', function(e) {
-      if (e.target === this) {
-        closeEditModal();
-      }
-    });
-    
-    document.getElementById('tab-name-modal').addEventListener('click', function(e) {
-      if (e.target === this) {
-        closeTabNameModal();
-      }
-    });
-    
-    document.addEventListener('keydown', function(e) {
-      if (e.key === 'Escape') {
-        closeEditModal();
-        closeTabNameModal();
-      }
-    });
-    
-    document.getElementById('modal-input').addEventListener('keydown', function(e) {
-      if (e.key === 'Enter') {
-        confirmEditCounter();
-      }
-    });
-    
-    document.getElementById('tab-name-input').addEventListener('keydown', function(e) {
-      if (e.key === 'Enter') {
-        confirmTabName();
-      }
-    });
-    
-    document.getElementById('modal-input').addEventListener('input', function(e) {
-      e.target.value = e.target.value.replace(/\D/g, '').slice(0, 4);
-    });
-    
-    // Auto-save every 30 seconds
-    setInterval(function() {
-      Object.keys(counters).forEach(type => {
-        localStorage.setItem(`${type}Counter`, counters[type].value);
-      });
-      console.log('Auto-saved all counters');
-    }, 30000);
-  </script>
 </body>
 </html>

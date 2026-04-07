@@ -1269,7 +1269,6 @@ if (elements.campaignIdInput) {
 // Add saveState event listeners
 if (elements.subjectInput) elements.subjectInput.addEventListener('input', saveState);
 if (elements.linkInput) elements.linkInput.addEventListener('input', saveState);
-window.addEventListener('beforeunload', saveState);
 
 /* Campaign ID Format Validation */
 function validateCampaignIdFormat(campaignId) {

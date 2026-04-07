@@ -139,6 +139,37 @@ img {
    =================================== */
 
 /* ===================================
+   DATABASE GENERATOR PAGE STYLES
+   =================================== */
+
+.page-header {
+  text-align: center;
+  margin-bottom: 40px;
+  margin-top: 40px;
+}
+
+.page-header h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text);
+  margin: 0 0 12px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.page-header h1 i {
+  color: var(--accent-primary);
+}
+
+.page-header .subtitle {
+  font-size: 1rem;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+/* ===================================
    LAYOUT.CSS - Header, Footer, Grid, Section, Utilities
    =================================== */
 
@@ -307,10 +338,9 @@ img {
 .cursor-text { cursor: text; }
 .cursor-help { cursor: help; }
 
-/* Add padding to body to account for fixed header and sticky footer */
+/* Remove padding to body since footer is no longer fixed */
 body {
   padding-top: var(--header-height);
-  padding-bottom: 60px;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -365,13 +395,19 @@ main {
   color: var(--text);
   text-decoration: none;
   font-weight: 500;
-  border-radius: 0;
+  border-radius: 8px;
   position: relative;
+  transition: all 0.3s ease;
 }
 
 .nav-link:hover {
   color: var(--accent-primary);
   background: rgba(241, 140, 142, 0.1);
+  transform: translateY(-1px);
+}
+
+.nav-link:active {
+  transform: translateY(0);
 }
 
 .nav-link[aria-current="page"] {
@@ -2893,28 +2929,15 @@ tbody tr {
     flex-direction: column;
     align-items: stretch;
   }
-  
-  .panel-field {
+
+  .panel-col {
     width: 100%;
   }
-  
-  .btn {
-    width: 100%;
-    justify-content: center;
-  }
-  
-  .flex.flex-wrap {
-    flex-direction: column;
-  }
-  
-  .flex.gap-3 {
-    flex-direction: column;
-  }
-  
+
   #previews {
     grid-template-columns: 1fr;
   }
-  
+
   .panel {
     padding: 1.5rem;
   }

@@ -1,482 +1,360 @@
-/* ===================================
-   TOAST UTILITY - Merged from toast.js
-   =================================== */
+// Campaign Counter Script with Supabase Integration
 
-/* ===================================
-   SHARED TOAST UTILITY
-   =================================== */
+const supabaseClient = window.supabase.createClient('https://neuyjcotcmjnndjyzbcq.supabase.co', 'sb_publishable_BGon7fPsvXNe59meFE9F4Q_SbjCa-Dp');
 
-// Global Toast Manager Class
-class ToastManager {
-  constructor() {
-    this.container = null;
-    this.init();
+const counters = {
+  campaign1: { value: 1, color: 'primary', name: 'Name 1' },
+  campaign2: { value: 1, color: 'success', name: 'Name 2' },
+  campaign3: { value: 1, color: 'warning', name: 'Name 3' },
+  campaign4: { value: 1, color: 'info', name: 'Name 4' }
+};
+
+let currentTab = 'campaign1';
+let currentEditCounter = null;
+let currentEditTab = null;
+
+async function loadCounterFromSupabase(campaignType) {
+  try {
+    const { data, error } = await supabaseClient
+      .from('campaign_counters')
+      .select('value, name')
+      .eq('campaign_type', campaignType)
+      .single();
+    if (error && error.code !== 'PGRST116') throw error;
+    return data ? { value: data.value, name: data.name } : null;
+  } catch (error) {
+    console.error('Error loading counter:', error);
+    return null;
   }
-  
-  init() {
-    // Create toast container if it doesn't exist
-    if (!document.getElementById('toast-container')) {
-      this.container = document.createElement('div');
-      this.container.id = 'toast-container';
-      this.container.style.cssText = `
-        position: fixed;
-        top: 80px;
-        right: 20px;
-        z-index: 10000;
-        pointer-events: none;
-      `;
-      // Append to layout area
-      const layoutArea = document.querySelector('main.layout');
-      if (layoutArea) {
-        layoutArea.appendChild(this.container);
-      } else {
-        // Fallback to body
-        document.body.appendChild(this.container);
+}
+
+async function saveCounterToSupabase(campaignType, value) {
+  try {
+    const { error } = await supabaseClient
+      .from('campaign_counters')
+      .upsert({ campaign_type: campaignType, value: value, name: counters[campaignType].name, updated_at: new Date().toISOString() }, { onConflict: 'campaign_type' });
+    if (error) throw error;
+  } catch (error) {
+    console.error('Error saving counter:', error);
+  }
+}
+
+async function saveTabNameToSupabase(campaignType, name) {
+  try {
+    const { error } = await supabaseClient
+      .from('campaign_counters')
+      .upsert({ campaign_type: campaignType, name: name, value: counters[campaignType].value, updated_at: new Date().toISOString() }, { onConflict: 'campaign_type' });
+    if (error) throw error;
+  } catch (error) {
+    console.error('Error saving tab name:', error);
+  }
+}
+
+async function saveHistoryToSupabase(campaignType, action, value) {
+  try {
+    const { error } = await supabaseClient
+      .from('campaign_history')
+      .insert({ campaign_type: campaignType, action: action, value: value, created_at: new Date().toISOString() });
+    if (error) throw error;
+  } catch (error) {
+    console.error('Error saving history:', error);
+  }
+}
+
+async function loadHistoryFromSupabase(campaignType) {
+  try {
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+    const { data, error } = await supabaseClient
+      .from('campaign_history')
+      .select('*')
+      .eq('campaign_type', campaignType)
+      .gte('created_at', sevenDaysAgo.toISOString())
+      .order('created_at', { ascending: false });
+    if (error) throw error;
+    return data || [];
+  } catch (error) {
+    console.error('Error loading history:', error);
+    return [];
+  }
+}
+
+document.addEventListener('DOMContentLoaded', async function() {
+  try {
+    for (const type of Object.keys(counters)) {
+      const savedData = await loadCounterFromSupabase(type);
+      if (savedData) {
+        if (savedData.value !== null) counters[type].value = savedData.value;
+        if (savedData.name) counters[type].name = savedData.name;
       }
-    } else {
-      this.container = document.getElementById('toast-container');
     }
+  } catch (error) {
+    console.error('Error loading from Supabase, using defaults:', error);
   }
-  
-  show(message, type = 'info', options = {}) {
-    const {
-      duration = 3000,
-      position = 'top-right'
-    } = options;
-    
-    // Update container position
-    this.updatePosition(position);
-    
-    const toast = document.createElement('div');
-    toast.className = `toast toast-${type}`;
-    toast.style.cssText = `
-      background: ${type === 'success' ? '#22c55e' : type === 'error' ? '#ef4444' : type === 'warning' ? '#eab308' : '#3b82f6'};
-      color: white;
-      padding: 12px 20px;
-      border-radius: 8px;
-      margin-bottom: 10px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      pointer-events: auto;
-      cursor: pointer;
-      transform: translateX(100%);
-      transition: transform 0.3s ease;
-      max-width: 300px;
-      word-wrap: break-word;
-    `;
-    toast.textContent = message;
-    
-    this.container.appendChild(toast);
-    
-    // Animate in
-    requestAnimationFrame(() => {
-      toast.style.transform = 'translateX(0)';
-    });
-    
-    // Remove on click
-    toast.addEventListener('click', () => {
-      this.remove(toast);
-    });
-    
-    // Auto remove
-    setTimeout(() => {
-      this.remove(toast);
-    }, duration);
-  }
-  
-  updatePosition(position) {
-    const positions = {
-      'top-right': 'top: 80px; right: 20px;',
-      'top-left': 'top: 80px; left: 20px;',
-      'bottom-right': 'bottom: 20px; right: 20px;',
-      'bottom-left': 'bottom: 20px; left: 20px;'
-    };
-    
-    this.container.style.cssText = `
-      position: fixed;
-      z-index: 10000;
-      pointer-events: none;
-      ${positions[position] || positions['top-right']}
-    `;
-  }
-  
-  remove(toast) {
-    toast.style.transform = 'translateX(100%)';
-    setTimeout(() => {
-      if (toast.parentNode) {
-        toast.parentNode.removeChild(toast);
-      }
-    }, 300);
-  }
-  
-  success(message, options = {}) {
-    this.show(message, 'success', options);
-  }
-  
-  error(message, options = {}) {
-    this.show(message, 'error', options);
-  }
-  
-  warning(message, options = {}) {
-    this.show(message, 'warning', options);
-  }
-  
-  info(message, options = {}) {
-    this.show(message, 'info', options);
-  }
-}
-
-// Shared showToast function
-function showToast(message, type = 'info', title = '') {
-  // Use global toast system if available
-  if (type === 'success' && window.toastSuccess) {
-    window.toastSuccess(message, title);
-    return;
-  } else if (type === 'error' && window.toastError) {
-    window.toastError(message, title);
-    return;
-  } else if (type === 'warning' && window.toastWarning) {
-    window.toastWarning(message, title);
-    return;
-  } else if (window.toastInfo) {
-    window.toastInfo(message, title);
-    return;
-  }
-  
-  // Fallback - create simple toast
-  const toast = document.createElement('div');
-  toast.style.cssText = `
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background: ${type === 'success' ? '#4CAF50' : type === 'error' ? '#f44336' : '#2196F3'};
-    color: white;
-    padding: 12px 20px;
-    border-radius: 5px;
-    z-index: 10000;
-    font-size: 14px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-  `;
-  toast.textContent = message;
-  document.body.appendChild(toast);
-  
-  // Animate in
-  setTimeout(() => toast.style.opacity = '1', 100);
-  
-  // Remove after 3 seconds
-  setTimeout(() => {
-    toast.style.opacity = '0';
-    setTimeout(() => {
-      if (toast.parentNode) {
-        toast.parentNode.removeChild(toast);
-      }
-    }, 300);
-  }, 3000);
-}
-
-// Initialize global toast manager
-window.toastManager = new ToastManager();
-
-// Global toast functions for compatibility
-window.toastSuccess = function(message, title = '') {
-  if (window.toastManager) {
-    window.toastManager.success(message);
-  }
-};
-
-window.toastError = function(message, title = '') {
-  if (window.toastManager) {
-    window.toastManager.error(message);
-  }
-};
-
-window.toastWarning = function(message, title = '') {
-  if (window.toastManager) {
-    window.toastManager.warning(message);
-  }
-};
-
-window.toastInfo = function(message, title = '') {
-  if (window.toastManager) {
-    window.toastManager.info(message);
-  }
-};
-
-// Export for module usage
-if (typeof module !== 'undefined' && module.exports) {
-  module.exports = { ToastManager, showToast };
-}
-
-
-// Initialize Toast Manager
-document.addEventListener('DOMContentLoaded', () => {
-  window.toastManager = new ToastManager();
+  setupTabs();
+  loadTabNames();
+  Object.keys(counters).forEach(type => {
+    updateCounterDisplay(type);
+    updateHistoryDisplay(type);
+  });
 });
 
-/* ===================================
-   ORIGINAL CODE
-   =================================== */
-
-// Bookmarklet Tools - Regular JavaScript Version
-class BookmarkletTools {
-    constructor() {
-        this.init();
-    }
-    
-    init() {
-        // Add event listeners for bookmarklet buttons
-        this.setupEventListeners();
-    }
-    
-    setupEventListeners() {
-        // Copy Page Source
-        document.getElementById('copy-source')?.addEventListener('click', () => {
-            this.copyPageSource();
-        });
-        
-        // Extract Links
-        document.getElementById('extract-links')?.addEventListener('click', () => {
-            this.extractLinks();
-        });
-        
-        // Extract Images
-        document.getElementById('extract-images')?.addEventListener('click', () => {
-            this.extractImages();
-        });
-        
-        // View Meta Tags
-        document.getElementById('view-meta')?.addEventListener('click', () => {
-            this.viewMetaTags();
-        });
-        
-        // Remove Element
-        document.getElementById('remove-element')?.addEventListener('click', () => {
-            this.enableRemoveElement();
-        });
-        
-        // Page Info
-        document.getElementById('page-info')?.addEventListener('click', () => {
-            this.showPageInfo();
-        });
-    }
-    
-    // Copy Page Source
-    async copyPageSource() {
-        try {
-            const response = await fetch(location.href);
-            const source = await response.text();
-            
-            if (navigator.clipboard && window.isSecureContext) {
-                await navigator.clipboard.writeText(source);
-                this.showToast('Source code copied to clipboard!', 'success');
-            } else {
-                // Fallback for older browsers
-                const textarea = document.createElement('textarea');
-                textarea.value = source;
-                document.body.appendChild(textarea);
-                textarea.select();
-                document.execCommand('copy');
-                document.body.removeChild(textarea);
-                this.showToast('Source code copied to clipboard!', 'success');
-            }
-        } catch (error) {
-            console.error('Error copying source:', error);
-            this.showToast('Failed to copy source code', 'error');
-        }
-    }
-    
-    // Extract All Links
-    extractLinks() {
-        const links = Array.from(document.querySelectorAll('a')).map(a => ({
-            text: a.innerText.trim(),
-            href: a.href,
-            target: a.target || '_self'
-        }));
-        
-        const result = links.map((link, i) => 
-            `${i+1}. ${link.text}\n   URL: ${link.href}\n   Target: ${link.target}`
-        ).join('\n\n');
-        
-        this.showResult('Extracted Links', result);
-    }
-    
-    // Extract Images
-    extractImages() {
-        const images = Array.from(document.querySelectorAll('img')).map(img => img.src).filter(src => src);
-        
-        const result = images.map((src, i) => 
-            `${i+1}. ${src}`
-        ).join('\n');
-        
-        this.showResult('Extracted Images', result);
-    }
-    
-    // View Meta Tags
-    viewMetaTags() {
-        const metas = Array.from(document.querySelectorAll('meta'));
-        let output = '=== META TAGS ===\n\n';
-        
-        metas.forEach(meta => {
-            const name = meta.name || meta.property || meta.httpEquiv || 'charset';
-            const content = meta.content || meta.charset || '';
-            output += `${name}: ${content}\n`;
-        });
-        
-        this.showResult('Meta Tags', output);
-    }
-    
-    // Enable Remove Element Mode
-    enableRemoveElement() {
-        document.body.style.cursor = 'crosshair';
-        
-        function removeElement(e) {
-            e.stopPropagation();
-            e.preventDefault();
-            
-            if (e.target === document.body) return;
-            
-            e.target.remove();
-            
-            // Clean up
-            document.body.style.cursor = '';
-            document.removeEventListener('click', removeElement, true);
-            
-            if (window.showToast) {
-                window.showToast('success', 'Element Removed', 'Element removed successfully!');
-            } else {
-                alert('Element removed!');
-            }
-        }
-        
-        document.addEventListener('click', removeElement, true);
-        
-        // Add cancel instruction
-        const instruction = document.createElement('div');
-        instruction.style.cssText = `
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: #333;
-            color: white;
-            padding: 10px 15px;
-            border-radius: 5px;
-            z-index: 10000;
-            font-size: 14px;
-        `;
-        instruction.textContent = 'Click any element to remove it';
-        document.body.appendChild(instruction);
-        
-        setTimeout(() => instruction.remove(), 3000);
-    }
-    
-    // Show Page Info
-    showPageInfo() {
-        const info = {
-            title: document.title,
-            url: location.href,
-            domain: location.hostname,
-            protocol: location.protocol,
-            path: location.pathname,
-            timestamp: new Date().toISOString(),
-            userAgent: navigator.userAgent,
-            language: navigator.language,
-            cookies: document.cookie ? 'Enabled' : 'Disabled',
-            localStorage: Object.keys(localStorage).length + ' items',
-            sessionStorage: Object.keys(sessionStorage).length + ' items'
-        };
-        
-        const output = Object.entries(info)
-            .map(([key, value]) => `${key.charAt(0).toUpperCase() + key.slice(1)}: ${value}`)
-            .join('\n');
-        
-        this.showResult('Page Information', output);
-    }
-    
-    // Show result in modal or alert
-    showResult(title, content) {
-        // Check if modal exists
-        const modal = document.getElementById('result-modal');
-        if (modal) {
-            document.getElementById('result-title').textContent = title;
-            document.getElementById('result-content').textContent = content;
-            modal.classList.add('active');
-        } else {
-            // Fallback to console
-            console.log(`${title}:\n\n${content}`);
-            
-            // Try to copy to clipboard
-            if (navigator.clipboard && window.isSecureContext) {
-                navigator.clipboard.writeText(content);
-                this.showToast('Result copied to clipboard!', 'success');
-            } else {
-                // Show in alert as last resort
-                alert(`${title}:\n\n${content.substring(0, 1000)}${content.length > 1000 ? '...' : ''}`);
-            }
-        }
-    }
-    
-    // Show toast notification - using global toast manager
-    showToast(message, type = 'info') {
-        // Use global toast system if available
-        if (type === 'success' && window.toastSuccess) {
-            window.toastSuccess(message, 'Bookmarklet');
-            return;
-        } else if (type === 'error' && window.toastError) {
-            window.toastError(message, 'Bookmarklet');
-            return;
-        } else if (type === 'warning' && window.toastWarning) {
-            window.toastWarning(message, 'Bookmarklet');
-            return;
-        } else if (window.toastInfo) {
-            window.toastInfo(message, 'Bookmarklet');
-            return;
-        }
-        
-        // Fallback - create simple toast
-        const toast = document.createElement('div');
-        toast.style.cssText = `
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: ${type === 'success' ? '#4CAF50' : type === 'error' ? '#f44336' : '#2196F3'};
-            color: white;
-            padding: 12px 20px;
-            border-radius: 5px;
-            z-index: 10000;
-            font-size: 14px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        `;
-        toast.textContent = message;
-        document.body.appendChild(toast);
-        
-        setTimeout(() => {
-            toast.style.opacity = '0';
-            toast.style.transition = 'opacity 0.3s';
-            setTimeout(() => toast.remove(), 300);
-        }, 3000);
-    }
+function loadTabNames() {
+  Object.keys(counters).forEach(type => {
+    document.querySelectorAll(`[data-tab="${type}"] .tab-name`).forEach(tabName => {
+      tabName.textContent = counters[type].name;
+    });
+    document.querySelectorAll(`#${type}-tab .counter-container h2`).forEach(counterTitle => {
+      counterTitle.innerHTML = `${counters[type].name} Counter
+        <button class="edit-icon" onclick="editCounter('${type}')" title="Edit manually">
+          <i class="fa-solid fa-pen-to-square"></i>
+        </button>`;
+    });
+    document.querySelectorAll(`[data-tab="${type}"]`).forEach(tabBtn => {
+      tabBtn.title = `${counters[type].name} - Double click to edit`;
+    });
+  });
 }
 
-// Initialize when DOM is ready
-document.addEventListener('DOMContentLoaded', function() {
-    // Initialize bookmarklet tools
-    window.bookmarkletTools = new BookmarkletTools();
-    
-    // Track bookmarklet usage analytics
-    const trackBookmarkletClick = (toolName) => {
-        console.log(`Bookmarklet tool clicked: ${toolName}`);
-    };
-    
-    // Add click tracking to bookmarklet buttons
-    const bookmarkletBtns = document.querySelectorAll('.bookmarklet-btn, .tool-btn');
-    bookmarkletBtns.forEach(btn => {
-        btn.addEventListener('click', function() {
-            const toolName = this.getAttribute('data-tool') || this.closest('.bookmarklet-card, .tool-card')?.querySelector('h3')?.textContent || 'Unknown';
-            trackBookmarkletClick(toolName);
-        });
-        
-        // Prevent default drag behavior
-        btn.addEventListener('dragstart', function(e) {
-            // Allow default drag behavior for bookmarklets
-        });
+function openTabNameModal(type) {
+  currentEditTab = type;
+  const modal = document.getElementById('tab-name-modal');
+  const input = document.getElementById('tab-name-input');
+  input.value = counters[type].name;
+  modal.style.display = 'flex';
+  input.focus();
+  input.select();
+}
+
+function closeTabNameModal() {
+  document.getElementById('tab-name-modal').style.display = 'none';
+  currentEditTab = null;
+}
+
+async function confirmTabName() {
+  const input = document.getElementById('tab-name-input');
+  const newName = input.value.trim();
+  if (newName && currentEditTab) {
+    counters[currentEditTab].name = newName;
+    await saveTabNameToSupabase(currentEditTab, newName);
+    document.querySelectorAll(`[data-tab="${currentEditTab}"] .tab-name`).forEach(tabName => {
+      tabName.textContent = newName;
     });
+    document.querySelectorAll(`#${currentEditTab}-tab .counter-container h2`).forEach(counterTitle => {
+      counterTitle.innerHTML = `${newName} Counter
+        <button class="edit-icon" onclick="editCounter('${currentEditTab}')" title="Edit manually">
+          <i class="fa-solid fa-pen-to-square"></i>
+        </button>`;
+    });
+    document.querySelectorAll(`[data-tab="${currentEditTab}"]`).forEach(tabBtn => {
+      tabBtn.title = `${newName} - Double click to edit`;
+    });
+    closeTabNameModal();
+  }
+}
+
+function setupTabs() {
+  const tabBtns = document.querySelectorAll('.tab-btn');
+  tabBtns.forEach(btn => {
+    btn.addEventListener('click', function() {
+      const tabName = this.dataset.tab;
+      switchTab(tabName);
+      document.querySelectorAll('.counter-tabs').forEach(container => {
+        container.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        container.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+      });
+    });
+    btn.addEventListener('dblclick', function(e) {
+      e.stopPropagation();
+      openTabNameModal(this.dataset.tab);
+    });
+  });
+}
+
+function switchTab(tabName) {
+  document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.remove('active'));
+  document.getElementById(`${tabName}-tab`).classList.add('active');
+  currentTab = tabName;
+}
+
+async function updateCounterDisplay(type) {
+  const counter = counters[type];
+  document.getElementById(`${type}-number`).textContent = String(counter.value).padStart(4, '0');
+  const progress = ((counter.value % 100) / 100) * 100;
+  document.getElementById(`${type}-progress`).style.width = progress + '%';
+  const updatedEl = document.getElementById(`${type}-updated`);
+  if (updatedEl) {
+    updatedEl.textContent = 'Last updated: ' + formatDateTime(new Date());
+  }
+  try {
+    const history = await loadHistoryFromSupabase(type);
+    const cacheEl = document.getElementById(`${type}-cache`);
+    if (cacheEl) {
+      cacheEl.textContent = history.length;
+    }
+  } catch (error) {
+    console.error('Error loading history count:', error);
+  }
+}
+
+async function addCounter(type) {
+  try {
+    counters[type].value++;
+    await saveCounterToSupabase(type, counters[type].value);
+    await updateCounterDisplay(type);
+    await addToHistory(type, counters[type].value, 'generated');
+    console.log(`New ${type} ID: ` + String(counters[type].value).padStart(4, '0'));
+  } catch (error) {
+    console.error('Error in addCounter:', error);
+    counters[type].value--;
+  }
+}
+
+async function decrementCounter(type) {
+  if (counters[type].value > 1) {
+    try {
+      counters[type].value--;
+      await saveCounterToSupabase(type, counters[type].value);
+      await updateCounterDisplay(type);
+      await addToHistory(type, counters[type].value, 'reverted');
+      console.log(`${type} ID reverted to: ` + String(counters[type].value).padStart(4, '0'));
+    } catch (error) {
+      console.error('Error in decrementCounter:', error);
+      counters[type].value++;
+    }
+  }
+}
+
+function editCounter(type) {
+  if (!counters[type]) {
+    console.error('Counter type not found:', type);
+    return;
+  }
+  currentEditCounter = type;
+  const modal = document.getElementById('edit-modal');
+  const input = document.getElementById('modal-input');
+  const title = document.getElementById('modal-title');
+  input.value = counters[type].value;
+  title.textContent = `Edit ${counters[type].name} ID`;
+  modal.style.display = 'flex';
+  input.focus();
+  input.select();
+}
+
+function closeEditModal() {
+  document.getElementById('edit-modal').style.display = 'none';
+  currentEditCounter = null;
+}
+
+async function confirmEditCounter() {
+  const input = document.getElementById('modal-input');
+  const newValue = parseInt(input.value);
+  if (newValue >= 1 && newValue <= 9999 && currentEditCounter && counters[currentEditCounter]) {
+    try {
+      counters[currentEditCounter].value = newValue;
+      await saveCounterToSupabase(currentEditCounter, counters[currentEditCounter].value);
+      await updateCounterDisplay(currentEditCounter);
+      await addToHistory(currentEditCounter, counters[currentEditCounter].value, 'manual_edit');
+      console.log(`${counters[currentEditCounter].name} ID updated to ` + String(counters[currentEditCounter].value).padStart(4, '0'));
+      closeEditModal();
+    } catch (error) {
+      console.error('Error in confirmEditCounter:', error);
+    }
+  } else {
+    alert('Please enter a valid number (1-9999)');
+    input.focus();
+  }
+}
+
+async function addToHistory(type, value, action) {
+  await saveHistoryToSupabase(type, action, value);
+  await updateHistoryDisplay(type);
+}
+
+async function updateHistoryDisplay(type) {
+  const historyList = document.getElementById(`${type}-history`);
+  if (!historyList) return;
+  try {
+    const history = await loadHistoryFromSupabase(type);
+    historyList.innerHTML = history.slice(0, 10).map(entry => `
+      <div class="history-item">
+        <i class="fa-solid fa-${entry.action === 'generated' ? 'plus-circle' : entry.action === 'reverted' ? 'rotate-left' : 'edit'}"></i>
+        <div>
+          <strong>${String(entry.value).padStart(4, '0')}</strong>
+          <time>${formatTime(entry.created_at)}</time>
+        </div>
+      </div>
+    `).join('');
+    const cacheEl = document.getElementById(`${type}-cache`);
+    if (cacheEl) {
+      cacheEl.textContent = history.length;
+    }
+  } catch (error) {
+    console.error('Error updating history display:', error);
+    historyList.innerHTML = '<p style="color: #666;">Unable to load history</p>';
+  }
+}
+
+function formatDateTime(date) {
+  const d = new Date(date);
+  const day = String(d.getDate()).padStart(2, '0');
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const year = d.getFullYear();
+  const hours = String(d.getHours()).padStart(2, '0');
+  const minutes = String(d.getMinutes()).padStart(2, '0');
+  const seconds = String(d.getSeconds()).padStart(2, '0');
+  return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
+}
+
+function formatTime(timestamp) {
+  return formatDateTime(timestamp);
+}
+
+async function loadMoreHistory(type) {
+  const historyList = document.getElementById(`${type}-history`);
+  const currentCount = historyList.children.length;
+  const history = await loadHistoryFromSupabase(type);
+  const moreItems = history.slice(currentCount, currentCount + 10);
+  moreItems.forEach(entry => {
+    const item = document.createElement('div');
+    item.className = 'history-item';
+    item.innerHTML = `
+      <i class="fa-solid fa-${entry.action === 'generated' ? 'plus-circle' : entry.action === 'reverted' ? 'rotate-left' : 'edit'}"></i>
+      <div>
+        <strong>${String(entry.value).padStart(4, '0')}</strong>
+        <time>${formatTime(entry.created_at)}</time>
+      </div>
+    `;
+    historyList.appendChild(item);
+  });
+  if (currentCount + 10 >= history.length) {
+    event.target.style.display = 'none';
+  }
+}
+
+document.getElementById('edit-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeEditModal();
+});
+
+document.getElementById('tab-name-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeTabNameModal();
+});
+
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    closeEditModal();
+    closeTabNameModal();
+  }
+});
+
+document.getElementById('modal-input').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') confirmEditCounter();
+});
+
+document.getElementById('tab-name-input').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') confirmTabName();
+});
+
+document.getElementById('modal-input').addEventListener('input', function(e) {
+  e.target.value = e.target.value.replace(/\D/g, '').slice(0, 4);
 });

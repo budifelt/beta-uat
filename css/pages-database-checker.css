@@ -307,10 +307,9 @@ img {
 .cursor-text { cursor: text; }
 .cursor-help { cursor: help; }
 
-/* Add padding to body to account for fixed header and sticky footer */
+/* Remove padding to body since footer is no longer fixed */
 body {
   padding-top: var(--header-height);
-  padding-bottom: 60px;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -365,13 +364,19 @@ main {
   color: var(--text);
   text-decoration: none;
   font-weight: 500;
-  border-radius: 0;
+  border-radius: 8px;
   position: relative;
+  transition: all 0.3s ease;
 }
 
 .nav-link:hover {
   color: var(--accent-primary);
   background: rgba(241, 140, 142, 0.1);
+  transform: translateY(-1px);
+}
+
+.nav-link:active {
+  transform: translateY(0);
 }
 
 .nav-link[aria-current="page"] {
@@ -3983,5 +3988,35 @@ main#main-content {
   
   .back-btn {
     bottom: 80px;
+  }
+}
+
+/* Responsive Design - Tablet */
+@media (max-width: 1023px) and (min-width: 768px) {
+  .db-checker-layout {
+    gap: var(--space-4);
+  }
+
+  .db-input-panel {
+    padding: var(--space-4);
+  }
+}
+
+/* Responsive Design - Small Mobile */
+@media (max-width: 480px) {
+  .db-input-group {
+    flex-direction: column;
+  }
+
+  .db-input {
+    width: 100%;
+    font-size: 14px;
+    padding: 12px;
+  }
+
+  .db-button {
+    width: 100%;
+    padding: 12px 20px;
+    font-size: 14px;
   }
 }

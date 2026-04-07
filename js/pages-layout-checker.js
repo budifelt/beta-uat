@@ -879,40 +879,15 @@ const originalUrlInput = document.getElementById('originalUrlInput');
     document.getElementById('krhredInput').value = '';
   }
 
-  // Handle F5 refresh with confirmation
-  let refreshTimer;
-  window.addEventListener('beforeunload', (e) => {
-    const hasData = editor.getValue().trim() || 
-                   document.getElementById('krhredInput').value.trim() ||
-                   document.querySelectorAll('input[id^="krhred_unit_"]').some(input => input.value.trim());
-    
-    if (hasData) {
-      e.preventDefault();
-      e.returnValue = 'You have unsaved data. Are you sure you want to leave?';
-      return e.returnValue;
-    }
-  });
-
-  // Handle keyboard shortcuts
+  // Handle F5 refresh - clear data without prompt
   window.addEventListener('keydown', (e) => {
-    // F5 or Ctrl+R
     if (e.key === 'F5' || (e.ctrlKey && e.key === 'r')) {
-      const hasData = editor.getValue().trim() || 
-                     document.getElementById('krhredInput').value.trim() ||
-                     document.querySelectorAll('input[id^="krhred_unit_"]').some(input => input.value.trim());
-      
-      if (hasData) {
-        e.preventDefault();
-        if (confirm('You have unsaved data. Are you sure you want to refresh and clear everything?')) {
-          performClearAll();
-          console.log('Data cleared. Refreshing page...');
-          setTimeout(() => {
-            window.location.reload();
-          }, 1000);
-        } else {
-          console.log('Refresh cancelled.');
-        }
-      }
+      e.preventDefault();
+      performClearAll();
+      console.log('Data cleared. Refreshing page...');
+      setTimeout(() => {
+        window.location.reload();
+      }, 100);
     }
   });
 

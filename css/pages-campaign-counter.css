@@ -307,10 +307,9 @@ img {
 .cursor-text { cursor: text; }
 .cursor-help { cursor: help; }
 
-/* Add padding to body to account for fixed header and sticky footer */
+/* Remove padding to body since footer is no longer fixed */
 body {
   padding-top: var(--header-height);
-  padding-bottom: 60px;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -365,13 +364,19 @@ main {
   color: var(--text);
   text-decoration: none;
   font-weight: 500;
-  border-radius: 0;
+  border-radius: 8px;
   position: relative;
+  transition: all 0.3s ease;
 }
 
 .nav-link:hover {
   color: var(--accent-primary);
   background: rgba(241, 140, 142, 0.1);
+  transform: translateY(-1px);
+}
+
+.nav-link:active {
+  transform: translateY(0);
 }
 
 .nav-link[aria-current="page"] {
@@ -2411,13 +2416,43 @@ html {
   /* Disable animations on mobile for better performance */
   .edit-icon,
   .progress-bar,
-  .buttons button,
-  .history-item,
-  .load-more-btn-custom {
-    transition: none;
+  .campaign-section {
+    height: calc(100vh - var(--header-height) - 60px);
+    min-height: calc(100vh - var(--header-height) - 60px);
   }
-  
-  .history-item:hover {
-    transform: none;
+}
+
+/* Responsive Design - Tablet */
+@media (max-width: 1023px) and (min-width: 768px) {
+  .campaign-grid {
+    grid-template-columns: 1fr;
   }
+}
+
+/* Responsive Design - Small Mobile */
+@media (max-width: 480px) {
+  .counter-display {
+    font-size: 3rem;
+  }
+
+  .campaign-section {
+    padding: 20px 15px;
+  }
+}
+
+/* Fix CSS structure to remove syntax error */
+.counter-value,
+.progress-bar,
+.history-item {
+  will-change: auto; /* Remove will-change to reduce GPU load */
+}
+
+.buttons button,
+.history-item,
+.load-more-btn-custom {
+  transition: none;
+}
+
+.history-item:hover {
+  transform: none;
 }

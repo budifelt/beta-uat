@@ -233,31 +233,38 @@ function createProgressOverlay(current, total) {
     `;
     
     content.innerHTML = `
+      <div class="progress-text" style="
+        font-size: 14px;
+        font-weight: 600;
+        color: #1A1A1A;
+        margin-bottom: 8px;
+      ">Checking links...</div>
       <div class="progress-bar-container" style="
         width: 100%;
         height: 4px;
         background: #E5E7EB;
-        border-radius: 2px;
+        border-radius: 4px;
         overflow: hidden;
-        margin-bottom: 16px;
       ">
         <div class="progress-bar-fill" style="
           height: 100%;
-          background: var(--link-checker-primary);
-          width: 0%;
+          background: linear-gradient(90deg, #F18C8E 0%, #E53935 100%);
+          border-radius: 4px;
           transition: width 0.3s ease;
         "></div>
       </div>
-      <div class="progress-text" style="
-        font-size: 16px;
-        font-weight: 600;
-        color: var(--link-checker-text-dark);
-        margin-bottom: 8px;
-      ">Checking links...</div>
       <div class="progress-count" style="
-        font-size: 14px;
-        color: var(--link-checker-text-light);
+        font-size: 13px;
+        font-weight: 500;
+        color: #666;
+        margin-top: 8px;
       ">0 / 0</div>
+      <div class="progress-percentage" style="
+        font-size: 12px;
+        font-weight: 600;
+        color: #E53935;
+        margin-top: 4px;
+      ">0%</div>
       <button class="btn btn-danger" style="
         margin-top: 20px;
         width: 100%;
@@ -274,6 +281,7 @@ function createProgressOverlay(current, total) {
   progressOverlay.style.visibility = 'visible';
   progressOverlay.querySelector('.progress-bar-fill').style.width = `${(current / total) * 100}%`;
   progressOverlay.querySelector('.progress-count').textContent = `${current} / ${total}`;
+  progressOverlay.querySelector('.progress-percentage').textContent = `${Math.round((current / total) * 100)}%`;
   progressOverlay.querySelector('div > div').style.transform = 'scale(1)';
 }
 

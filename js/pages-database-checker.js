@@ -2255,10 +2255,3 @@ async function updateQuickStatsAsync() {
 /* ========= Boot ========= */
 const app = new DatabaseChecker();
 window.dbChecker = app; // Make app globally accessible
-window.addEventListener('beforeunload', ()=>{
-  app.vs.destroy();
-  // Clean up Web Worker
-  if (app.worker) {
-    app.worker.terminate();
-  }
-});

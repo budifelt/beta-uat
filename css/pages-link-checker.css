@@ -147,9 +147,14 @@ img {
    =================================== */
 .container {
   width: 100%;
+  padding: 0;
+}
+
+/* Footer container should have no padding and correct max-width */
+.footer .container {
+  padding: 0;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0;
 }
 
 .container-fluid {
@@ -307,20 +312,21 @@ img {
 .cursor-text { cursor: text; }
 .cursor-help { cursor: help; }
 
-/* Add padding to body to account for fixed header and sticky footer */
 body {
-  padding-top: var(--header-height);
-  padding-bottom: 60px;
   min-height: 100vh;
   display: flex;
-  flex-direction: column;
-  overflow-x: hidden; /* Prevent horizontal scroll */
+  align-items: flex-start;
+  justify-content: center;
+  padding: 40px 20px;
+  margin: 0;
+  overflow-x: hidden;
 }
 
 main {
-  flex: 1;
   display: flex;
   flex-direction: column;
+  width: 100%;
+  max-width: 1200px;
 }
 
 /* ===================================
@@ -334,6 +340,7 @@ main {
   z-index: var(--z-header);
   background: #ffffff;
   border-bottom: 2px solid #e5e7eb;
+  display: block;
 }
 
 .nav {
@@ -343,6 +350,7 @@ main {
   height: var(--header-height);
   max-width: 1200px;
   margin: 0 auto;
+  padding: 0 var(--space-5);
 }
 
 .nav-left {
@@ -361,17 +369,23 @@ main {
   display: flex;
   align-items: center;
   gap: var(--space-2);
-  padding: var(--space-2) var(--space-3);
+  padding: var(--space-2);
   color: var(--text);
   text-decoration: none;
   font-weight: 500;
-  border-radius: 0;
+  border-radius: 8px;
   position: relative;
+  transition: all 0.3s ease;
 }
 
 .nav-link:hover {
   color: var(--accent-primary);
   background: rgba(241, 140, 142, 0.1);
+  transform: translateY(-1px);
+}
+
+.nav-link:active {
+  transform: translateY(0);
 }
 
 .nav-link[aria-current="page"] {
@@ -397,6 +411,15 @@ main {
    =================================== */
 .section {
   padding: var(--space-16) 0;
+}
+
+.link-checker-section {
+  flex: 0 1 auto;
+  background: #ffffff;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  margin-top: 80px;
 }
 
 .section-sm {
@@ -440,11 +463,6 @@ main {
 /* ===================================
    MAIN LAYOUT
    =================================== */
-main {
-  flex: 1;
-}
-
-
 /* ===================================
    THEME.CSS
    =================================== */
@@ -1864,16 +1882,10 @@ body {
 }
 
 main {
-  padding-top: 40px !important;
   padding-bottom: 40px !important;
-  min-height: 100vh;
 }
 
 .page-center {
-  max-width: 1400px !important;
-  margin: 0 auto !important;
-  padding: 40px 24px !important;
-  display: grid !important;
   grid-template-columns: 1fr !important;
   gap: 32px !important;
 }
@@ -1886,13 +1898,99 @@ main {
   }
 }
 
+/* Responsive Design - Tablet */
+@media (max-width: 1023px) and (min-width: 768px) {
+  body {
+    padding: 30px 20px;
+  }
+
+  .link-checker-section {
+    margin-top: 40px;
+  }
+
+  .input-group {
+    flex-direction: row;
+  }
+
+  #urlInput {
+    font-size: 14px;
+  }
+
+  .btn {
+    padding: 12px 24px;
+    font-size: 14px;
+  }
+}
+
+/* Responsive Design - Mobile */
+@media (max-width: 767px) {
+  body {
+    padding: 20px 15px;
+  }
+
+  .link-checker-section {
+    margin-top: 20px;
+  }
+
+  .input-group {
+    flex-direction: column;
+  }
+
+  #urlInput {
+    font-size: 16px;
+    padding: 16px;
+  }
+
+  .btn {
+    padding: 16px 24px;
+    font-size: 16px;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .status {
+    margin: 8px 16px;
+    padding: 10px 14px;
+    font-size: 13px;
+  }
+
+  .panel {
+    border-radius: 8px;
+  }
+}
+
+/* Responsive Design - Small Mobile */
+@media (max-width: 480px) {
+  body {
+    padding: 15px 10px;
+  }
+
+  .link-checker-section {
+    margin-top: 15px;
+  }
+
+  .title {
+    font-size: 1.5rem;
+  }
+
+  .subtitle {
+    font-size: 0.9rem;
+  }
+}
+
 .panel {
   background: #FFFFFF !important;
-  border-radius: 0 !important;
-  box-shadow: none !important;
+  border-radius: 12px !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
   overflow: hidden !important;
-  border: 1px solid #E0E0E0 !important;
+  border: 1px solid #E5E7EB !important;
   margin: 0 !important;
+  transition: box-shadow 0.3s ease, transform 0.3s ease !important;
+}
+
+.panel:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12) !important;
+  transform: translateY(-2px) !important;
 }
 
 .panel-header {
@@ -1932,19 +2030,18 @@ main {
 #urlInput {
   flex: 1 !important;
   padding: 14px 16px !important;
-  border: 1px solid #D0D0D0 !important;
-  border-radius: 0 !important;
+  border: 2px solid #E5E7EB !important;
+  border-radius: 8px !important;
   font-size: 15px !important;
   background: #FFFFFF !important;
-  box-shadow: none !important;
-  transition: border-color 0.2s ease !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+  transition: all 0.3s ease !important;
 }
 
 #urlInput:focus {
-  outline: 2px solid #F18C8E !important;
-  outline-offset: -2px !important;
+  outline: none !important;
   border-color: #F18C8E !important;
-  box-shadow: none !important;
+  box-shadow: 0 0 0 3px rgba(241, 140, 142, 0.1), 0 1px 3px rgba(0, 0, 0, 0.05) !important;
 }
 
 #urlInput::placeholder {
@@ -1952,28 +2049,31 @@ main {
 }
 
 .btn {
-  background: #F18C8E !important;
+  background: linear-gradient(135deg, #F18C8E 0%, #E53935 100%) !important;
   color: white !important;
   border: none !important;
   padding: 14px 28px !important;
-  border-radius: 0 !important;
+  border-radius: 8px !important;
   font-weight: 600 !important;
   font-size: 15px !important;
   cursor: pointer !important;
   display: inline-flex !important;
   align-items: center !important;
   gap: 8px !important;
-  box-shadow: none !important;
-  transition: background-color 0.2s ease !important;
+  box-shadow: 0 2px 8px rgba(241, 140, 142, 0.3) !important;
+  transition: all 0.3s ease !important;
   white-space: nowrap !important;
 }
 
 .btn:hover {
-  background: #E67477 !important;
+  background: linear-gradient(135deg, #E67477 0%, #D32F2F 100%) !important;
+  box-shadow: 0 4px 12px rgba(241, 140, 142, 0.4) !important;
+  transform: translateY(-2px) !important;
 }
 
 .btn:active {
-  background: #D5686B !important;
+  transform: translateY(0) !important;
+  box-shadow: 0 2px 4px rgba(241, 140, 142, 0.3) !important;
 }
 
 .btn::before,
@@ -2016,37 +2116,62 @@ main {
 .status {
   margin: 12px 20px !important;
   padding: 12px 16px !important;
-  border-radius: 0 !important;
+  border-radius: 8px !important;
   display: flex !important;
   align-items: center !important;
   gap: 8px !important;
   font-weight: 500 !important;
-  border: 1px solid #E0E0E0 !important;
-  box-shadow: none !important;
+  border: 1px solid #E5E7EB !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
   font-size: 14px !important;
+  transition: all 0.3s ease !important;
 }
 
 .status.wait {
-  background: #F8F9FA !important;
-  color: #666666 !important;
+  background: #F9FAFB !important;
+  color: #6B7280 !important;
+  border-color: #E5E7EB !important;
 }
 
 .status.live {
-  background: #F1F8E9 !important;
-  color: #2E7D32 !important;
-  border-color: #A5D6A7 !important;
+  background: #ECFDF5 !important;
+  color: #059669 !important;
+  border-color: #6EE7B7 !important;
 }
 
 .status.err {
-  background: #FFEBEE !important;
-  color: #C62828 !important;
-  border-color: #EF9A9A !important;
+  background: #FEF2F2 !important;
+  color: #DC2626 !important;
+  border-color: #FECACA !important;
 }
 
 /* Hide all animations */
 * {
   animation: none !important;
   transition: none !important;
+}
+
+/* Allow smooth transitions */
+.btn, #urlInput, .panel, .status {
+  transition: all 0.3s ease !important;
+}
+
+/* Loading skeleton animation */
+@keyframes skeleton {
+  0% { background-position: -200px 0; }
+  100% { background-position: calc(200px + 100%) 0; }
+}
+
+.skeleton {
+  background: linear-gradient(90deg, #f0f0f0 0px, #f8f8f8 40px, #f0f0f0 80px);
+  background-size: 200px 100%;
+  animation: skeleton 1.5s ease-in-out infinite;
+}
+
+/* Focus visible improvement */
+:focus-visible {
+  outline: 2px solid #F18C8E;
+  outline-offset: 2px;
 }
 
 /* Allow specific transitions */
