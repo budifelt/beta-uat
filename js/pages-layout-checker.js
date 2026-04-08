@@ -125,54 +125,6 @@ class ToastManager {
   }
 }
 
-// Shared showToast function
-function showToast(message, type = 'info', title = '') {
-  // Use global toast system if available
-  if (type === 'success' && window.toastSuccess) {
-    window.toastSuccess(message, title);
-    return;
-  } else if (type === 'error' && window.toastError) {
-    window.toastError(message, title);
-    return;
-  } else if (type === 'warning' && window.toastWarning) {
-    window.toastWarning(message, title);
-    return;
-  } else if (window.toastInfo) {
-    window.toastInfo(message, title);
-    return;
-  }
-  
-  // Fallback - create simple toast
-  const toast = document.createElement('div');
-  toast.style.cssText = `
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background: ${type === 'success' ? '#4CAF50' : type === 'error' ? '#f44336' : '#2196F3'};
-    color: white;
-    padding: 12px 20px;
-    border-radius: 5px;
-    z-index: 10000;
-    font-size: 14px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-  `;
-  toast.textContent = message;
-  document.body.appendChild(toast);
-  
-  // Animate in
-  setTimeout(() => toast.style.opacity = '1', 100);
-  
-  // Remove after 3 seconds
-  setTimeout(() => {
-    toast.style.opacity = '0';
-    setTimeout(() => {
-      if (toast.parentNode) {
-        toast.parentNode.removeChild(toast);
-      }
-    }, 300);
-  }, 3000);
-}
-
 // Initialize global toast manager
 window.toastManager = new ToastManager();
 
@@ -243,21 +195,6 @@ const originalUrlInput = document.getElementById('originalUrlInput');
   // AbortController for stopping operations
   let abortController = null;
   let currentOperation = null;
-
-  // Toast notification - using global toast manager
-  function showToast(message, type = 'info') {
-    if (type === 'success' && window.toastSuccess) {
-      window.toastSuccess(message);
-    } else if (type === 'error' && window.toastError) {
-      window.toastError(message);
-    } else if (type === 'warning' && window.toastWarning) {
-      window.toastWarning(message);
-    } else if (window.toastInfo) {
-      window.toastInfo(message);
-    } else {
-      console.log(`[${type.toUpperCase()}] ${message}`);
-    }
-  }
 
   // Progress indicator functions
   function showProgress(text, operation) {

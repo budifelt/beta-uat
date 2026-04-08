@@ -16,7 +16,8 @@
   
   <!-- CSS -->
   <link rel="stylesheet" href="css/theme.css">
-  <link rel="stylesheet" href="css/pages-bookmarklet.css">
+  <link rel="stylesheet" href="css/footer.css">
+    <link rel="stylesheet" href="css/pages-bookmarklet.css">
   
   <title>Bookmarklet - eDM Helper</title>
   <meta name="theme-color" content="#0f172a" />
@@ -27,21 +28,7 @@
 <body>
   <!-- Initial State Script - Removed -->
   
-  <header class="header" role="banner">
-    <nav class="nav" role="navigation" aria-label="Main navigation">
-      <!-- Home Button -->
-      <div class="nav-left">
-        <a href="index.html" class="nav-link">
-          <i class="fa-solid fa-home"></i>
-          <span>Home</span>
-        </a>
-      </div>
-      
-      <div class="nav-right">
-        <!-- Additional navigation items can be added here -->
-      </div>
-    </nav>
-  </header>
+  <!-- Header hidden per design -->
 
   <main id="main-content" role="main">
     <section class="bookmarklet-section">
@@ -132,19 +119,67 @@
                 </a>
             </div>
 
-            <!-- View Meta Tags -->
+            <!-- HTML Validator -->
             <div class="bookmarklet-card">
                 <div class="bookmarklet-header">
-                    <i class="fa-solid fa-tags"></i>
-                    <h3>View Meta Tags</h3>
+                    <i class="fa-solid fa-check-double"></i>
+                    <h3>HTML Validator</h3>
                 </div>
-                <p>Tampilkan semua meta tags halaman (SEO, OG, dll)</p>
-                <a href="javascript:(function(){function showToast(msg,type){const toast=document.createElement('div');toast.style.cssText='position:fixed;top:20px;right:20px;background:#333;color:white;padding:12px 20px;border-radius:4px;z-index:10000;animation:slideIn 0.3s ease';toast.textContent=msg;document.body.appendChild(toast);setTimeout(()=>toast.remove(),3000);}const metas=[];document.querySelectorAll('meta').forEach(meta=>{if(meta.name||meta.property||meta.charset||meta.httpEquiv){let label='';if(meta.name)label='name='+meta.name;else if(meta.property)label='property='+meta.property;else if(meta.charset)label='charset='+meta.charset;else if(meta.httpEquiv)label='http-equiv='+meta.httpEquiv;metas.push(label+': '+meta.content);}});const output='Meta Tags ('+metas.length+'):\n\n'+metas.join('\n');console.log(output);if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(output).then(()=>{showToast('\u2705 Found '+metas.length+' meta tags (copied!)','success');});}else{prompt('Copy meta tags:',output);showToast('Found '+metas.length+' meta tags','info');}const style=document.createElement('style');style.textContent='@keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}';document.head.appendChild(style);})();";" 
+                <p>Validate HTML & show errors directly on page</p>
+                <a href="javascript:(function(){function showToast(msg,type){const toast=document.createElement('div');toast.style.cssText='position:fixed;top:20px;right:20px;background:#333;color:white;padding:12px 20px;border-radius:4px;z-index:10000;animation:slideIn 0.3s ease';toast.textContent=msg;document.body.appendChild(toast);setTimeout(()=>toast.remove(),3000);}showToast('Validating HTML...','info');const html=document.documentElement.outerHTML;const errors=[];const warnings=[];const tags=html.match(/<[^>]+>/g)||[];tags.forEach((tag,index)=>{if(tag.match(/<br>/i))warnings.push('Line '+index+': <br> should be <br />');if(tag.match(/<img[^>]*(?!alt=)[^>]*>/i))errors.push('Line '+index+': Missing alt attribute on img');});const output='HTML Validation Results:\n\nErrors: '+errors.length+'\nWarnings: '+warnings.length+'\n\n'+errors.concat(warnings).join('\n');console.log(output);if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(output).then(()=>{showToast('\u2705 Found '+errors.length+' errors, '+warnings.length+' warnings (copied!)','success');});}else{prompt('Copy results:',output);showToast('Found '+errors.length+' errors, '+warnings.length+' warnings','warning');}const style=document.createElement('style');style.textContent='@keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}';document.head.appendChild(style);})();" 
                    class="bookmarklet-btn" 
                    draggable="true"
-                   data-tool="View Meta Tags">
+                   data-tool="HTML Validator">
                     <i class="fa-solid fa-play"></i>
-                    <span class="btn-text">View Meta Tags</span>
+                    <span class="btn-text">HTML Validator</span>
+                </a>
+            </div>
+
+            <!-- Link Checker -->
+            <div class="bookmarklet-card">
+                <div class="bookmarklet-header">
+                    <i class="fa-solid fa-link-slash"></i>
+                    <h3>Link Checker</h3>
+                </div>
+                <p>Check link status & highlight broken links on page</p>
+                <a href="javascript:(function(){function showToast(msg,type){const toast=document.createElement('div');toast.style.cssText='position:fixed;top:20px;right:20px;background:#333;color:white;padding:12px 20px;border-radius:4px;z-index:10000;animation:slideIn 0.3s ease';toast.textContent=msg;document.body.appendChild(toast);setTimeout(()=>toast.remove(),3000);}showToast('Checking links...','info');const links=Array.from(document.querySelectorAll('a[href]')).filter(a=>!a.href.includes('javascript:')&&!a.href.includes('mailto:'));const uniqueLinks=[...new Set(links)];let valid=0;let invalid=0;let checked=0;const results=[];uniqueLinks.forEach(link=>{link.style.background='#fbbf24';link.style.transition='background 0.3s';fetch(link.href,{method:'HEAD',mode:'no-cors'}).then(()=>{valid++;link.style.background='#86efac';link.title='\u2705 Valid link';results.push('\u2705 '+link.href);checked++;if(checked===uniqueLinks.length){showResults();}}).catch(()=>{invalid++;link.style.background='#fca5a5';link.title='\u274c Broken link';results.push('\u274c '+link.href);checked++;if(checked===uniqueLinks.length){showResults();}});});function showResults(){const output='Link Validation Results:\n\nTotal Links: '+uniqueLinks.length+'\nValid: '+valid+'\nInvalid: '+invalid+'\n\n'+results.join('\n');console.log(output);if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(output).then(()=>{showToast('\u2705 '+valid+' valid, '+invalid+' broken (copied!)','success');});}else{prompt('Copy results:',output);showToast(valid+' valid, '+invalid+' broken links','warning');}setTimeout(()=>{document.querySelectorAll('a').forEach(a=>{a.style.background='';});},3000);}const style=document.createElement('style');style.textContent='@keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}';document.head.appendChild(style);})();" 
+                   class="bookmarklet-btn" 
+                   draggable="true"
+                   data-tool="Link Checker">
+                    <i class="fa-solid fa-play"></i>
+                    <span class="btn-text">Link Checker</span>
+                </a>
+            </div>
+
+            <!-- Local to HSBC URL -->
+            <div class="bookmarklet-card">
+                <div class="bookmarklet-header">
+                    <i class="fa-solid fa-arrow-right-arrow-left"></i>
+                    <h3>Local to HSBC URL</h3>
+                </div>
+                <p>Convert localhost URL to HSBC mail server</p>
+                <a href="javascript:(function(){function showToast(msg,type){const toast=document.createElement('div');toast.style.cssText='position:fixed;top:20px;right:20px;background:#333;color:white;padding:12px 20px;border-radius:4px;z-index:10000;animation:slideIn 0.3s ease';toast.textContent=msg;document.body.appendChild(toast);setTimeout(()=>toast.remove(),3000);}const currentUrl=window.location.href;if(currentUrl.includes('127.0.0.1:5500')){const newUrl=currentUrl.replace('http://127.0.0.1:5500','https://mail.hsbc.com.hk/id');if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(newUrl).then(()=>{showToast('\u2705 URL copied!','success');}).catch(()=>{fallbackCopy(newUrl);});}else{fallbackCopy(newUrl);}function fallbackCopy(text){const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.left='-9999px';document.body.appendChild(ta);ta.focus();ta.select();try{document.execCommand('copy');showToast('\u2705 URL copied!','success');}catch(err){console.error('Gagal menyalin:',err);prompt('Copy manual URL:',text);}document.body.removeChild(ta);}}else{showToast('\u274c URL tidak mengandung 127.0.0.1:5500','error');}const style=document.createElement('style');style.textContent='@keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}';document.head.appendChild(style);})();" 
+                   class="bookmarklet-btn" 
+                   draggable="true"
+                   data-tool="Local to HSBC URL">
+                    <i class="fa-solid fa-play"></i>
+                    <span class="btn-text">Local to HSBC URL</span>
+                </a>
+            </div>
+
+            <!-- Page Info -->
+            <div class="bookmarklet-card">
+                <div class="bookmarklet-header">
+                    <i class="fa-solid fa-info-circle"></i>
+                    <h3>Page Info</h3>
+                </div>
+                <p>Tampilkan informasi lengkap tentang halaman</p>
+                <a href="javascript:(function(){function showToast(msg,type){const toast=document.createElement('div');toast.style.cssText='position:fixed;top:20px;right:20px;background:#333;color:white;padding:12px 20px;border-radius:4px;z-index:10000;animation:slideIn 0.3s ease';toast.textContent=msg;document.body.appendChild(toast);setTimeout(()=>toast.remove(),3000);}const info={title:document.title,url:location.href,domain:location.hostname,protocol:location.protocol,path:location.pathname,timestamp:new Date().toISOString(),userAgent:navigator.userAgent,language:navigator.language,cookies:document.cookie?'Enabled':'Disabled',localStorage:Object.keys(localStorage).length+' items',sessionStorage:Object.keys(sessionStorage).length+' items'};const output=Object.entries(info).map(([key,value])=>key.charAt(0).toUpperCase()+key.slice(1)+': '+value).join('\n');console.log('Page Information:\n\n'+output);if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(output).then(()=>{showToast('\u2705 Page info copied! ('+Object.keys(info).length+' items)','success');});}else{prompt('Copy manual:',output);showToast('Page info: '+Object.keys(info).length+' items','info');}const style=document.createElement('style');style.textContent='@keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}';document.head.appendChild(style);})();" 
+                   class="bookmarklet-btn" 
+                   draggable="true"
+                   data-tool="Page Info">
+                    <i class="fa-solid fa-play"></i>
+                    <span class="btn-text">Page Info</span>
                 </a>
             </div>
 
@@ -164,54 +199,6 @@
                 </a>
             </div>
 
-            <!-- Page Info -->
-            <div class="bookmarklet-card">
-                <div class="bookmarklet-header">
-                    <i class="fa-solid fa-info-circle"></i>
-                    <h3>Page Info</h3>
-                </div>
-                <p>Tampilkan informasi lengkap tentang halaman</p>
-                <a href="javascript:(function(){function showToast(msg,type){const toast=document.createElement('div');toast.style.cssText='position:fixed;top:20px;right:20px;background:#333;color:white;padding:12px 20px;border-radius:4px;z-index:10000;animation:slideIn 0.3s ease';toast.textContent=msg;document.body.appendChild(toast);setTimeout(()=>toast.remove(),3000);}const info={title:document.title,url:location.href,domain:location.hostname,protocol:location.protocol,path:location.pathname,timestamp:new Date().toISOString(),userAgent:navigator.userAgent,language:navigator.language,cookies:document.cookie?'Enabled':'Disabled',localStorage:Object.keys(localStorage).length+' items',sessionStorage:Object.keys(sessionStorage).length+' items'};const output=Object.entries(info).map(([key,value])=>key.charAt(0).toUpperCase()+key.slice(1)+': '+value).join('\n');console.log('Page Information:\n\n'+output);if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(output).then(()=>{showToast('\u2705 Page info copied! ('+Object.keys(info).length+' items)','success');});}else{prompt('Copy manual:',output);showToast('Page info: '+Object.keys(info).length+' items','info');}const style=document.createElement('style');style.textContent='@keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}';document.head.appendChild(style);})();";" 
-                   class="bookmarklet-btn" 
-                   draggable="true"
-                   data-tool="Page Info">
-                    <i class="fa-solid fa-play"></i>
-                    <span class="btn-text">Page Info</span>
-                </a>
-            </div>
-
-            <!-- Validate HTML -->
-            <div class="bookmarklet-card">
-                <div class="bookmarklet-header">
-                    <i class="fa-solid fa-check-double"></i>
-                    <h3>HTML Validator</h3>
-                </div>
-                <p>Validate HTML & show errors directly on page</p>
-                <a href="javascript:(function(){function showToast(msg,type){const toast=document.createElement('div');toast.style.cssText='position:fixed;top:20px;right:20px;background:#333;color:white;padding:12px 20px;border-radius:4px;z-index:10000;animation:slideIn 0.3s ease';toast.textContent=msg;document.body.appendChild(toast);setTimeout(()=>toast.remove(),3000);}showToast('Validating HTML...','info');const html=document.documentElement.outerHTML;const errors=[];const warnings=[];const tags=html.match(/<[^>]+>/g)||[];tags.forEach((tag,index)=>{if(tag.match(/<br>/i))warnings.push('Line '+index+': <br> should be <br />');if(tag.match(/<img[^>]*(?!alt=)[^>]*>/i))errors.push('Line '+index+': Missing alt attribute on img');});const output='HTML Validation Results:\n\nErrors: '+errors.length+'\nWarnings: '+warnings.length+'\n\n'+errors.concat(warnings).join('\n');console.log(output);if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(output).then(()=>{showToast('\u2705 Found '+errors.length+' errors, '+warnings.length+' warnings (copied!)','success');});}else{prompt('Copy results:',output);showToast('Found '+errors.length+' errors, '+warnings.length+' warnings','warning');}const style=document.createElement('style');style.textContent='@keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}';document.head.appendChild(style);})();";" 
-                   class="bookmarklet-btn" 
-                   draggable="true"
-                   data-tool="HTML Validator">
-                    <i class="fa-solid fa-play"></i>
-                    <span class="btn-text">HTML Validator</span>
-                </a>
-            </div>
-
-            <!-- Link Checker -->
-            <div class="bookmarklet-card">
-                <div class="bookmarklet-header">
-                    <i class="fa-solid fa-link-slash"></i>
-                    <h3>Link Checker</h3>
-                </div>
-                <p>Check link status & highlight broken links on page</p>
-                <a href="javascript:(function(){function showToast(msg,type){const toast=document.createElement('div');toast.style.cssText='position:fixed;top:20px;right:20px;background:#333;color:white;padding:12px 20px;border-radius:4px;z-index:10000;animation:slideIn 0.3s ease';toast.textContent=msg;document.body.appendChild(toast);setTimeout(()=>toast.remove(),3000);}showToast('Checking links...','info');const links=Array.from(document.querySelectorAll('a[href]')).filter(a=>!a.href.includes('javascript:')&&!a.href.includes('mailto:'));const uniqueLinks=[...new Set(links)];let valid=0;let invalid=0;let checked=0;const results=[];uniqueLinks.forEach(link=>{link.style.background='#fbbf24';link.style.transition='background 0.3s';fetch(link.href,{method:'HEAD',mode:'no-cors'}).then(()=>{valid++;link.style.background='#86efac';link.title='\u2705 Valid link';results.push('\u2705 '+link.href);checked++;if(checked===uniqueLinks.length){showResults();}}).catch(()=>{invalid++;link.style.background='#fca5a5';link.title='\u274c Broken link';results.push('\u274c '+link.href);checked++;if(checked===uniqueLinks.length){showResults();}});});function showResults(){const output='Link Validation Results:\n\nTotal Links: '+uniqueLinks.length+'\nValid: '+valid+'\nInvalid: '+invalid+'\n\n'+results.join('\n');console.log(output);if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(output).then(()=>{showToast('\u2705 '+valid+' valid, '+invalid+' broken (copied!)','success');});}else{prompt('Copy results:',output);showToast(valid+' valid, '+invalid+' broken links','warning');}setTimeout(()=>{document.querySelectorAll('a').forEach(a=>{a.style.background='';});},3000);}const style=document.createElement('style');style.textContent='@keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}';document.head.appendChild(style);})();";" 
-                   class="bookmarklet-btn" 
-                   draggable="true"
-                   data-tool="Link Checker">
-                    <i class="fa-solid fa-play"></i>
-                    <span class="btn-text">Link Checker</span>
-                </a>
-            </div>
-
             <!-- Typo Scanner -->
             <div class="bookmarklet-card">
                 <div class="bookmarklet-header">
@@ -219,7 +206,7 @@
                     <h3>Typo Scanner</h3>
                 </div>
                 <p>Scan & highlight typos directly on the page</p>
-                <a href="javascript:(function(){let toastQueue=[];let showingToast=false;function showToast(msg,type){toastQueue.push({msg,type});if(!showingToast){processQueue();}function processQueue(){if(toastQueue.length===0){showingToast=false;return;}showingToast=true;const {msg,type}=toastQueue.shift();const toast=document.createElement('div');toast.style.cssText='position:fixed;top:20px;right:20px;background:#333;color:white;padding:12px 20px;border-radius:4px;z-index:10000;animation:slideIn 0.3s ease';toast.textContent=msg;document.body.appendChild(toast);setTimeout(()=>{toast.style.animation='slideOut 0.3s ease';setTimeout(()=>{toast.remove();processQueue();},300);},3000);}}showToast('Scanning for typos...','info');function getPageText(){let text='';const walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,null,false);let node;while(node=walker.nextNode()){const parent=node.parentNode;const parentClass=parent.className||'';if(parent.tagName!=='SCRIPT'&&parent.tagName!=='STYLE'&&parent.tagName!=='CODE'&&parentClass!=='bookmarklet-btn'){text+=node.textContent+' ';}}return text.trim().replace(/\s+/g,' ').substring(0,2000);}const text=getPageText();const commonTypos={fetc:'fetch',websit:'website',bekeja:'bekerja',meblokir:'memblokir',beberap:'beberapa',foldr:'folder',teh:'the',adn:'and',recieve:'receive',beleive:'believe',occured:'occurred',untill:'until',wich:'which',begining:'beginning',neccessary:'necessary',seperate:'separate',definately:'definitely',comming:'coming',sucess:'success',thier:'their',tommorow:'tomorrow',writting:'writing'};let typosFound=[];const words=text.toLowerCase().split(/\s+/);words.forEach(word=>{const cleanWord=word.replace(/[^\w]/g,'');if(commonTypos[cleanWord]){typosFound.push(cleanWord+' -> '+commonTypos[cleanWord]);}});console.log('Found typos:',typosFound);if(typosFound.length>0){const output='Typos Found:\n\n'+typosFound.join('\n');console.log(output);if(navigator.clipboard){navigator.clipboard.writeText(output).then(()=>{showToast('✅ Found '+typosFound.length+' typos (copied!)','success');});}else{prompt('Copy typos:',output);showToast('Found '+typosFound.length+' typos','warning');}}else{showToast('✅ No typos found!','success');}const style=document.createElement('style');style.textContent='@keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}@keyframes slideOut{from{transform:translateX(0);opacity:1}to{transform:translateX(100%);opacity:0}}';document.head.appendChild(style);})();" 
+                <a href="javascript:(function(){let toastQueue=[];let showingToast=false;function showToast(msg,type){toastQueue.push({msg,type});if(!showingToast){processQueue();}function processQueue(){if(toastQueue.length===0){showingToast=false;return;}showingToast=true;const {msg,type}=toastQueue.shift();const toast=document.createElement('div');toast.style.cssText='position:fixed;top:20px;right:20px;background:#333;color:white;padding:12px 20px;border-radius:4px;z-index:10000;animation:slideIn 0.3s ease';toast.textContent=msg;document.body.appendChild(toast);setTimeout(()=>{toast.style.animation='slideOut 0.3s ease';setTimeout(()=>{toast.remove();processQueue();},300);},3000);}}showToast('Scanning for typos...','info');function getPageText(){let text='';const walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,null,false);let node;while(node=walker.nextNode()){const parent=node.parentNode;const parentClass=parent.className||'';if(parent.tagName!=='SCRIPT'&&parent.tagName!=='STYLE'&&parent.tagName!=='CODE'&&parentClass!=='bookmarklet-btn'){text+=node.textContent+' ';}}return text.trim().replace(/\s+/g,' ').substring(0,2000);}const text=getPageText();const commonTypos={fetc:'fetch',websit:'website',bekeja:'bekerja',meblokir:'memblokir',beberap:'beberapa',foldr:'folder',teh:'the',adn:'and',recieve:'receive',beleive:'believe',occured:'occurred',untill:'until',wich:'which',begining:'beginning',neccessary:'necessary',seperate:'separate',definately:'definitely',comming:'coming',sucess:'success',thier:'their',tommorow:'tomorrow',writting:'writing'};let typosFound=[];const words=text.toLowerCase().split(/\s+/);words.forEach(word=>{const cleanWord=word.replace(/[^\w]/g,'');if(commonTypos[cleanWord]){typosFound.push(cleanWord+' -> '+commonTypos[cleanWord]);}});console.log('Found typos:',typosFound);if(typosFound.length>0){const output='Typos Found:\n\n'+typosFound.join('\n');console.log(output);if(navigator.clipboard){navigator.clipboard.writeText(output).then(()=>{showToast('\u2705 '+typosFound.length+' typos found & copied!','success');});}else{prompt('Copy typos:',output);showToast(typosFound.length+' typos found','info');}}else{showToast('\u2713 No typos found!','success');}const style=document.createElement('style');style.textContent='@keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}@keyframes slideOut{from{transform:translateX(0);opacity:1}to{transform:translateX(100%);opacity:0}}';document.head.appendChild(style);})();" 
                    class="bookmarklet-btn" 
                    draggable="true"
                    data-tool="Typo Scanner">
@@ -228,19 +215,19 @@
                 </a>
             </div>
 
-            <!-- Local to HSBC URL Converter -->
+            <!-- View Meta Tags -->
             <div class="bookmarklet-card">
                 <div class="bookmarklet-header">
-                    <i class="fa-solid fa-arrow-right-arrow-left"></i>
-                    <h3>Local to HSBC URL</h3>
+                    <i class="fa-solid fa-tags"></i>
+                    <h3>View Meta Tags</h3>
                 </div>
-                <p>Convert localhost URL to HSBC mail server</p>
-                <a href="javascript:(function(){function showToast(msg,type){const toast=document.createElement('div');toast.style.cssText='position:fixed;top:20px;right:20px;background:#333;color:white;padding:12px 20px;border-radius:4px;z-index:10000;animation:slideIn 0.3s ease';toast.textContent=msg;document.body.appendChild(toast);setTimeout(()=>toast.remove(),3000);}const currentUrl=window.location.href;if(currentUrl.includes('127.0.0.1:5500')){const newUrl=currentUrl.replace('http://127.0.0.1:5500','https://mail.hsbc.com.hk/id');if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(newUrl).then(()=>{showToast('\u2705 URL copied!','success');}).catch(()=>{fallbackCopy(newUrl);});}else{fallbackCopy(newUrl);}function fallbackCopy(text){const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.left='-9999px';document.body.appendChild(ta);ta.focus();ta.select();try{document.execCommand('copy');showToast('\u2705 URL copied!','success');}catch(err){console.error('Gagal menyalin:',err);prompt('Copy manual URL:',text);}document.body.removeChild(ta);}}else{showToast('\u274c URL tidak mengandung 127.0.0.1:5500','error');}const style=document.createElement('style');style.textContent='@keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}';document.head.appendChild(style);})();"; 
+                <p>Tampilkan semua meta tags halaman (SEO, OG, dll)</p>
+                <a href="javascript:(function(){function showToast(msg,type){const toast=document.createElement('div');toast.style.cssText='position:fixed;top:20px;right:20px;background:#333;color:white;padding:12px 20px;border-radius:4px;z-index:10000;animation:slideIn 0.3s ease';toast.textContent=msg;document.body.appendChild(toast);setTimeout(()=>toast.remove(),3000);}const metas=[];document.querySelectorAll('meta').forEach(meta=>{if(meta.name||meta.property||meta.charset||meta.httpEquiv){let label='';if(meta.name)label='name='+meta.name;else if(meta.property)label='property='+meta.property;else if(meta.charset)label='charset='+meta.charset;else if(meta.httpEquiv)label='http-equiv='+meta.httpEquiv;metas.push(label+': '+meta.content);}});const output='Meta Tags ('+metas.length+'):\n\n'+metas.join('\n');console.log(output);if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(output).then(()=>{showToast('\u2705 Found '+metas.length+' meta tags (copied!)','success');});}else{prompt('Copy meta tags:',output);showToast('Found '+metas.length+' meta tags','info');}const style=document.createElement('style');style.textContent='@keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}';document.head.appendChild(style);})();" 
                    class="bookmarklet-btn" 
                    draggable="true"
-                   data-tool="Local to HSBC URL">
+                   data-tool="View Meta Tags">
                     <i class="fa-solid fa-play"></i>
-                    <span class="btn-text">Local to HSBC URL</span>
+                    <span class="btn-text">View Meta Tags</span>
                 </a>
             </div>
         </div>
@@ -297,33 +284,63 @@
             </div>
         </div>
 
-        <!-- Keyboard Shortcuts -->
-        <div class="instructions">
+        <!-- Keyboard Shortcuts Section -->
+        <div class="shortcuts-section">
             <h3><i class="fa-solid fa-keyboard"></i> Shortcut Keyboard Berguna:</h3>
             <div class="shortcuts-grid">
                 <div class="shortcut-item">
-                    <kbd>Ctrl</kbd> + <kbd>U</kbd>
-                    <span>View source code</span>
+                    <div class="shortcut-keys">
+                        <kbd>Ctrl</kbd>
+                        <span>+</span>
+                        <kbd>U</kbd>
+                    </div>
+                    <span class="shortcut-desc">View source code</span>
                 </div>
                 <div class="shortcut-item">
-                    <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>C</kbd>
-                    <span>Inspect element</span>
+                    <div class="shortcut-keys">
+                        <kbd>Ctrl</kbd>
+                        <span>+</span>
+                        <kbd>Shift</kbd>
+                        <span>+</span>
+                        <kbd>C</kbd>
+                    </div>
+                    <span class="shortcut-desc">Inspect element</span>
                 </div>
                 <div class="shortcut-item">
-                    <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>J</kbd>
-                    <span>Open console</span>
+                    <div class="shortcut-keys">
+                        <kbd>Ctrl</kbd>
+                        <span>+</span>
+                        <kbd>Shift</kbd>
+                        <span>+</span>
+                        <kbd>J</kbd>
+                    </div>
+                    <span class="shortcut-desc">Open console</span>
                 </div>
                 <div class="shortcut-item">
-                    <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>B</kbd>
-                    <span>Toggle bookmark bar</span>
+                    <div class="shortcut-keys">
+                        <kbd>Ctrl</kbd>
+                        <span>+</span>
+                        <kbd>Shift</kbd>
+                        <span>+</span>
+                        <kbd>B</kbd>
+                    </div>
+                    <span class="shortcut-desc">Toggle bookmark bar</span>
                 </div>
                 <div class="shortcut-item">
-                    <kbd>Ctrl</kbd> + <kbd>A</kbd>
-                    <span>Select all</span>
+                    <div class="shortcut-keys">
+                        <kbd>Ctrl</kbd>
+                        <span>+</span>
+                        <kbd>A</kbd>
+                    </div>
+                    <span class="shortcut-desc">Select all</span>
                 </div>
                 <div class="shortcut-item">
-                    <kbd>Ctrl</kbd> + <kbd>C</kbd>
-                    <span>Copy</span>
+                    <div class="shortcut-keys">
+                        <kbd>Ctrl</kbd>
+                        <span>+</span>
+                        <kbd>C</kbd>
+                    </div>
+                    <span class="shortcut-desc">Copy</span>
                 </div>
             </div>
         </div>
@@ -342,41 +359,52 @@
     </section>
   </main>
 
-  <!-- Footer -->
-  <footer class="footer" role="contentinfo">
-    <div class="container">
-      <div class="footer-content">
-        <div class="footer-left">
-          <p class="footer-text">
-            &copy; <span id="footer-year">2025</span> eDM Helper <span class="footer-version" data-version>v1.0.0</span>. 
-            Built with <i class="fa-solid fa-heart"></i> for developers.
-          </p>
-        </div>
-        <div class="footer-right">
-          <nav class="footer-links" aria-label="Social media links">
-            <a href="https://github.com/budifelt" target="_blank" class="footer-link" aria-label="GitHub">
-              <i class="fa-brands fa-github"></i>
-            </a>
-            <a href="https://instagram.com/budife.psd/" target="_blank" class="footer-link" aria-label="Instagram">
-              <i class="fa-brands fa-instagram"></i>
-            </a>
-            <a href="https://linkedin.com/in/budifelt/" target="_blank" class="footer-link" aria-label="LinkedIn">
-              <i class="fa-brands fa-linkedin"></i>
-            </a>
-          </nav>
-        </div>
-      </div>
-    </div>
-  </footer>
-
+  
   <!-- Settings Modal -->
   <div id="settings-container"></div>
 
+<!-- Floating Info Button -->
+<button id="footer-toggle" class="footer-toggle" aria-label="Show footer info" title="About eDM Helper">
+  <i class="fa-solid fa-info"></i>
+</button>
+
+<!-- Back to Home Button -->
+<a href="index.html" class="back-to-home" aria-label="Back to home" title="Back to home">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+    <polyline points="9 22 9 12 15 12 15 22"></polyline>
+  </svg>
+</a>
+
+<!-- Footer Modal -->
+<div id="footer-modal" class="footer-modal" role="dialog" aria-modal="true">
+  <div class="footer-modal-content">
+    <div class="footer-modal-body">
+      <nav class="footer-links" aria-label="Social media links">
+        <a href="https://github.com/budifelt" target="_blank" class="footer-link" aria-label="GitHub">
+          <i class="fa-brands fa-github"></i>
+          <span>GitHub</span>
+        </a>
+        <a href="https://instagram.com/budife.psd/" target="_blank" class="footer-link" aria-label="Instagram">
+          <i class="fa-brands fa-instagram"></i>
+          <span>Instagram</span>
+        </a>
+        <a href="https://linkedin.com/in/budifelt/" target="_blank" class="footer-link" aria-label="LinkedIn">
+          <i class="fa-brands fa-linkedin"></i>
+          <span>LinkedIn</span>
+        </a>
+      </nav>
+      <p class="footer-text">
+        &copy; <span id="footer-year">2025</span> eDM Helper <span class="footer-version" data-version>v1.0.0</span>. 
+        Built with <i class="fa-solid fa-heart"></i> for developers.
+      </p>
+    </div>
+  </div>
+</div>
+
 <script src="js/footer.js" defer></script>
 <script src="js/version-config.js" defer></script>
-<!-- All functionality in one inline script -->
 <script>
-// Search functionality
 document.addEventListener('DOMContentLoaded', function() {
     const searchInput = document.getElementById('bookmarkletSearch');
     const cards = document.querySelectorAll('.bookmarklet-card');
@@ -391,29 +419,13 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
     }
-
-    // Add drag event listeners to bookmarklet buttons
-    const bookmarkletBtns = document.querySelectorAll('.bookmarklet-btn');
-    bookmarkletBtns.forEach(btn => {
-        btn.addEventListener('dragstart', function(e) {
-            const toolName = this.getAttribute('data-tool');
-            showToast(`Dragging ${toolName}...`, 'info', 2000);
-        });
-
-        btn.addEventListener('dragend', function(e) {
-            const toolName = this.getAttribute('data-tool');
-            showToast(`${toolName} ready! Add to your bookmarks bar.`, 'success', 3000);
-        });
-    });
 });
 
-// Global functions for onclick
 function clearSearch() {
     const search = document.getElementById('bookmarkletSearch');
     if (search) {
         search.value = '';
         search.dispatchEvent(new Event('input'));
-        showToast('Search cleared', 'info', 1500);
     }
 }
 
@@ -426,58 +438,7 @@ function toggleView() {
         btn.innerHTML = isListView ? 
             '<i class="fa-solid fa-list"></i> List' : 
             '<i class="fa-solid fa-grip"></i> Grid';
-        // Removed toast notification for better performance
     }
-}
-
-// Toast notification function - Only for button success
-function showToast(message, type = 'success', duration = 3000) {
-    // Only show toast for button-related success messages
-    if (type !== 'success' || (!message.toLowerCase().includes('copied') && !message.toLowerCase().includes('clipboard'))) {
-        return;
-    }
-    
-    // Create toast container if it doesn't exist
-    let container = document.querySelector('.toast-container');
-    if (!container) {
-        container = document.createElement('div');
-        container.className = 'toast-container button-toast'; // Add button-toast class
-        document.body.appendChild(container);
-    }
-
-    // Create toast element
-    const toast = document.createElement('div');
-    toast.className = `toast ${type}`;
-    
-    // Icon mapping
-    const icons = {
-        success: 'fa-check-circle',
-        error: 'fa-exclamation-circle',
-        warning: 'fa-exclamation-triangle',
-        info: 'fa-info-circle'
-    };
-
-    toast.innerHTML = `
-        <i class="fa-solid ${icons[type]} toast-icon"></i>
-        <div class="toast-content">
-            <div class="toast-message">${message}</div>
-        </div>
-        <button class="toast-close" onclick="this.parentElement.remove()">
-            <i class="fa-solid fa-times"></i>
-        </button>
-    `;
-
-    // Add to container
-    container.appendChild(toast);
-
-    // Trigger animation
-    setTimeout(() => toast.classList.add('show'), 10);
-
-    // Auto remove
-    setTimeout(() => {
-        toast.classList.remove('show');
-        setTimeout(() => toast.remove(), 300);
-    }, duration);
 }
 
 function copyManualScript() {
@@ -485,9 +446,17 @@ function copyManualScript() {
     if (textarea) {
         textarea.select();
         document.execCommand('copy');
-        showToast('Script copied to clipboard!', 'success');
+        const btn = document.getElementById('copy-script-btn');
+        const originalHTML = btn.innerHTML;
+        btn.innerHTML = '<i class="fa-solid fa-check"></i> <span>Copied!</span>';
+        btn.classList.add('copied');
+        setTimeout(() => {
+            btn.innerHTML = originalHTML;
+            btn.classList.remove('copied');
+        }, 2000);
     }
 }
+
 </script>
 </body>
 </html>

@@ -97,13 +97,13 @@ button {
 
 /* Remove default browser styling - Flat Design */
 * {
-  border-radius: 0 !important;
+  border-radius: 0;
 }
 
 /* Remove all transitions for better performance */
 * {
-  transition: none !important;
-  animation: none !important;
+  transition: none;
+  animation: none;
 }
 
 img {
@@ -307,9 +307,9 @@ img {
 .cursor-text { cursor: text; }
 .cursor-help { cursor: help; }
 
-/* Remove padding to body since footer is no longer fixed */
+/* Remove padding to body since header has been removed */
 body {
-  padding-top: var(--header-height);
+  padding-top: 0;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -547,29 +547,6 @@ main {
   --shadow-colored: none;
   
   /* ===================================
-     TYPOGRAPHY
-     =================================== */
-  --font-family-base: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
-  --font-family-mono: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
-  
-  --font-size-xs: 0.75rem;
-  --font-size-sm: 0.875rem;
-  --font-size-base: 1rem;
-  --font-size-lg: 1.125rem;
-  --font-size-xl: 1.25rem;
-  --font-size-2xl: 1.5rem;
-  --font-size-3xl: 1.875rem;
-  
-  --font-weight-normal: 400;
-  --font-weight-medium: 500;
-  --font-weight-semibold: 600;
-  --font-weight-bold: 700;
-  
-  --line-height-tight: 1.25;
-  --line-height-normal: 1.5;
-  --line-height-relaxed: 1.75;
-  
-  /* ===================================
      SPACING
      =================================== */
   --space-1: 0.25rem;
@@ -703,23 +680,7 @@ body {
 /* ===================================
    SCROLLBAR - Simplified
    =================================== */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: #F3F4F6;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #D1D5DB;
-  border-radius: 0;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #9CA3AF;
-}
+/* Global scrollbar styles removed to prevent conflicts */
 
 /* ===================================
    SCROLLBAR STABILIZER - Prevent layout shift
@@ -1853,14 +1814,21 @@ html {
 }
 
 .campaign-section .container {
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
   padding: 0 20px;
   display: flex;
   flex-direction: column;
-  align-items: center;
   height: 100%;
   flex: 1;
+}
+
+/* Main Layout - Counter and Folder Browser */
+.main-layout {
+  display: flex;
+  gap: var(--space-6);
+  flex: 1;
+  align-items: stretch;
 }
 
 .campaign-section .container > * + * {
@@ -1944,7 +1912,6 @@ html {
 /* Tab Content */
 .tab-content {
   width: 50%;
-  margin: 0 auto;
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -2111,8 +2078,7 @@ html {
   border: 2px solid var(--primary);
   padding: var(--space-6) var(--space-8);
   width: 100%;
-  flex: 1;
-  min-height: 0;
+  height: 500px;
   /* Remove shadow for performance */
   display: flex;
   flex-direction: column;
@@ -2129,31 +2095,20 @@ html {
   flex-shrink: 0;
 }
 
-.history-list {
+/* Hide scrollbar while keeping scroll functionality */
+.history-list-wrapper {
   flex: 1;
-  overflow-y: auto;
+  overflow: hidden;
+}
+
+.history-list {
+  height: 100%;
+  overflow-y: scroll;
   overflow-x: hidden;
-  min-height: 0;
-  padding-right: 4px;
-}
-
-/* Scrollbar styling for webkit browsers */
-.history-list::-webkit-scrollbar {
-  width: 6px;
-}
-
-.history-list::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 3px;
-}
-
-.history-list::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.3);
-  border-radius: 3px;
-}
-
-.history-list::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.5);
+  
+  /* Hide scrollbar for Chrome, Safari, Opera */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
 }
 
 /* History items - Flat */
@@ -2355,92 +2310,363 @@ html {
   font-size: var(--font-size-xs);
 }
 
-/* Responsive design */
-@media (min-width: 769px) {
+/* ===================================
+   RESPONSIVE DESIGN
+   =================================== */
+
+/* Extra Small Devices (phones, 320px and up) */
+@media (max-width: 575px) {
+  /* Campaign Section */
+  .campaign-section {
+    padding: var(--space-4) 0;
+    min-height: 100vh;
+    height: auto;
+  }
+  
+  .campaign-section .container {
+    padding: 0 var(--space-3);
+  }
+  
+  /* Main Layout */
+  .main-layout {
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+  
+  /* Folder Browser */
+  .folder-browser {
+    width: 100%;
+    order: -1;
+  }
+  
+  .folder-container {
+    padding: var(--space-4);
+  }
+  
+  .folder-controls {
+    flex-direction: column;
+  }
+  
+  .folder-items {
+    grid-template-columns: repeat(5, 1fr);
+  }
+  
+  /* Tab Content */
+  .tab-content {
+    width: 100%;
+  }
+  
+  /* Counter Container */
+  .counter-container {
+    padding: var(--space-4);
+  }
+  
+  /* Counter Number - Responsive font size */
   #counter-number,
   #campaign1-number,
   #campaign2-number,
   #campaign3-number,
   #campaign4-number {
-    font-size: 120px !important;
-    letter-spacing: 0.1em !important;
+    font-size: 60px;
+  }
+  
+  /* Counter Title */
+  .counter-container h2 {
+    font-size: 10px;
+    margin-bottom: 20px;
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  /* Tab Buttons */
+  .tab-btn {
+    padding: var(--space-2) var(--space-3);
+    font-size: 10px;
+  }
+  
+  .tab-btn i {
+    font-size: 12px;
+  }
+  
+  .tab-name {
+    font-size: 10px;
+  }
+  
+  /* Buttons */
+  .buttons {
+    flex-direction: column;
+    gap: var(--space-2);
+    margin-top: 20px;
+  }
+  
+  .buttons button {
+    padding: var(--space-3) var(--space-4);
+    font-size: 11px;
+  }
+  
+  /* History Container */
+  .history-container {
+    padding: var(--space-4);
+  }
+  
+  /* Modal */
+  #edit-modal .modal,
+  #tab-name-modal .modal {
+    width: 95%;
+    max-width: 320px;
+  }
+  
+  .modal-header,
+  .modal-body,
+  .modal-footer {
+    padding: var(--space-4);
+  }
+  
+  .input-group input {
+    padding: 12px;
+    font-size: 16px; /* Prevents zoom on iOS */
   }
 }
 
-@media (max-width: 768px) {
+/* Small Devices (landscape phones, 576px and up) */
+@media (min-width: 576px) and (max-width: 767px) {
+  /* Campaign Section */
   .campaign-section {
-    height: calc(100vh - var(--header-height) - 60px);
-    min-height: calc(100vh - var(--header-height) - 60px);
+    padding: var(--space-6) 0;
   }
   
-  .tab-content {
-    width: 100%;
+  .campaign-section .container {
     padding: 0 var(--space-4);
   }
   
-  .counter-container,
-  .history-container {
-    margin: 0;
-    padding: 32px 24px;
-    max-width: 100%;
+  /* Tab Content */
+  .tab-content {
+    width: 90%;
   }
   
-  #counter-number {
-    font-size: var(--font-size-6xl);
-    letter-spacing: -0.04em;
+  /* Counter Container */
+  .counter-container {
+    padding: var(--space-6);
   }
   
+  /* Counter Number */
+  #counter-number,
+  #campaign1-number,
+  #campaign2-number,
+  #campaign3-number,
+  #campaign4-number {
+    font-size: 80px;
+  }
+  
+  /* Counter Title */
   .counter-container h2 {
-    font-size: var(--font-size-2xs);
+    font-size: 11px;
+    margin-bottom: 24px;
   }
   
+  /* Tab Buttons */
+  .tab-btn {
+    padding: var(--space-3) var(--space-4);
+    font-size: 11px;
+  }
+  
+  /* Buttons */
   .buttons {
-    flex-direction: column;
+    margin-top: 24px;
   }
   
-  .modal {
-    padding: 32px 24px;
+  /* History Container */
+  .history-container {
+    padding: var(--space-5);
   }
 }
 
+/* Medium Devices (tablets, 768px and up) */
+@media (min-width: 768px) and (max-width: 991px) {
+  /* Campaign Section */
+  .campaign-section {
+    padding: var(--space-8) 0;
+  }
+  
+  /* Tab Content */
+  .tab-content {
+    width: 75%;
+  }
+  
+  /* Counter Container */
+  .counter-container {
+    padding: var(--space-8);
+  }
+  
+  /* Counter Number */
+  #counter-number,
+  #campaign1-number,
+  #campaign2-number,
+  #campaign3-number,
+  #campaign4-number {
+    font-size: 100px;
+  }
+  
+  /* Counter Title */
+  .counter-container h2 {
+    font-size: 12px;
+    margin-bottom: 28px;
+  }
+  
+  /* Tab Buttons */
+  .tab-btn {
+    padding: var(--space-3) var(--space-5);
+    font-size: 12px;
+  }
+  
+  /* Buttons */
+  .buttons {
+    margin-top: 28px;
+  }
+}
+
+/* Large Devices (desktops, 992px and up) */
+@media (min-width: 992px) and (max-width: 1199px) {
+  /* Campaign Section */
+  .campaign-section {
+    padding: var(--space-10) 0;
+  }
+  
+  /* Tab Content */
+  .tab-content {
+    width: 60%;
+  }
+  
+  /* Counter Number */
+  #counter-number,
+  #campaign1-number,
+  #campaign2-number,
+  #campaign3-number,
+  #campaign4-number {
+    font-size: 110px;
+  }
+}
+
+/* Extra Large Devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) {
+  /* Campaign Section */
+  .campaign-section {
+    padding: var(--space-12) 0;
+  }
+  
+  /* Counter Number */
+  #counter-number,
+  #campaign1-number,
+  #campaign2-number,
+  #campaign3-number,
+  #campaign4-number {
+    font-size: 120px;
+  }
+}
+
+/* Landscape Orientation Adjustments */
+@media (max-height: 600px) and (orientation: landscape) {
+  /* Campaign Section */
+  .campaign-section {
+    padding: var(--space-3) 0;
+    min-height: 100vh;
+    height: 100vh;
+  }
+  
+  /* Counter Container */
+  .counter-container {
+    padding: var(--space-3);
+  }
+  
+  /* Counter Number */
+  #counter-number,
+  #campaign1-number,
+  #campaign2-number,
+  #campaign3-number,
+  #campaign4-number {
+    font-size: 48px;
+  }
+  
+  /* Counter Title */
+  .counter-container h2 {
+    font-size: 10px;
+    margin-bottom: 16px;
+  }
+  
+  /* Progress Bar */
+  .progress-bar-container {
+    margin: var(--space-4) 0;
+  }
+  
+  /* Counter Value */
+  .counter-value {
+    margin: var(--space-4) 0;
+  }
+  
+  /* Buttons */
+  .buttons {
+    margin-top: 16px;
+  }
+  
+  /* History Container */
+  .history-container {
+    padding: var(--space-3);
+  }
+  
+  .history-container h2 {
+    margin-bottom: 12px;
+  }
+}
+
+/* High DPI Displays */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  /* Ensure sharp rendering on high DPI displays */
+  #counter-number,
+  #campaign1-number,
+  #campaign2-number,
+  #campaign3-number,
+  #campaign4-number {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+/* Touch Device Optimizations */
+@media (hover: none) and (pointer: coarse) {
+  /* Increase touch targets for mobile devices */
+  .tab-btn {
+    min-height: 44px;
+  }
+  
+  .buttons button {
+    min-height: 44px;
+  }
+  
+  .edit-icon {
+    padding: var(--space-2);
+  }
+  
+  /* Remove hover effects on touch devices */
+  .tab-btn:hover,
+  .buttons button:hover,
+  .history-item:hover,
+  .load-more-btn-custom:hover {
+    background: inherit;
+    color: inherit;
+  }
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  /* Respect user's motion preferences */
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
 
 /* Optimize for low-end devices */
-.counter-value,
-.progress-bar,
-.history-item {
-  will-change: auto; /* Remove will-change to reduce GPU load */
-}
-
-/* Optimize animations */
-@media (max-width: 768px) {
-  /* Disable animations on mobile for better performance */
-  .edit-icon,
-  .progress-bar,
-  .campaign-section {
-    height: calc(100vh - var(--header-height) - 60px);
-    min-height: calc(100vh - var(--header-height) - 60px);
-  }
-}
-
-/* Responsive Design - Tablet */
-@media (max-width: 1023px) and (min-width: 768px) {
-  .campaign-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* Responsive Design - Small Mobile */
-@media (max-width: 480px) {
-  .counter-display {
-    font-size: 3rem;
-  }
-
-  .campaign-section {
-    padding: 20px 15px;
-  }
-}
-
-/* Fix CSS structure to remove syntax error */
 .counter-value,
 .progress-bar,
 .history-item {
@@ -2455,4 +2681,343 @@ html {
 
 .history-item:hover {
   transform: none;
+}
+
+/* ===================================
+   FOLDER BROWSER
+   =================================== */
+
+/* Folder Browser Container */
+.folder-browser {
+  width: 50%;
+  flex-shrink: 0;
+}
+
+.folder-container {
+  background: var(--primary);
+  border: 2px solid var(--primary);
+  padding: var(--space-8);
+  width: 100%;
+  position: relative;
+  margin: 0 auto;
+  flex-shrink: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.folder-container h2 {
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: 0.13em;
+  margin-bottom: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+/* Folder Controls */
+.folder-controls {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+#folder-input-text {
+  width: 100%;
+  min-height: 120px;
+  padding: var(--space-3);
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+  color: #ffffff;
+  font-size: var(--font-size-sm);
+  font-family: monospace;
+  resize: vertical;
+}
+
+#folder-input-text::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+#folder-input-text:focus {
+  outline: none;
+  border-color: #ffffff;
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.folder-controls > div:first-child {
+  display: flex;
+  gap: var(--space-3);
+}
+
+.folder-select-btn,
+.folder-clear-btn {
+  flex: 1;
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  border: 2px solid #ffffff;
+  background: transparent;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+}
+
+.folder-select-btn:hover {
+  background: #ffffff;
+  color: var(--info);
+}
+
+.folder-clear-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.7);
+}
+
+/* Folder List */
+.folder-list {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  min-height: 0;
+}
+
+.folder-items {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: var(--space-1);
+  padding: var(--space-2);
+}
+
+.folder-empty {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: var(--font-size-sm);
+  text-align: center;
+  padding: var(--space-4);
+}
+
+/* Compact Folder Item */
+.folder-item-compact {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-left: 3px solid #ffffff;
+  padding: var(--space-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  height: 40px;
+  text-align: center;
+}
+
+.folder-item-compact:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.campaign-id {
+  font-weight: 600;
+  color: #ffffff;
+  font-size: var(--font-size-sm);
+  font-family: monospace;
+}
+
+.folder-item-compact.multiple-dates {
+  border-color: #fbbf24;
+  box-shadow: 0 0 0 1px #fbbf24;
+}
+
+/* Folder Item (legacy - kept for reference) */
+.folder-item {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-left: 3px solid #ffffff;
+  padding: var(--space-3) var(--space-4);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.folder-item:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.folder-item i {
+  color: #ffffff;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.folder-item-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.folder-item-name {
+  font-weight: 600;
+  color: #ffffff;
+  font-size: var(--font-size-sm);
+  word-break: break-all;
+}
+
+.folder-item-path {
+  font-size: var(--font-size-2xs);
+  color: rgba(255, 255, 255, 0.7);
+  margin-top: 2px;
+}
+
+/* Folder Group */
+.folder-group {
+  margin-bottom: var(--space-3);
+}
+
+.folder-dates {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+  padding-left: var(--space-7);
+}
+
+.folder-date {
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: var(--space-1) var(--space-2);
+  font-size: var(--font-size-2xs);
+  color: #ffffff;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-radius: 2px;
+}
+
+.folder-date:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: translateY(-1px);
+}
+
+/* Folder Details Tooltip */
+.folder-tooltip {
+  position: absolute;
+  background: var(--primary);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 0;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  width: 200px;
+  overflow: hidden;
+}
+
+.tooltip-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.tooltip-header {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  text-align: center;
+}
+
+.tooltip-campaign-id {
+  font-size: 18px;
+  font-weight: 700;
+  color: #ffffff;
+  font-family: monospace;
+  letter-spacing: 1px;
+}
+
+.tooltip-row {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.tooltip-row:last-child {
+  border-bottom: none;
+}
+
+.tooltip-label {
+  font-size: 10px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.7);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.tooltip-row span:not(.tooltip-label) {
+  font-size: 13px;
+  color: #ffffff;
+  font-weight: 500;
+}
+
+.tooltip-dates {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 2px;
+}
+
+.tooltip-dates .date-item {
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 3px 7px;
+  font-size: 11px;
+  color: #ffffff;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 500;
+}
+
+.tooltip-dates .date-item:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.tooltip-arrow {
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-bottom: 8px solid var(--primary);
+}
+
+/* Hide scrollbar for campaign counter page - placed at very end */
+*::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+* {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
 }
