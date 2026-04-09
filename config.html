@@ -30,6 +30,10 @@
 
   
 
+  <!-- DNS Prefetch & Preconnect for CDN -->
+  <link rel="dns-prefetch" href="//cdnjs.cloudflare.com">
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  
   <!-- CSS -->
   <link rel="stylesheet" href="css/theme.css">
   <link rel="stylesheet" href="css/footer.css">
@@ -50,40 +54,23 @@
 
 <body>
 
-  <!-- Navigation Bar -->
-  <header class="header" role="banner">
-    <nav class="nav" role="navigation" aria-label="Main navigation">
-      <!-- Home Button -->
-      <div class="nav-left">
-        <a href="index.html" class="nav-link">
-          <i class="fa-solid fa-home"></i>
-          <span>Home</span>
-        </a>
-      </div>
-      
-      <div class="nav-right">
-        <!-- Additional navigation items can be added here -->
-      </div>
-    </nav>
-  </header>
-
-  <main id="main-content" role="main">
+  <main id="main-content">
   <div class="layout">
   <div class="container">
 
-    <aside class="sidebar flex flex-col">
+    <nav class="sidebar flex flex-col" role="navigation" aria-label="File explorer">
 
       <div class="sidebar-header">
 
-        <button id="openFolderBtn" class="btn" title="Open Folder">
+        <button id="openFolderBtn" class="btn" title="Open Folder" aria-label="Open folder">
 
-          <i class="fa-solid fa-folder-open"></i> Open Folder
+          <i class="fa-solid fa-folder-open" aria-hidden="true"></i> Open Folder
 
         </button>
 
-        <button id="refreshTreeBtn" class="btn secondary" title="Refresh">
+        <button id="refreshTreeBtn" class="btn secondary" title="Refresh" aria-label="Refresh file tree">
 
-          <i class="fa-solid fa-refresh"></i>
+          <i class="fa-solid fa-refresh" aria-hidden="true"></i>
 
         </button>
 
@@ -91,25 +78,27 @@
 
       <div class="sidebar-body flex-1">
 
-        <div id="fileTree" class="file-tree"></div>
+        <div id="fileTree" class="file-tree" role="tree" aria-label="File tree"></div>
 
       </div>
 
-      <div class="resize-handle" id="resizeHandle"></div>
+      <div class="resize-handle" id="resizeHandle" aria-label="Resize sidebar"></div>
 
-    </aside>
+    </nav>
 
-    <section class="content flex-1">
+    <section class="content flex-1" aria-label="Configuration editor">
 
-      <div class="content-header">
+      <header class="content-header">
 
-        <div class="breadcrumb" id="breadcrumb">No folder</div>
+        <div class="breadcrumb" id="breadcrumb" aria-live="polite" aria-atomic="true">No folder</div>
 
-        <div id="campaignCountIndicator" class="campaign-count-indicator">0/7</div>
+        <div id="campaignCountIndicator" class="campaign-count-indicator" aria-live="polite" aria-atomic="true">0/7</div>
 
-      </div>
+      </header>
 
       
+
+      <form id="configForm" onsubmit="return false" aria-label="Campaign configuration">
 
       <div class="controls">
 
@@ -125,7 +114,7 @@
 
             <div class="input-wrapper campaign-id-field">
 
-              <input id="campaignId" type="text" placeholder="YYYYMMDD[X]_nama-campaign_XXX atau XXXX" />
+              <input id="campaignId" type="text" placeholder="YYYYMMDD[X]_nama-campaign_XXX atau XXXX" aria-describedby="campaignIdWarningTooltip campaignIdMismatchTooltip campaignIdCharCount" autocomplete="off" />
 
               <span id="campaignIdWarningTooltip" class="warning-tooltip"></span>
 
@@ -151,7 +140,7 @@
 
             <div class="input-wrapper subject-field">
 
-              <input id="subject" type="text" placeholder="Subject with <%[KRHRED_Unit_XX]|%>" />
+              <input id="subject" type="text" placeholder="Subject with <%[KRHRED_Unit_XX]|%>" aria-describedby="subjectCharCount" autocomplete="off" />
 
               <span id="subjectCharCount" class="char-count">0</span>
 
@@ -177,7 +166,7 @@
 
             <div class="input-wrapper link-field">
 
-              <input id="link" type="text" placeholder="http://mail.hsbc.com.hk/1450-campaign-name.html" />
+              <input id="link" type="url" placeholder="http://mail.hsbc.com.hk/1450-campaign-name.html" aria-describedby="linkValidationTooltip linkMismatchTooltip linkCharCount mismatchWarning" autocomplete="off" />
 
               <span id="linkValidationTooltip" class="validation-tooltip"></span>
 
@@ -199,17 +188,19 @@
 
         <div class="buttons">
 
-          <button id="applyUpdateBtn" class="btn"><i class="fa-solid fa-wand-magic-sparkles"></i> Apply Update</button>
+          <button id="applyUpdateBtn" class="btn" type="button" aria-label="Apply updates to XML"><i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i> Apply Update</button>
 
-          <button id="saveFileBtn" class="btn" title="Save File">
+          <button id="saveFileBtn" class="btn" type="button" title="Save File" aria-label="Save current file">
 
-            <i class="fa-solid fa-save"></i> Save
+            <i class="fa-solid fa-save" aria-hidden="true"></i> Save
 
           </button>
 
         </div>
 
       </div>
+
+      </form>
 
 
 
@@ -230,11 +221,11 @@
   
 
 
-  <div id="overlay" class="overlay" hidden>
+  <div id="overlay" class="overlay" hidden aria-hidden="true">
 
     <div class="spinner" role="status" aria-label="Loading">
 
-      <i class="fa-solid fa-rotate fa-spin"></i>
+      <i class="fa-solid fa-rotate fa-spin" aria-hidden="true"></i>
 
       <div>Loading…</div>
 
@@ -273,21 +264,22 @@
     </svg>
   </a>
 
+
   <!-- Footer Modal -->
-  <div id="footer-modal" class="footer-modal" role="dialog" aria-modal="true">
+  <div id="footer-modal" class="footer-modal" role="dialog" aria-modal="true" aria-label="About eDM Helper">
     <div class="footer-modal-content">
       <div class="footer-modal-body">
         <nav class="footer-links" aria-label="Social media links">
-          <a href="https://github.com/budife" target="_blank" class="footer-link" aria-label="GitHub">
-            <i class="fa-brands fa-github"></i>
+          <a href="https://github.com/budife" target="_blank" class="footer-link" aria-label="Visit GitHub profile">
+            <i class="fa-brands fa-github" aria-hidden="true"></i>
             <span>GitHub</span>
           </a>
-          <a href="https://instagram.com/budife.psd/" target="_blank" class="footer-link" aria-label="Instagram">
-            <i class="fa-brands fa-instagram"></i>
+          <a href="https://instagram.com/budife.psd/" target="_blank" class="footer-link" aria-label="Visit Instagram profile">
+            <i class="fa-brands fa-instagram" aria-hidden="true"></i>
             <span>Instagram</span>
           </a>
-          <a href="https://linkedin.com/in/budife/" target="_blank" class="footer-link" aria-label="LinkedIn">
-            <i class="fa-brands fa-linkedin"></i>
+          <a href="https://linkedin.com/in/budife/" target="_blank" class="footer-link" aria-label="Visit LinkedIn profile">
+            <i class="fa-brands fa-linkedin" aria-hidden="true"></i>
             <span>LinkedIn</span>
           </a>
         </nav>
@@ -308,8 +300,6 @@
   <script src="js/footer.js" defer></script>
 
   <script src="js/version-config.js" defer></script>
-
-  <script src="js/toast.js" defer></script>
 
   <!-- Page Scripts (Load Last) -->
 

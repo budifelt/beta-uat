@@ -418,6 +418,15 @@ async function openDirectory() {
   
   try {
     const dirHandle = await window.showDirectoryPicker();
+    
+    // Update the title with the selected folder name
+    const folderTitle = document.getElementById('folder-browser-title');
+    if (folderTitle) {
+      folderTitle.textContent = dirHandle.name;
+      // Save folder name to localStorage
+      localStorage.setItem('selected_folder_name', dirHandle.name);
+    }
+    
     const folderNames = [];
     
     // Recursively get all folder names
@@ -642,54 +651,61 @@ function handleFileSelection(event) {
 function parseFolderName(folderName) {
   console.log('Parsing folder:', folderName); // Debug log
   
-  // Match pattern: CampaignID CampaignName CampaignManager MM-DD (and ignore anything after)
-  // Example: "2901 Portfolio asset Bianca 03-21 |- Copy"
-  // Strategy: Find the date first, then work backwards
+  // Remove leading underscores and any prefix before first campaign ID
+  let cleanedName = folderName.replace(/^_+[^0-9]*\s*/, '');
+  
+  // Find the date first (MM-DD format)
   const dateRegex = /(\d{2}-\d{2})(?:\s+|$)/;
-  const dateMatch = folderName.match(dateRegex);
+  const dateMatch = cleanedName.match(dateRegex);
   
-  if (dateMatch) {
-    const dateIndex = folderName.lastIndexOf(dateMatch[1]);
-    const beforeDate = folderName.substring(0, dateIndex).trim();
-    
-    // Split the part before date
-    const parts = beforeDate.split(' ');
-    
-    if (parts.length >= 3) {
-      const campaignId = parts[0];
-      const campaignManager = parts[parts.length - 1];
-      const campaignName = parts.slice(1, -1).join(' ');
-      
-      return {
-        campaignId: campaignId,
-        campaignName: campaignName,
-        campaignManager: campaignManager,
-        date: dateMatch[1]
-      };
-    }
+  if (!dateMatch) {
+    console.log('No date found');
+    return null;
   }
   
-  // Fallback: Try to extract at least campaign ID and name
-  const fallbackRegex = /^(\d{4})\s+(.+?)\s+(.+?)(?:\s+|$)/;
-  const fallbackMatch = folderName.match(fallbackRegex);
+  const date = dateMatch[1];
+  const dateIndex = cleanedName.lastIndexOf(dateMatch[1]);
+  const beforeDate = cleanedName.substring(0, dateIndex).trim();
   
-  if (fallbackMatch) {
-    return {
-      campaignId: fallbackMatch[1],
-      campaignName: fallbackMatch[2],
-      campaignManager: fallbackMatch[3],
-      date: null
-    };
+  // Find campaign ID(s) - supports single ID or range
+  const idRegex = /(\d{4})(?:\s*[-]\s*\d{4})*/;
+  const idMatch = beforeDate.match(idRegex);
+  
+  if (!idMatch) {
+    console.log('No campaign ID found');
+    return null;
   }
   
-  // Last resort - just return the folder name as campaign name
-  console.log('Using last resort parsing');
+  const fullIdString = idMatch[0]; // e.g., "0001-0002" or "0001"
+  const firstCampaignId = idMatch[1]; // Always the first ID (e.g., "0001")
+  const idEndIndex = beforeDate.indexOf(idMatch[0]) + idMatch[0].length;
+  
+  // Extract the part between ID(s) and date
+  const middlePart = beforeDate.substring(idEndIndex).trim();
+  
+  // Split middle part to get campaign name and manager
+  // Manager is typically the last word before date
+  const parts = middlePart.split(' ');
+  
+  if (parts.length < 2) {
+    console.log('Not enough parts for campaign name and manager');
+    return null;
+  }
+  
+  // Manager is always the last word before date
+  // Campaign name is everything between ID(s) and manager
+  const campaignManager = parts[parts.length - 1];
+  let campaignName = parts.slice(0, -1).join(' ');
+  
+  // Clean up campaign name (remove extra spaces)
+  campaignName = campaignName.replace(/\s+/g, ' ').trim();
+  
   return {
-    campaignId: '',
-    campaignName: folderName,
-    campaignManager: '',
-    date: '',
-    fullMatch: folderName
+    campaignId: firstCampaignId,
+    fullIdRange: fullIdString,
+    campaignName: campaignName,
+    campaignManager: campaignManager,
+    date: date
   };
 }
 
@@ -707,6 +723,16 @@ function loadFoldersFromStorage() {
   try {
     const stored = localStorage.getItem(FOLDER_STORAGE_KEY);
     const folders = stored ? JSON.parse(stored) : [];
+    
+    // Restore folder name if available
+    const folderName = localStorage.getItem('selected_folder_name');
+    if (folderName) {
+      const folderTitle = document.getElementById('folder-browser-title');
+      if (folderTitle) {
+        folderTitle.textContent = folderName;
+      }
+    }
+    
     displayFolders(folders);
   } catch (error) {
     console.error('Error loading folders from localStorage:', error);
@@ -717,30 +743,50 @@ function loadFoldersFromStorage() {
 // Display folders in the UI
 function displayFolders(folders) {
   const folderItems = document.getElementById('folder-items');
-  if (!folderItems) {
-    console.log('folder-items element not found!'); // Debug log
+  
+  if (!folders || folders.length === 0) {
+    folderItems.innerHTML = `
+      <div class="folder-empty-state">
+        <i class="fa-solid fa-folder-open"></i>
+        <h3>No folders selected</h3>
+        <p>Click "Open Folder" to select a directory containing campaign folders</p>
+        <p class="folder-hint">Folders should follow the format: 0001 Campaign Name Manager MM-DD</p>
+      </div>
+    `;
     return;
   }
   
-  if (folders.length === 0) {
-    folderItems.innerHTML = '<p class="folder-empty">No folders selected</p>';
-    return;
-  }
-  
-  // Group folders by campaign (ID + Name + Manager)
+  // Group folders by campaign ID only
   const groupedFolders = {};
   folders.forEach(folder => {
-    const key = `${folder.parsed.campaignId}-${folder.parsed.campaignName}-${folder.parsed.campaignManager}`;
-    if (!groupedFolders[key]) {
-      groupedFolders[key] = {
-        campaignId: folder.parsed.campaignId,
-        campaignName: folder.parsed.campaignName,
-        campaignManager: folder.parsed.campaignManager,
-        dates: new Set() // Use Set to avoid duplicate dates
+    const campaignId = folder.parsed.campaignId;
+    
+    if (!groupedFolders[campaignId]) {
+      groupedFolders[campaignId] = {
+        campaignId: campaignId,
+        fullIdRange: folder.parsed.fullIdRange || folder.parsed.campaignId,
+        campaignName: folder.parsed.campaignName, // Will use the first encountered name
+        campaignManager: folder.parsed.campaignManager, // Will use the first encountered manager
+        dates: [] // Array of objects to store date with associated name and manager
       };
     }
+    
     if (folder.parsed.date) {
-      groupedFolders[key].dates.add(folder.parsed.date);
+      // Check if this date with the same campaign name and manager already exists
+      const existingDate = groupedFolders[campaignId].dates.find(d => 
+        d.date === folder.parsed.date && 
+        d.campaignName === folder.parsed.campaignName && 
+        d.campaignManager === folder.parsed.campaignManager
+      );
+      
+      // Only add if not already present
+      if (!existingDate) {
+        groupedFolders[campaignId].dates.push({
+          date: folder.parsed.date,
+          campaignName: folder.parsed.campaignName,
+          campaignManager: folder.parsed.campaignManager
+        });
+      }
     }
   });
   
@@ -751,13 +797,17 @@ function displayFolders(folders) {
   
   // Generate compact HTML
   const html = sortedGroups.map(group => {
-    // Convert Set to array and sort dates
-    const sortedDates = Array.from(group.dates).sort();
+    // Sort dates by date value
+    const sortedDates = group.dates.sort((a, b) => a.date.localeCompare(b.date));
     const multipleDatesClass = sortedDates.length > 1 ? 'multiple-dates' : '';
+    
+    // Store group data globally
+    if (!window.folderData) window.folderData = {};
+    window.folderData[group.campaignId] = group;
     
     return `
       <div class="folder-item-compact ${multipleDatesClass}" 
-           onclick="showFolderDetails(event, '${group.campaignId}', '${group.campaignName}', '${group.campaignManager}', [${sortedDates.map(d => `'${d}'`).join(',')}])">
+           onclick="showFolderDetails(event, '${group.campaignId}')">
         <span class="campaign-id">${group.campaignId}</span>
       </div>
     `;
@@ -767,22 +817,36 @@ function displayFolders(folders) {
 }
 
 // Show folder details tooltip
-function showFolderDetails(event, campaignId, campaignName, campaignManager, dates) {
+function showFolderDetails(event, campaignId) {
   const tooltip = document.getElementById('folder-tooltip');
   const folderItems = document.getElementById('folder-items');
   const rect = event.target.getBoundingClientRect();
   const folderItemsRect = folderItems.getBoundingClientRect();
   
-  // Set content
-  document.getElementById('tooltip-campaign-id').textContent = campaignId;
-  document.getElementById('tooltip-campaign-name').textContent = campaignName;
-  document.getElementById('tooltip-campaign-manager').textContent = campaignManager;
+  // Get group data from global storage
+  const group = window.folderData && window.folderData[campaignId];
+  if (!group) {
+    console.error('No data found for campaign ID:', campaignId);
+    return;
+  }
   
+  // Set content
   const datesContainer = document.getElementById('tooltip-dates');
-  if (dates && dates.length > 0) {
-    datesContainer.innerHTML = dates.map(date => 
-      `<span class="date-item" onclick="selectFolderWithDate('${campaignId}', '${campaignName}', '${campaignManager}', '${date}')">${date}</span>`
-    ).join('');
+  if (!datesContainer) {
+    console.error('tooltip-dates element not found');
+    return;
+  }
+  
+  if (group.dates && group.dates.length > 0) {
+    datesContainer.innerHTML = group.dates.map(dateObj => {
+      return `<span class="date-item" onclick="selectFolderWithDate('${campaignId}', '${dateObj.campaignName}', '${dateObj.campaignManager}', '${dateObj.date}')">${dateObj.date} ${dateObj.campaignName} - ${dateObj.campaignManager}</span>`;
+    }).join('');
+    
+    // Add ID range info at the top
+    const idRangeInfo = document.createElement('div');
+    idRangeInfo.style.cssText = 'padding: 6px 10px; font-size: 11px; color: rgba(255,255,255,0.8); border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 4px; text-align: center;';
+    idRangeInfo.textContent = `ID: ${group.fullIdRange || campaignId}`;
+    datesContainer.insertBefore(idRangeInfo, datesContainer.firstChild);
   } else {
     datesContainer.innerHTML = '<span style="color: rgba(255,255,255,0.5); font-size: 11px;">No dates</span>';
   }
@@ -840,7 +904,7 @@ function closeFolderTooltip() {
 // Close tooltip when clicking outside
 document.addEventListener('click', function(event) {
   const tooltip = document.getElementById('folder-tooltip');
-  if (!tooltip.contains(event.target) && !event.target.closest('.folder-item-compact')) {
+  if (tooltip && !tooltip.contains(event.target) && !event.target.closest('.folder-item-compact')) {
     tooltip.style.display = 'none';
   }
 });
@@ -870,6 +934,16 @@ function selectFolderWithDate(campaignId, campaignName, campaignManager, date) {
 function clearFolders() {
   if (confirm('Are you sure you want to clear all folders?')) {
     localStorage.removeItem(FOLDER_STORAGE_KEY);
+    
+    // Reset the title back to default
+    const folderTitle = document.getElementById('folder-browser-title');
+    if (folderTitle) {
+      folderTitle.textContent = 'Folder Browser';
+    }
+    
+    // Remove folder name from localStorage
+    localStorage.removeItem('selected_folder_name');
+    
     displayFolders([]);
   }
 }

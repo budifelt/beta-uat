@@ -38,9 +38,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const closeModal = () => {
       footerModal.classList.remove('active');
       footerModal.setAttribute('aria-hidden', 'true');
-      document.body.style.overflow = 'hidden';
-      document.body.style.scrollbarWidth = 'none';
-      document.body.style.msOverflowStyle = 'none';
+      document.body.style.overflow = '';
+      document.body.style.scrollbarWidth = '';
+      document.body.style.msOverflowStyle = '';
       footerToggle.focus();
 
       // Remove Escape key handler when modal is closed

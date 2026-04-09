@@ -1002,7 +1002,7 @@ class DatabaseChecker {
     // Find the group element
     const groupDiv = document.querySelector(`[data-code="${code}"]`).closest('.email-group');
     if (!groupDiv) {
-      this.showToast('Group not found', 'error');
+      console.error('Group not found');
       return;
     }
 
@@ -1044,7 +1044,7 @@ class DatabaseChecker {
           btn.classList.remove('copied');
         }, 2000);
         
-        this.showToast('Copied to clipboard!', 'success');
+        console.log('Copied to clipboard!');
       }).catch(err => {
         console.error('Failed to copy:', err);
         this.fallbackCopyToClipboard(copyText);
@@ -1059,7 +1059,7 @@ class DatabaseChecker {
     const inputs = this.rowsEl.querySelectorAll('textarea[data-unit]');
     
     if (!emailInput && !inputs.length){
-      this.showToast('No results to copy', 'warning');
+      console.warn('No results to copy');
       return;
     }
 
@@ -1082,7 +1082,7 @@ class DatabaseChecker {
     if (navigator.clipboard && window.isSecureContext){
       navigator.clipboard.writeText(copyText).then(() => {
         const count = inputs.length + (emailInput && emailInput.value ? 1 : 0);
-        this.showToast(`Copied ${count} entries to clipboard!`, 'success');
+        console.log(`Copied ${count} entries to clipboard!`);
         
         // Visual feedback on button
         const btn = document.getElementById('copyDatabaseBtn');
@@ -1130,37 +1130,14 @@ class DatabaseChecker {
       }, 2000);
     } catch (err) {
       console.error('Fallback: Oops, unable to copy', err);
-      this.showToast('Failed to copy to clipboard', 'error');
+      console.error('Failed to copy to clipboard');
     }
     
     document.body.removeChild(textArea);
   }
 
   showToast(message, type = 'info'){
-    // Create toast element
-    const toast = document.createElement('div');
-    toast.className = `toast toast-${type}`;
-    toast.style.cssText = `
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background: ${type === 'success' ? '#28a745' : type === 'error' ? '#dc3545' : type === 'warning' ? '#ffc107' : '#17a2b8'};
-      color: white;
-      padding: 12px 20px;
-      border-radius: 8px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-      z-index: 10000;
-      animation: slideInRight 0.3s ease;
-      font-weight: 500;
-    `;
-    toast.textContent = message;
-    
-    document.body.appendChild(toast);
-    
-    setTimeout(() => {
-      toast.style.animation = 'slideOutRight 0.3s ease';
-      setTimeout(() => toast.remove(), 300);
-    }, 3000);
+    console.log(`[${type.toUpperCase()}] ${message}`);
   }
 
   /* ========= Check database (optimized with full validation) ===== */

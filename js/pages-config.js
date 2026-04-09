@@ -1,170 +1,4 @@
 /* ===================================
-   TOAST UTILITY - Merged from toast.js
-   =================================== */
-
-/* ===================================
-   SHARED TOAST UTILITY
-   =================================== */
-
-// Global Toast Manager Class
-class ToastManager {
-  constructor() {
-    this.container = null;
-    this.init();
-  }
-  
-  init() {
-    // Create toast container if it doesn't exist
-    if (!document.getElementById('toast-container')) {
-      this.container = document.createElement('div');
-      this.container.id = 'toast-container';
-      this.container.style.cssText = `
-        position: fixed;
-        top: 80px;
-        right: 20px;
-        z-index: 10000;
-        pointer-events: none;
-      `;
-      // Append to layout area
-      const layoutArea = document.querySelector('main.layout');
-      if (layoutArea) {
-        layoutArea.appendChild(this.container);
-      } else {
-        // Fallback to body
-        document.body.appendChild(this.container);
-      }
-    } else {
-      this.container = document.getElementById('toast-container');
-    }
-  }
-  
-  show(message, type = 'info', options = {}) {
-    const {
-      duration = 3000,
-      position = 'top-right'
-    } = options;
-    
-    // Update container position
-    this.updatePosition(position);
-    
-    const toast = document.createElement('div');
-    toast.className = `toast toast-${type}`;
-    toast.style.cssText = `
-      background: ${type === 'success' ? '#22c55e' : type === 'error' ? '#ef4444' : type === 'warning' ? '#eab308' : '#3b82f6'};
-      color: white;
-      padding: 12px 20px;
-      border-radius: 8px;
-      margin-bottom: 10px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      pointer-events: auto;
-      cursor: pointer;
-      transform: translateX(100%);
-      transition: transform 0.3s ease;
-      max-width: 300px;
-      word-wrap: break-word;
-    `;
-    toast.textContent = message;
-    
-    this.container.appendChild(toast);
-    
-    // Animate in
-    requestAnimationFrame(() => {
-      toast.style.transform = 'translateX(0)';
-    });
-    
-    // Remove on click
-    toast.addEventListener('click', () => {
-      this.remove(toast);
-    });
-    
-    // Auto remove
-    setTimeout(() => {
-      this.remove(toast);
-    }, duration);
-  }
-  
-  updatePosition(position) {
-    const positions = {
-      'top-right': 'top: 80px; right: 20px;',
-      'top-left': 'top: 80px; left: 20px;',
-      'bottom-right': 'bottom: 20px; right: 20px;',
-      'bottom-left': 'bottom: 20px; left: 20px;'
-    };
-    
-    this.container.style.cssText = `
-      position: fixed;
-      z-index: 10000;
-      pointer-events: none;
-      ${positions[position] || positions['top-right']}
-    `;
-  }
-  
-  remove(toast) {
-    toast.style.transform = 'translateX(100%)';
-    setTimeout(() => {
-      if (toast.parentNode) {
-        toast.parentNode.removeChild(toast);
-      }
-    }, 300);
-  }
-  
-  success(message, options = {}) {
-    this.show(message, 'success', options);
-  }
-  
-  error(message, options = {}) {
-    this.show(message, 'error', options);
-  }
-  
-  warning(message, options = {}) {
-    this.show(message, 'warning', options);
-  }
-  
-  info(message, options = {}) {
-    this.show(message, 'info', options);
-  }
-}
-
-// Initialize global toast manager
-window.toastManager = new ToastManager();
-
-// Global toast functions for compatibility
-window.toastSuccess = function(message, title = '') {
-  if (window.toastManager) {
-    window.toastManager.success(message);
-  }
-};
-
-window.toastError = function(message, title = '') {
-  if (window.toastManager) {
-    window.toastManager.error(message);
-  }
-};
-
-window.toastWarning = function(message, title = '') {
-  if (window.toastManager) {
-    window.toastManager.warning(message);
-  }
-};
-
-window.toastInfo = function(message, title = '') {
-  if (window.toastManager) {
-    window.toastManager.info(message);
-  }
-};
-
-// Export for module usage
-if (typeof module !== 'undefined' && module.exports) {
-  module.exports = { ToastManager, showToast };
-}
-
-
-// Initialize Toast Manager
-document.addEventListener('DOMContentLoaded', () => {
-  window.toastManager = new ToastManager();
-});
-
-/* ===================================
    ORIGINAL CODE
    =================================== */
 
@@ -275,7 +109,7 @@ function initializeFields() {
   if (xmlCampaignId) {
     // Validate Campaign ID format
     const formatValidation = validateCampaignIdFormat(xmlCampaignId);
-    const fieldContainer = document.querySelector('.field.campaign-id-field');
+    const fieldContainer = elements.campaignIdField || document.querySelector('.field.campaign-id-field');
     
     // Don't show tooltips on initialization - only on user interaction
     if (!formatValidation.valid) {
@@ -315,6 +149,9 @@ let originalValues = {
 // Track if changes have been applied but not saved
 let hasUnsavedChanges = false;
 
+// Track applied state
+let hasAppliedChanges = false;
+
 // Performance: Cache DOM elements
 const elements = {
   saveFileBtn: document.getElementById('saveFileBtn'),
@@ -325,7 +162,20 @@ const elements = {
   campaignCountIndicator: document.getElementById('campaignCountIndicator'),
   breadcrumb: document.getElementById('breadcrumb'),
   overlay: document.getElementById('overlay'),
-  spinner: document.querySelector('.spinner')
+  spinner: document.querySelector('.spinner'),
+  // Additional cached elements
+  campaignIdField: document.querySelector('.field.campaign-id-field'),
+  linkField: document.querySelector('.field.link-field'),
+  campaignIdWarningTooltip: document.getElementById('campaignIdWarningTooltip'),
+  campaignIdMismatchTooltip: document.getElementById('campaignIdMismatchTooltip'),
+  linkValidationTooltip: document.getElementById('linkValidationTooltip'),
+  linkMismatchTooltip: document.getElementById('linkMismatchTooltip'),
+  campaignIdCharCount: document.getElementById('campaignIdCharCount'),
+  subjectCharCount: document.getElementById('subjectCharCount'),
+  linkCharCount: document.getElementById('linkCharCount'),
+  campaignIdCheckmark: document.getElementById('campaignIdCheckmark'),
+  subjectCheckmark: document.getElementById('subjectCheckmark'),
+  linkCheckmark: document.getElementById('linkCheckmark')
 };
 
 // Initialize CodeMirror editor
@@ -575,26 +425,30 @@ function clearAllUI(opts = { clearStorage: false }) {
     });
     
     // Clear tooltip classes
-    const campaignIdField = document.querySelector('.field.campaign-id-field');
+    const campaignIdField = elements.campaignIdField || document.querySelector('.field.campaign-id-field');
     if (campaignIdField) {
       campaignIdField.classList.remove('validation-error', 'past-date-warning', 'mismatch-error', 'today-warning', 'future-date-warning');
       // Clear only the warning tooltip (now used for all messages)
-      const tooltip = document.getElementById('campaignIdWarningTooltip');
+      const tooltip = elements.campaignIdWarningTooltip || document.getElementById('campaignIdWarningTooltip');
       if (tooltip) {
         tooltip.textContent = '';
         tooltip.style.opacity = '0';
       }
     }
-    const linkField = document.querySelector('.field.link-field');
+    const linkField = elements.linkField || document.querySelector('.field.link-field');
     if (linkField) {
       linkField.classList.remove('mismatch-error');
     }
     
     updateCampaignCountIndicator('');
     
-    const charCounts = ['campaignIdCharCount', 'subjectCharCount', 'linkCharCount'];
-    charCounts.forEach(id => {
-      const el = document.getElementById(id);
+    const charCounts = [
+      { id: 'campaignIdCharCount', element: elements.campaignIdCharCount },
+      { id: 'subjectCharCount', element: elements.subjectCharCount },
+      { id: 'linkCharCount', element: elements.linkCharCount }
+    ];
+    charCounts.forEach(item => {
+      const el = item.element || document.getElementById(item.id);
       if (el) el.textContent = '0';
     });
     
@@ -773,14 +627,7 @@ async function performSave() {
   
   if (!currentFileHandle) {
     console.log("No file opened");
-    if (window.toastManager) {
-      window.toastManager.warning("Tidak ada file yang dibuka. Silakan buka file terlebih dahulu.", {
-        duration: 3000,
-        position: 'top-right'
-      });
-    } else {
-      console.log("Tidak ada file yang dibuka. Silakan buka file terlebih dahulu.");
-    }
+    console.log("Tidak ada file yang dibuka. Silakan buka file terlebih dahulu.");
     return;
   }
   
@@ -838,14 +685,7 @@ async function performSave() {
     setCampaignIndicatorState('saved');
   } catch (err) {
     console.error("Error saving file:", err);
-    if (window.toastManager) {
-      window.toastManager.error('Gagal menyimpan file: ' + err.message, {
-        duration: 5000,
-        position: 'top-right'
-      });
-    } else {
-      console.log('Gagal menyimpan file: ' + err.message);
-    }
+    console.error('Gagal menyimpan file: ' + err.message);
     throw err; // Re-throw error to be handled by caller
   }
 }
@@ -910,27 +750,27 @@ function hideAllTooltips(field) {
 
 function clearAllTooltips() {
   // Clear campaign ID tooltip (now using only warning tooltip)
-  const warningTooltip = document.getElementById('campaignIdWarningTooltip');
+  const warningTooltip = elements.campaignIdWarningTooltip || document.getElementById('campaignIdWarningTooltip');
   if (warningTooltip) {
     warningTooltip.style.opacity = '0';
     warningTooltip.textContent = '';
   }
   
   // Clear mismatch tooltip separately
-  const mismatchTooltip = document.getElementById('campaignIdMismatchTooltip');
+  const mismatchTooltip = elements.campaignIdMismatchTooltip || document.getElementById('campaignIdMismatchTooltip');
   if (mismatchTooltip) {
     mismatchTooltip.style.opacity = '0';
     mismatchTooltip.textContent = '';
   }
   
   // Clear link field tooltips
-  const linkValidationTooltip = document.getElementById('linkValidationTooltip');
+  const linkValidationTooltip = elements.linkValidationTooltip || document.getElementById('linkValidationTooltip');
   if (linkValidationTooltip) {
     linkValidationTooltip.style.opacity = '0';
     linkValidationTooltip.textContent = '';
   }
   
-  const linkMismatchTooltip = document.getElementById('linkMismatchTooltip');
+  const linkMismatchTooltip = elements.linkMismatchTooltip || document.getElementById('linkMismatchTooltip');
   if (linkMismatchTooltip) {
     linkMismatchTooltip.style.opacity = '0';
     linkMismatchTooltip.textContent = '';
@@ -944,8 +784,8 @@ function clearAllTooltips() {
   }
   
   // Remove visual validation states from form fields
-  const campaignField = document.querySelector('.field.campaign-id-field');
-  const linkField = document.querySelector('.field.link-field');
+  const campaignField = elements.campaignIdField || document.querySelector('.field.campaign-id-field');
+  const linkField = elements.linkField || document.querySelector('.field.link-field');
   
   if (campaignField) {
     campaignField.classList.remove('validation-error', 'past-date-warning', 'today-warning', 'future-date-warning', 'mismatch-error');
@@ -2186,7 +2026,8 @@ function manageTooltipCollision(fieldContainer) {
           // Update original values to reflect the applied state
           storeOriginalValues();
           
-          // Re-mark as unsaved since storeOriginalValues resets it
+          // Mark as applied and unsaved
+          hasAppliedChanges = true;
           hasUnsavedChanges = true;
           
           // Disable apply button after successful use
@@ -2215,7 +2056,7 @@ function manageTooltipCollision(fieldContainer) {
   }
 })();
 
-// === Auto Save with Toast ===
+// === Auto Save ===
 let autoSaveTimer = null;
 const AUTO_SAVE_DELAY = 2000; // 2 seconds after change
 
@@ -2249,7 +2090,7 @@ function setCampaignIndicatorState(state) {
   });
 }
 
-// Auto save function with toast notification
+// Auto save function
 async function autoSave() {
   if (!window.fileHandle) {
     console.log('No file handle, skipping auto save');
@@ -2260,31 +2101,15 @@ async function autoSave() {
     console.log('Auto saving...');
     await performSave();
     
-    // Show success toast
-    if (window.toastManager) {
-      window.toastManager.success('File berhasil disimpan otomatis', {
-        duration: 3000,
-        position: 'top-right'
-      });
-    } else {
-      // Fallback to console if toast not available
-      console.log('File berhasil disimpan otomatis');
-    }
+    // Log success
+    console.log('File berhasil disimpan otomatis');
     
     setCampaignIndicatorState('saved');
   } catch (error) {
     console.error('Auto save failed:', error);
     
-    // Show error toast
-    if (window.toastManager) {
-      window.toastManager.error('Gagal menyimpan file: ' + error.message, {
-        duration: 5000,
-        position: 'top-right'
-      });
-    } else {
-      // Fallback to console if toast not available
-      console.log('Gagal menyimpan file: ' + error.message);
-    }
+    // Log error
+    console.error('Gagal menyimpan file: ' + error.message);
   }
 }
 
@@ -2323,8 +2148,8 @@ function updateSaveAndApplyButtons() {
   const hasErrors = hasCampaignIdError || hasSubjectError || hasLinkError;
   const allEmpty = isCampaignIdEmpty && isSubjectEmpty && isLinkEmpty;
   
-  // Apply button: disable if errors or all empty (allow applying current values even if no changes)
-  const shouldDisableApply = hasErrors || allEmpty;
+  // Apply button: disable if errors, all empty, or if changes have been applied
+  const shouldDisableApply = hasErrors || allEmpty || (hasAppliedChanges && !hasContentChanged());
   
   // Save button: disable if errors, all empty, or no unsaved changes
   const shouldDisableSave = hasErrors || allEmpty || !hasUnsavedChanges;
@@ -2373,6 +2198,7 @@ function resetOriginalValues() {
     xmlContent: ''
   };
   hasUnsavedChanges = false;
+  hasAppliedChanges = false;
 }
 
 // Check if content has changed from original
@@ -2478,14 +2304,7 @@ window.addEventListener('load', () => {
       
       // Check if file is opened
       if (!window.fileHandle) {
-        if (window.toastManager) {
-          window.toastManager.warning('Tidak ada file yang dibuka. Silakan buka file terlebih dahulu.', {
-            duration: 3000,
-            position: 'top-right'
-          });
-        } else {
-          console.log("Tidak ada file yang dibuka. Silakan buka file terlebih dahulu.");
-        }
+        console.log('Tidak ada file yang dibuka. Silakan buka file terlebih dahulu.');
         return;
       }
       
@@ -2498,29 +2317,15 @@ window.addEventListener('load', () => {
       try {
         await performSave();
         
-        // Show success toast
-        if (window.toastManager) {
-          window.toastManager.success('File berhasil disimpan!', {
-            duration: 3000,
-            position: 'top-right'
-          });
-        } else {
-          console.log("File berhasil disimpan!");
-        }
+        // Log success
+        console.log('File berhasil disimpan!');
         
         setCampaignIndicatorState('saved');
       } catch (error) {
         console.error("Error saving file:", error);
         
-        // Show error toast
-        if (window.toastManager) {
-          window.toastManager.error('Gagal menyimpan file: ' + error.message, {
-            duration: 5000,
-            position: 'top-right'
-          });
-        } else {
-          console.log("Gagal menyimpan file: " + error.message);
-        }
+        // Log error
+        console.error('Gagal menyimpan file: ' + error.message);
         
         // Re-enable button on error since save failed
         updateSaveAndApplyButtons();

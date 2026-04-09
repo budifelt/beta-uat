@@ -2798,11 +2798,45 @@ html {
   padding: var(--space-2);
 }
 
-.folder-empty {
-  color: rgba(255, 255, 255, 0.6);
-  font-size: var(--font-size-sm);
+.folder-empty-state {
   text-align: center;
-  padding: var(--space-4);
+  padding: var(--space-12) var(--space-6);
+  color: rgba(255, 255, 255, 0.6);
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+}
+
+.folder-empty-state i {
+  font-size: 48px;
+  color: rgba(255, 255, 255, 0.3);
+  margin-bottom: var(--space-4);
+}
+
+.folder-empty-state h3 {
+  font-size: 20px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.8);
+  margin: 0 0 var(--space-3) 0;
+}
+
+.folder-empty-state p {
+  font-size: 14px;
+  line-height: 1.5;
+  margin: var(--space-2) 0;
+  max-width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.folder-empty-state .folder-hint {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.4);
+  font-style: italic;
+  margin-top: var(--space-4);
 }
 
 /* Compact Folder Item */
@@ -2927,63 +2961,28 @@ html {
   gap: 0;
 }
 
-.tooltip-header {
-  background: rgba(255, 255, 255, 0.1);
-  padding: 12px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-  text-align: center;
-}
-
-.tooltip-campaign-id {
-  font-size: 18px;
-  font-weight: 700;
-  color: #ffffff;
-  font-family: monospace;
-  letter-spacing: 1px;
-}
-
-.tooltip-row {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  padding: 10px 12px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.tooltip-row:last-child {
-  border-bottom: none;
-}
-
-.tooltip-label {
-  font-size: 10px;
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.7);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-.tooltip-row span:not(.tooltip-label) {
-  font-size: 13px;
-  color: #ffffff;
-  font-weight: 500;
-}
-
 .tooltip-dates {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: 4px;
-  margin-top: 2px;
+  padding: 10px;
+  text-align: left;
 }
 
 .tooltip-dates .date-item {
   background: rgba(255, 255, 255, 0.15);
   border: 1px solid rgba(255, 255, 255, 0.3);
-  padding: 3px 7px;
-  font-size: 11px;
+  padding: 6px 10px;
+  font-size: 12px;
   color: #ffffff;
   cursor: pointer;
   transition: all 0.2s ease;
   font-weight: 500;
+  border-radius: 4px;
+  text-align: left;
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .tooltip-dates .date-item:hover {

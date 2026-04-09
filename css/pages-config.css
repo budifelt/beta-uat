@@ -100,10 +100,47 @@ button {
   border-radius: 0;
 }
 
+/* Preserve floating button border-radius */
+.back-to-home,
+.footer-toggle {
+  border-radius: 50% !important;
+}
+
 /* Remove all transitions for better performance */
 * {
   transition: none;
   animation: none;
+}
+
+/* Preserve floating button transitions */
+.back-to-home,
+.footer-toggle,
+.back-to-home:hover,
+.footer-toggle:hover,
+.back-to-home svg,
+.footer-toggle i {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* Preserve floating button shadows */
+.back-to-home,
+.footer-toggle {
+  box-shadow: 0 4px 12px rgba(241, 140, 142, 0.3) !important;
+}
+
+.back-to-home:hover,
+.footer-toggle:hover {
+  box-shadow: 0 8px 20px rgba(241, 140, 142, 0.4) !important;
+}
+
+.back-to-home:active,
+.footer-toggle:active {
+  box-shadow: 0 4px 12px rgba(241, 140, 142, 0.3) !important;
+}
+
+.back-to-home:focus,
+.footer-toggle:focus {
+  box-shadow: 0 0 0 3px rgba(241, 140, 142, 0.3) !important;
 }
 
 img {
@@ -686,9 +723,38 @@ body {
 /* ===================================
    SCROLLBAR - Simplified
    =================================== */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+
+/* Hide scrollbar for entire config page */
+html::-webkit-scrollbar,
+body::-webkit-scrollbar,
+section::-webkit-scrollbar,
+main::-webkit-scrollbar,
+.content::-webkit-scrollbar,
+.sidebar::-webkit-scrollbar,
+.editor-container::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+/* Hide scrollbar for all containers and nested elements */
+*::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+/* Hide scrollbar for Firefox and IE */
+html,
+body,
+section,
+main,
+.content,
+.sidebar,
+.editor-container,
+* {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
 ::-webkit-scrollbar-track {
@@ -739,15 +805,15 @@ html {
   color: white;
   border: none;
   border-radius: 0;
-  padding: 10px 20px;
-  font-size: 14px;
+  padding: 6px 12px;
+  font-size: 12px;
   font-weight: 600;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  min-height: 40px;
+  gap: 6px;
+  min-height: 32px;
   outline: none;
   position: relative;
   overflow: hidden;
@@ -909,8 +975,8 @@ html {
 }
 
 .sidebar-header .btn {
-  padding: 8px 16px;
-  font-size: 13px;
+  padding: 6px 12px;
+  font-size: 12px;
   font-weight: 600;
   border: none;
   border-radius: 0;
@@ -919,8 +985,8 @@ html {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: var(--space-1);
-  height: 32px;
+  gap: 6px;
+  height: 28px;
   position: relative;
   overflow: hidden;
   min-width: 0;
@@ -1836,7 +1902,7 @@ html {
 * {
   box-shadow: none !important;
   text-shadow: none !important;
-  transform: translateZ(0);
+  /* transform: translateZ(0); */
   will-change: auto;
   backface-visibility: hidden;
 }
@@ -1919,7 +1985,7 @@ main .layout {
 /* Content Controls - Flat Design */
 .content .controls {
   background: var(--surface);
-  padding: var(--space-6);
+  padding: 12px;
   border-bottom: 1px solid var(--border);
   flex-shrink: 0;
 }
@@ -1934,11 +2000,11 @@ main .layout {
 
 .input-wrapper input {
   flex: 1;
-  padding: var(--space-4) var(--space-4);
-  padding-right: var(--space-12);
+  padding: 6px 12px;
+  padding-right: 36px;
   border: 1px solid var(--border);
   background: var(--bg-secondary);
-  font-size: var(--font-size-base);
+  font-size: 13px;
   color: var(--text);
   border-radius: 0;
   font-family: var(--font-family-base);
@@ -1950,6 +2016,7 @@ main .layout {
   width: 100%;
   -webkit-appearance: none;
   appearance: none;
+  min-height: 32px;
 }
 
 .input-wrapper input:hover {
@@ -2169,11 +2236,11 @@ input-wrapper .char-count#linkCharCount,
 .input-wrapper.campaign-id-field::before {
   content: '';
   position: absolute;
-  top: -2px;
-  left: -2px;
-  right: -2px;
-  bottom: -2px;
-  background: var(--error);
+  top: -1px;
+  left: -1px;
+  right: -1px;
+  bottom: -1px;
+  border: 1px solid var(--error);
   border-radius: 0;
   opacity: 0;
   transition: opacity 0.2s ease;
@@ -2181,7 +2248,7 @@ input-wrapper .char-count#linkCharCount,
 }
 
 .input-wrapper.campaign-id-field.past-date-warning::before {
-  opacity: 0.3;
+  opacity: 0.15;
 }
 
 /* Campaign ID label with warning */
@@ -2346,7 +2413,7 @@ body.initializing .content .field [class*="tooltip"] {
   position: relative;
   display: flex;
   align-items: center;
-  gap: var(--space-3);
+  gap: 6px;
 }
 
 /* === CodeMirror Editor Styling === */

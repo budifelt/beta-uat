@@ -262,7 +262,7 @@
             <div class="folder-container">
               <h2>
                 <i class="fa-solid fa-folder-open"></i>
-                Folder Browser
+                <span id="folder-browser-title">Folder Browser</span>
               </h2>
               <div class="folder-controls">
                 <button onclick="openDirectory()" class="folder-select-btn">
@@ -276,7 +276,12 @@
               </div>
               <div class="folder-list">
                 <div id="folder-items" class="folder-items">
-                  <p class="folder-empty">No folders selected</p>
+                  <div class="folder-empty-state">
+                    <i class="fa-solid fa-folder-open"></i>
+                    <h3>No folders selected</h3>
+                    <p>Click "Open Folder" to select a directory containing campaign folders</p>
+                    <p class="folder-hint">Folders should follow the format: 0001 Campaign Name Manager MM-DD</p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -289,21 +294,7 @@
   <!-- Folder Details Tooltip -->
   <div class="folder-tooltip" id="folder-tooltip" style="display: none;">
     <div class="tooltip-content">
-      <div class="tooltip-header">
-        <span class="tooltip-campaign-id" id="tooltip-campaign-id"></span>
-      </div>
-      <div class="tooltip-row">
-        <span class="tooltip-label">Campaign:</span>
-        <span id="tooltip-campaign-name"></span>
-      </div>
-      <div class="tooltip-row">
-        <span class="tooltip-label">Manager:</span>
-        <span id="tooltip-campaign-manager"></span>
-      </div>
-      <div class="tooltip-row">
-        <span class="tooltip-label">Dates:</span>
-        <div id="tooltip-dates" class="tooltip-dates"></div>
-      </div>
+      <div id="tooltip-dates" class="tooltip-dates"></div>
     </div>
     <div class="tooltip-arrow"></div>
   </div>
