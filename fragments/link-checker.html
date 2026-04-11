@@ -1,0 +1,248 @@
+<section class="panel input-panel" aria-labelledby="input-title">
+      <header class="panel-header">
+        <h1 id="input-title" class="panel-title">
+          <i class="fa-solid fa-link" aria-hidden="true"></i> 
+          Link Checker
+        </h1>
+      </header>
+      <div class="panel-content">
+        <!-- URL Input -->
+        <div class="input-group">
+          <label for="url" class="input-label">
+            URL to check:
+          </label>
+          <div class="input-wrapper">
+            <input 
+              id="url" 
+              type="url" 
+              class="input-field"
+              placeholder="https://example.com"
+              aria-describedby="input-help"
+              autocomplete="url"
+              spellcheck="false"
+            />
+            <button 
+              id="checkBtn" 
+              class="btn btn-primary"
+              aria-label="Check link status"
+              type="button"
+            >
+              <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i> 
+              <span>Check</span>
+            </button>
+          </div>
+          <div id="input-help" class="sr-only">Press Enter to check the link</div>
+        </div>
+
+        <!-- Bulk Check Section -->
+        <details class="bulk-wrap" aria-label="Bulk URL checker">
+          <summary class="bulk-summary">
+            <i class="fa-solid fa-list" aria-hidden="true"></i>
+            Bulk check — paste banyak URL
+            <span class="badge" id="bulkCount">0 URLs</span>
+          </summary>
+          <div class="bulk-content">
+            <label for="bulk" class="bulk-label">Paste URLs below (one per line):</label>
+            <textarea 
+              id="bulk" 
+              rows="6" 
+              placeholder="https://example.com&#10;https://test.com&#10;https://site.com"
+              aria-describedby="bulk-help"
+              spellcheck="false"
+            ></textarea>
+            <div id="bulk-help" class="help-text">Maximum 100 URLs per batch</div>
+            <div class="bulk-actions" role="group" aria-label="Bulk actions">
+              <button 
+                id="runBulk" 
+                class="btn btn-primary"
+                aria-label="Check all URLs"
+                type="button"
+              >
+                <i class="fa-solid fa-table" aria-hidden="true"></i> 
+                Check Semua
+              </button>
+              <button 
+                id="clearBulk" 
+                class="btn btn-secondary"
+                aria-label="Clear all URLs"
+                type="button"
+              >
+                <i class="fa-solid fa-eraser" aria-hidden="true"></i> 
+                Clear
+              </button>
+            </div>
+            <div class="table-wrapper" role="region" aria-label="Bulk check results" tabindex="0">
+              <table id="tbl" aria-live="polite">
+                <thead>
+                  <tr>
+                    <th scope="col" style="text-align:left">URL</th>
+                    <th scope="col" style="width:120px">Status</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </details>
+
+        <!-- Mode Selection -->
+        <fieldset class="mode-fieldset" aria-labelledby="mode-label">
+          <legend id="mode-label" class="mode-legend">Check Mode</legend>
+          <div class="mode" role="radiogroup" aria-labelledby="mode-label">
+            <span class="pill">
+              <input 
+                type="radio" 
+                id="mode-direct" 
+                name="mode" 
+                checked 
+                aria-describedby="mode-direct-desc"
+              />
+              <label for="mode-direct">
+                <i class="fa-solid fa-bolt" aria-hidden="true"></i>
+                Direct
+              </label>
+            </span>
+            <span class="pill">
+              <input 
+                type="radio" 
+                id="mode-proxy" 
+                name="mode"
+                aria-describedby="mode-proxy-desc"
+              />
+              <label for="mode-proxy">
+                <i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
+                Proxy
+              </label>
+            </span>
+          </div>
+          <div class="mode-descriptions">
+            <p id="mode-direct-desc" class="mode-description" hidden>
+              Direct check for same-origin or CORS-enabled servers
+            </p>
+            <p id="mode-proxy-desc" class="mode-description">
+              Use proxy to bypass CORS restrictions (via r.jina.ai)
+            </p>
+          </div>
+        </fieldset>
+        
+        <!-- Help Section -->
+        <div class="help-section" role="alert" aria-live="polite">
+          <button 
+            type="button" 
+            class="help-toggle" 
+            aria-expanded="false"
+            aria-controls="help-content"
+          >
+            <i class="fa-solid fa-circle-question" aria-hidden="true"></i>
+            Need help?
+          </button>
+          <div id="help-content" class="help-content hidden">
+            <div class="hint">
+              <i class="fa-solid fa-info-circle" aria-hidden="true"></i>
+              <strong>Direct mode</strong> works for same-origin requests or servers that allow CORS. 
+              If external domains reject CORS, use <strong>Proxy mode</strong> to check via public reader (r.jina.ai).
+            </div>
+          </div>
+        </div>
+
+        <!-- Status Display -->
+        <div 
+          id="result" 
+          class="status wait" 
+          role="status" 
+          aria-live="polite"
+          aria-atomic="true"
+        >
+          <i class="fa-solid fa-circle-question" aria-hidden="true"></i>
+          <span>Belum ada pengecekan</span>
+        </div>
+        
+        <!-- Keyboard Shortcuts Help -->
+        <div class="shortcuts-hint" aria-label="Keyboard shortcuts">
+          <kbd>Ctrl</kbd>+<kbd>K</kbd> to search • 
+          <kbd>Ctrl</kbd>+<kbd>Enter</kbd> to recheck all • 
+          <kbd>Ctrl</kbd>+<kbd>D</kbd> to toggle mode
+        </div>
+      </div>
+    </section>
+
+    <!-- Results Panel -->
+    <section class="panel history-panel" aria-labelledby="history-title">
+      <header class="history-header">
+        <div class="history-title-section">
+          <h2 id="history-title" class="history-title">
+            <i class="fa-solid fa-list-check" aria-hidden="true"></i> 
+            Daftar Hasil
+          </h2>
+          <div class="stats" aria-live="polite">
+            <span class="stat-item">
+              <span class="stat-value" id="liveCount">0</span>
+              <span class="stat-label">Live</span>
+            </span>
+            <span class="stat-item">
+              <span class="stat-value" id="errorCount">0</span>
+              <span class="stat-label">Error</span>
+            </span>
+            <span class="stat-item">
+              <span class="stat-value" id="totalCount">0</span>
+              <span class="stat-label">Total</span>
+            </span>
+          </div>
+        </div>
+
+        <div class="history-controls">
+          <div class="filter-group">
+            <label for="filterInput" class="filter-label">
+              <i class="fa-solid fa-filter" aria-hidden="true"></i>
+              Filter
+            </label>
+            <div class="filter-input-wrapper">
+              <input 
+                id="filterInput" 
+                type="search" 
+                placeholder="Filter title / URL..." 
+                aria-label="Filter results"
+              />
+              <button 
+                type="button" 
+                class="filter-clear" 
+                id="filterClear"
+                aria-label="Clear filter"
+                hidden
+              >
+                <i class="fa-solid fa-xmark"></i>
+              </button>
+            </div>
+          </div>
+          <div class="history-actions" role="group" aria-label="History actions">
+            <button 
+              id="exportCsv" 
+              class="btn btn-outline"
+              type="button"
+              aria-label="Export results to CSV"
+            >
+              <i class="fa-solid fa-download" aria-hidden="true"></i> 
+              Export
+            </button>
+            <button 
+              id="clearHistory" 
+              class="btn btn-outline"
+              type="button"
+              aria-label="Clear all history"
+            >
+              <i class="fa-solid fa-trash" aria-hidden="true"></i> 
+              Clear
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <div class="history-content">
+        <div id="history" class="history-list" role="log" aria-live="polite">
+          <div class="empty-state">
+            <i class="fa-solid fa-history" aria-hidden="true"></i>
+            <p>Belum ada hasil pengecekan</p>
+          </div>
+        </div>
+      </div>
+    </section>

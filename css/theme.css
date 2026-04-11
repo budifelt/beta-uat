@@ -6,9 +6,9 @@
   /* ===================================
      BASE PALETTE - Light Mode
      =================================== */
-  --bg: #FFFFFF;
+  --bg: #FAFAFA;  /* Soft off-white instead of pure white */
   --surface: #FFFFFF;
-  --text: #000000;
+  --text: #1A1A1A;  /* Softer black */
   --text-muted: #666666;
 
   /* ===================================
@@ -149,6 +149,100 @@
   --line-height-tight: 1.25;
   --line-height-normal: 1.5;
   --line-height-relaxed: 1.75;
+  --line-height-base: 1.5;
+
+  /* ===================================
+     SPACING SYSTEM
+     =================================== */
+  --space-0: 0;
+  --space-1: 0.25rem;   /* 4px */
+  --space-2: 0.5rem;    /* 8px */
+  --space-3: 0.75rem;   /* 12px */
+  --space-4: 1rem;      /* 16px */
+  --space-5: 1.25rem;   /* 20px */
+  --space-6: 1.5rem;    /* 24px */
+  --space-8: 2rem;      /* 32px */
+  --space-10: 2.5rem;   /* 40px */
+  --space-12: 3rem;     /* 48px */
+  --space-16: 4rem;     /* 64px */
+  --space-20: 5rem;     /* 80px */
+  --space-24: 6rem;     /* 96px */
+
+  /* ===================================
+     BORDER RADIUS
+     =================================== */
+  --border-radius: 8px;
+  --border-radius-sm: 4px;
+  --border-radius-md: 8px;
+  --border-radius-lg: 12px;
+  --border-radius-xl: 16px;
+  --border-radius-full: 50%;
+
+  /* ===================================
+     Z-INDEX SCALE
+     =================================== */
+  --z-dropdown: 1000;
+  --z-sticky: 1020;
+  --z-fixed: 1030;
+  --z-modal-backdrop: 1040;
+  --z-modal: 1050;
+  --z-popover: 1060;
+  --z-tooltip: 1070;
+  --z-toast: 1080;
+
+  /* ===================================
+     SHADOWS
+     =================================== */
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 8px 12px rgba(0, 0, 0, 0.12);
+  --shadow-xl: 0 12px 24px rgba(0, 0, 0, 0.15);
+  --shadow-2xl: 0 16px 32px rgba(0, 0, 0, 0.18);
+  --shadow-inner: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+  --shadow-colored: 0 4px 12px rgba(241, 140, 142, 0.2);
+
+  /* ===================================
+     TRANSITIONS
+     =================================== */
+  --transition-fast: 0.15s ease;
+  --transition-base: 0.2s ease;
+  --transition-slow: 0.3s ease;
+
+  /* ===================================
+     BREAKPOINTS
+     =================================== */
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+  --breakpoint-2xl: 1536px;
+
+  /* ===================================
+     CONTAINER WIDTHS
+     =================================== */
+  --container-sm: 640px;
+  --container-md: 768px;
+  --container-lg: 1024px;
+  --container-xl: 1280px;
+  --container-2xl: 1536px;
+
+  /* ===================================
+     ADDITIONAL SEMANTIC COLORS
+     =================================== */
+  --background: var(--bg);
+  --surface-hover: var(--hover);
+  --border-hover: var(--gray-300);
+  --text-success: var(--success);
+  --text-warning: var(--warning);
+  --text-error: var(--error);
+  --text-info: var(--info);
+  --success-text: var(--success);
+  --warning-text: var(--warning);
+  --error-text: var(--error);
+  --info-text: var(--info);
+  --accent-hover: var(--primary-hover);
+  --border-width: 1px;
 }
 
 

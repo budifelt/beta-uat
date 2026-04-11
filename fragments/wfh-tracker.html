@@ -1,0 +1,76 @@
+<div class="container">
+  <header class="header">
+    <h1>WFH Tracker</h1>
+    <p>Track your work from home days</p>
+  </header>
+  
+  <div class="legend">
+    <div class="legend-item">
+      <div class="legend-color" style="background: var(--success-bg); border: 2px solid var(--success);"></div>
+      <span class="legend-text">Work From Home</span>
+    </div>
+    <div class="legend-item">
+      <div class="legend-color" style="background: var(--surface); border: 2px solid var(--border);"></div>
+      <span class="legend-text">Work From Office</span>
+    </div>
+    <div class="legend-item">
+      <div class="legend-color" style="background: var(--error-bg); border: 2px solid var(--error);"></div>
+      <span class="legend-text">Hari Libur</span>
+    </div>
+    <div class="legend-item">
+      <div class="legend-color" style="background: var(--muted); border: 2px solid var(--border);"></div>
+      <span class="legend-text">Akhir Pekan</span>
+    </div>
+    <div class="legend-item">
+      <div class="legend-color" style="background: var(--warning-bg); border: 2px solid var(--warning); position: relative;">
+        <span style="position: absolute; top: -2px; right: -2px; font-size: 8px; font-weight: bold; color: var(--warning); background: white; width: 12px; height: 12px; display: flex; align-items: center; justify-content: center;">C</span>
+      </div>
+      <span class="legend-text">Cuti Bersama</span>
+    </div>
+  </div>
+  
+  <div class="stars" id="stars"></div>
+  <div class="calendar">
+    <div class="calendar-header">
+        <button id="prev-month">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z"/>
+          </svg>
+        </button>
+        <h1 id="month-year"></h1>
+        <div class="header-buttons">
+          <button id="today-btn" title="Go to Today">Today</button>
+          <button id="next-month">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+      <div id="calendar-days" class="days"></div>
+    </div>
+    <div id="holiday-description" class="holiday-description"></div>
+    
+    <!-- Summary Statistics -->
+    <div class="summary-stats">
+      <h3>Statistik Bulanan</h3>
+      <div class="stats-grid">
+        <div class="stat-item">
+          <div class="stat-value" id="total-days">0</div>
+          <div class="stat-label">Total Hari</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value" id="work-days">0</div>
+          <div class="stat-label">Hari Kerja</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value" id="holidays-count">0</div>
+          <div class="stat-label">Hari Libur</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value" id="wfh-percentage">0%</div>
+          <div class="stat-label">Persentase WFH</div>
+        </div>
+      </div>
+    </div>
+</div>

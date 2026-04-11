@@ -1,0 +1,231 @@
+<!-- Enhanced Sidebar -->
+<aside id="sidebar" class="sidebar">
+
+  <div class="sidebar-header">
+
+    <h2>Database Checker</h2>
+
+  </div>
+
+  
+
+  <!-- File Operations -->
+
+  <div class="sidebar-section">
+
+    <button id="folderOpenBtn" class="btn btn-primary btn-block" type="button">
+
+      <i class="fa-solid fa-folder-open"></i><span>Open Folder</span>
+
+    </button>
+
+  </div>
+
+  
+
+  <!-- File List -->
+
+  <div class="sidebar-section">
+
+    <h3>Files</h3>
+
+    <div id="fileList" class="file-list">
+
+      <ul></ul>
+
+    </div>
+
+  </div>
+
+  
+
+  <!-- Quick Stats -->
+
+  <div class="sidebar-section">
+
+    <h3>Quick Stats</h3>
+
+    <div id="quickStats" class="stats-grid">
+
+      <div class="stat-item">
+
+        <span class="stat-value" id="totalRows">0</span>
+
+        <span class="stat-label">Database</span>
+
+      </div>
+
+      <div class="stat-item">
+
+        <span class="stat-value" id="errorCount">0</span>
+
+        <span class="stat-label">Errors</span>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</aside>
+
+
+
+<!-- Main Content Area -->
+
+<div id="mainContent" class="main-content">
+
+  <!-- Top Toolbar -->
+
+  <div class="toolbar">
+
+    <div class="toolbar-left">
+      <div class="title-with-loading">
+        <h1>Database Validation</h1>
+        
+        <div id="loadingWrapper" class="loading-indicator" style="visibility:hidden;">
+
+          <div id="loadingIndicator" class="pill">Processing...</div>
+
+          <div id="progressText">0%</div>
+
+        </div>
+      </div>
+
+      <div class="breadcrumb">
+
+        <span id="currentPath">No file selected</span>
+
+      </div>
+
+    </div>
+
+    
+
+    <div class="toolbar-right">
+
+      <button id="checkBtn" class="btn btn-primary" type="button" disabled>
+
+        <i class="fa-solid fa-list-check"></i><span>Check Data</span>
+
+      </button>
+
+      <button id="openSearchModalBtn" class="btn btn-secondary" type="button" title="Search Email & KRHRED" disabled>
+
+        <i class="fa-solid fa-magnifying-glass"></i><span>Search</span>
+
+      </button>
+
+    </div>
+
+  </div>
+
+
+
+  <!-- Content Area with Split View -->
+
+  <div class="content-area">
+
+    <!-- Data Preview Panel -->
+
+    <div class="panel data-panel">
+
+      <div class="panel-header">
+
+        <h3>Data Preview</h3>
+
+      </div>
+
+      <div class="panel-body">
+
+        <div id="databaseContent" class="data-container">
+
+          <div class="empty-state">
+
+            <i class="fa-solid fa-database"></i>
+
+            <p>Open a database file to begin</p>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="panel-footer">
+
+        <button id="loadMoreBtn" class="btn btn-secondary" style="display:none;">
+
+          <i class="fa-solid fa-angles-down"></i><span>Load More</span>
+
+        </button>
+
+      </div>
+
+    </div>
+
+    
+
+    <!-- Results Panel -->
+
+    <div class="panel results-panel">
+
+      <div class="panel-header">
+
+        <h3>Validation Results</h3>
+
+      </div>
+
+      <div class="panel-body">
+
+        <div id="resultsContainer" class="results-container">
+
+          <div class="empty-state">
+
+            <i class="fa-solid fa-check-circle"></i>
+
+            <p>No validation results yet</p>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<!-- Search Modal -->
+<div class="modal" id="searchModal" style="display: none;">
+  <div class="modal-backdrop"></div>
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>Search Database</h3>
+      <button class="modal-close" onclick="closeSearchModal()">
+        <i class="fa-solid fa-times"></i>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="search-options">
+        <label>
+          <input type="radio" name="searchType" value="email" checked>
+          Search by Email
+        </label>
+        <label>
+          <input type="radio" name="searchType" value="krhred">
+          Search by KRHRED
+        </label>
+      </div>
+      <div class="search-input">
+        <input type="text" id="searchInput" placeholder="Enter search term...">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button onclick="performSearch()" class="btn btn-primary">Search</button>
+      <button onclick="closeSearchModal()" class="btn btn-secondary">Cancel</button>
+    </div>
+  </div>
+</div>

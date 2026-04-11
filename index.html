@@ -1,11 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <!-- Favicon -->
-  <link rel="icon" type="image/svg+xml" href="favicon.svg">
-  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+
+
   
   <!-- Meta Tags -->
   <meta charset="UTF-8">
@@ -19,9 +18,20 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   
   <!-- CSS -->
-  <link rel="stylesheet" href="css/theme.css">
-  <link rel="stylesheet" href="css/footer.css">
-  <link rel="stylesheet" href="css/pages-index.css">
+  <link rel="preload" href="css/theme.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="preload" href="css/base.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="preload" href="css/components.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="preload" href="css/components/nav.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="preload" href="css/utilities.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="preload" href="css/pages/index.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript>
+    <link rel="stylesheet" href="css/theme.css">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/components/nav.css">
+    <link rel="stylesheet" href="css/utilities.css">
+    <link rel="stylesheet" href="css/pages/index.css">
+  </noscript>
   
   <title>eDM Helper - Tools for Email Marketing & Productivity</title>
   <meta name="theme-color" content="#F18C8E" />
@@ -29,203 +39,192 @@
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" media="print" onload="this.media='all'">
   <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"></noscript>
+  
+  <style>
+    /* CSS Loading Overlay */
+    #css-loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #fafafa;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      transition: opacity 0.3s ease;
+    }
+    
+    #css-loading-overlay.loaded {
+      opacity: 0;
+      pointer-events: none;
+    }
+    
+    .loading-spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid #f18c8e;
+      border-top-color: transparent;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    /* Hide body until CSS is loaded */
+    body {
+      opacity: 0;
+    }
+    
+    body.loaded {
+      opacity: 1;
+      transition: opacity 0.3s ease;
+    }
+  </style>
 </head>
 <body>
-  <!-- Navigation Bar -->
-  <header class="header" role="banner">
-    <nav class="nav" role="navigation" aria-label="Main navigation">
-      <!-- Home Button -->
-      <div class="nav-left">
-        <a href="index.html" class="nav-link">
-          <i class="fa-solid fa-home"></i>
-          <span>Home</span>
+<!-- CSS Loading Overlay -->
+<div id="css-loading-overlay">
+  <div class="loading-spinner"></div>
+</div>
+
+<!-- Sidebar Menu -->
+<nav id="sidebar" class="sidebar-menu">
+  <nav class="sidebar-nav" role="navigation" aria-label="Main navigation">
+    <div class="sidebar-section">
+      <div class="sidebar-section-title">
+        <span class="sidebar-title-text">Tools</span>
+      </div>
+      <a href="#bookmarklet" class="sidebar-item" data-page="bookmarklet" data-tooltip="Bookmarklet Tools">
+        <i class="fa-solid fa-code"></i>
+        <span class="sidebar-item-text">Bookmarklet Tools</span>
+      </a>
+      <a href="#campaign-counter" class="sidebar-item" data-page="campaign-counter" data-tooltip="Campaign Counter">
+        <i class="fa-solid fa-hashtag"></i>
+        <span class="sidebar-item-text">Campaign Counter</span>
+      </a>
+      <a href="#config" class="sidebar-item" data-page="config" data-tooltip="Config eDM">
+        <i class="fa-solid fa-sliders"></i>
+        <span class="sidebar-item-text">Config eDM</span>
+      </a>
+      <a href="#database-checker" class="sidebar-item" data-page="database-checker" data-tooltip="Database Checker">
+        <i class="fa-solid fa-magnifying-glass-chart"></i>
+        <span class="sidebar-item-text">Database Checker</span>
+      </a>
+      <a href="#database-generator" class="sidebar-item" data-page="database-generator" data-tooltip="Database Generator">
+        <i class="fa-solid fa-file-circle-plus"></i>
+        <span class="sidebar-item-text">Database Generator</span>
+      </a>
+      <a href="#layout-checker" class="sidebar-item" data-page="layout-checker" data-tooltip="Layout Checker">
+        <i class="fa-solid fa-object-group"></i>
+        <span class="sidebar-item-text">Layout Checker</span>
+      </a>
+      <a href="#link-checker" class="sidebar-item" data-page="link-checker" data-tooltip="Link Checker">
+        <i class="fa-solid fa-check-double"></i>
+        <span class="sidebar-item-text">Link Checker</span>
+      </a>
+      <a href="#wfh-tracker" class="sidebar-item" data-page="wfh-tracker" data-tooltip="WFH Tracker">
+        <i class="fa-solid fa-house-laptop"></i>
+        <span class="sidebar-item-text">WFH Tracker</span>
+      </a>
+    </div>
+    
+    <!-- Footer Section -->
+    <div class="sidebar-footer">
+      <div class="version-info">
+        <span class="version-text">v8.1.0</span>
+      </div>
+      <div class="created-with">
+        <span class="love-text">Created with</span>
+        <i class="fa-solid fa-heart love-icon"></i>
+      </div>
+      <div class="social-links">
+        <a href="https://github.com" target="_blank" class="social-link" data-tooltip="GitHub" aria-label="Visit our GitHub page">
+          <i class="fa-brands fa-github" aria-hidden="true"></i>
+        </a>
+        <a href="https://linkedin.com" target="_blank" class="social-link" data-tooltip="LinkedIn" aria-label="Visit our LinkedIn page">
+          <i class="fa-brands fa-linkedin" aria-hidden="true"></i>
+        </a>
+        <a href="https://twitter.com" target="_blank" class="social-link" data-tooltip="Twitter" aria-label="Visit our Twitter page">
+          <i class="fa-brands fa-twitter" aria-hidden="true"></i>
+        </a>
+        <a href="mailto:contact@edmhelper.com" class="social-link" data-tooltip="Email" aria-label="Send us an email">
+          <i class="fa-solid fa-envelope" aria-hidden="true"></i>
         </a>
       </div>
-      
-      <div class="nav-right">
-        <!-- Additional navigation items can be added here -->
-      </div>
-    </nav>
-  </header>
+    </div>
+  </nav>
+</nav>
 
-  <!-- Main Content -->
-  <main id="main-content" role="main">
-    <!-- Hero Section -->
-    <section class="hero" aria-labelledby="hero-title">
-      <div class="hero-content">
-        <div class="hero-text">
-          <h1 id="hero-title" class="hero-title">eDM Helper</h1>
-          <p class="hero-subtitle">Collection of powerful tools for email marketing and everyday productivity</p>
-        </div>
-        <div class="hero-stats" role="group" aria-label="Platform statistics">
-          <div class="stat-item">
-            <span class="stat-number" aria-label="8 tools available">8</span>
-            <span class="stat-label">Tools</span>
-          </div>
-          <div class="stat-item">
-            <span class="stat-number">Free</span>
-            <span class="stat-label">Forever</span>
-          </div>
-          <div class="stat-item">
-            <span class="stat-number">Simple</span>
-            <span class="stat-label">Easy to Use</span>
-          </div>
-        </div>
-      </div>
-    </section>
+<!-- Sidebar Overlay for mobile -->
+<div class="sidebar-overlay" id="sidebar-overlay"></div>
 
-    <!-- Tools Grid Section -->
-    <section class="content" aria-labelledby="tools-title">
-      <div class="tools-container">
-        <h2 id="tools-title" class="sr-only">Available Tools</h2>
-        <div class="tools-grid" role="grid" aria-label="Collection of tools">
-          
-          <!-- Bookmarklet Tool -->
-          <article class="tool-item" role="gridcell">
-            <a class="tool-link" href="bookmarklet.html" aria-describedby="bookmarklet-desc">
-              <div class="tool-icon">
-                <i class="fa-solid fa-bookmark" ></i>
-              </div>
-              <div class="tool-info">
-                <h3 id="bookmarklet-title">Bookmarklet</h3>
-                <p id="bookmarklet-desc">Browser tools for quick actions and shortcuts. Drag-and-drop bookmarklets for instant productivity.</p>
-              </div>
-            </a>
-          </article>
-          
-          <!-- Campaign Counter Tool -->
-          <article class="tool-item" role="gridcell">
-            <a class="tool-link" href="campaign-counter.html" aria-describedby="campaign-desc">
-              <div class="tool-icon">
-                <i class="fa-solid fa-chart-line" ></i>
-              </div>
-              <div class="tool-info">
-                <h3 id="campaign-title">Campaign Counter</h3>
-                <p id="campaign-desc">Track and count your marketing campaigns with real-time statistics and history.</p>
-              </div>
-            </a>
-          </article>
-          
-          <!-- Config eDM Tool -->
-          <article class="tool-item" role="gridcell">
-            <a class="tool-link" href="config.html" aria-describedby="config-desc">
-              <div class="tool-icon">
-                <i class="fa-solid fa-cog" ></i>
-              </div>
-              <div class="tool-info">
-                <h3 id="config-title">Config eDM</h3>
-                <p id="config-desc">Configure and manage email marketing settings with advanced options.</p>
-              </div>
-            </a>
-          </article>
-          
-          <!-- Database Checker Tool -->
-          <article class="tool-item" role="gridcell">
-            <a class="tool-link" href="database-checker.html" aria-describedby="db-check-desc">
-              <div class="tool-icon" >
-                <i class="fa-solid fa-check-circle"></i>
-              </div>
-              <div class="tool-info">
-                <h3 id="db-check-title">Database Checker</h3>
-                <p id="db-check-desc">Validate and check database integrity with comprehensive error reporting.</p>
-              </div>
-            </a>
-          </article>
-          
-          <!-- Database Generator Tool -->
-          <article class="tool-item" role="gridcell">
-            <a class="tool-link" href="database-generator.html" aria-describedby="db-gen-desc">
-              <div class="tool-icon" >
-                <i class="fa-solid fa-database"></i>
-              </div>
-              <div class="tool-info">
-                <h3 id="db-gen-title">Database Generator</h3>
-                <p id="db-gen-desc">Generate custom databases quickly with customizable templates and fields.</p>
-              </div>
-            </a>
-          </article>
-          
-          <!-- Layout Checker Tool -->
-          <article class="tool-item" role="gridcell">
-            <a class="tool-link" href="layout-checker.html" aria-describedby="layout-desc">
-              <div class="tool-icon" >
-                <i class="fa-solid fa-ruler-combined"></i>
-              </div>
-              <div class="tool-info">
-                <h3 id="layout-title">Layout Checker</h3>
-                <p id="layout-desc" >Check email layout compatibility across different email clients and devices.</p>
-              </div>
-            </a>
-          </article>
-          
-          <!-- Link Checker Tool -->
-          <article class="tool-item" role="gridcell">
-            <a class="tool-link" href="link-checker.html" aria-describedby="link-desc">
-              <div class="tool-icon" >
-                <i class="fa-solid fa-link"></i>
-              </div>
-              <div class="tool-info">
-                <h3 id="link-title">Link Checker</h3>
-                <p id="link-desc" >Verify and check all links in your campaigns with real-time status updates.</p>
-              </div>
-            </a>
-          </article>
-          
-          <!-- WFH Tracker Tool -->
-          <article class="tool-item" role="gridcell">
-            <a class="tool-link" href="wfh-tracker.html" aria-describedby="wfh-desc">
-              <div class="tool-icon" >
-                <i class="fa-solid fa-calendar"></i>
-              </div>
-              <div class="tool-info">
-                <h3 id="wfh-title">WFH Tracker</h3>
-                <p id="wfh-desc" >Track and manage work from home days with ease and simplicity.</p>
-              </div>
-            </a>
-          </article>
-          
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <!-- Floating Info Button -->
-  <button id="footer-toggle" class="footer-toggle" aria-label="Show footer info" title="About eDM Helper">
-    <i class="fa-solid fa-info"></i>
-  </button>
-
-  <!-- Footer Modal -->
-  <div id="footer-modal" class="footer-modal" role="dialog" aria-modal="true">
-    <div class="footer-modal-content">
-      <div class="footer-modal-body">
-        <nav class="footer-links" aria-label="Social media links">
-          <a href="https://github.com/budife" target="_blank" class="footer-link" aria-label="GitHub">
-            <i class="fa-brands fa-github"></i>
-            <span>GitHub</span>
-          </a>
-          <a href="https://instagram.com/budife.psd/" target="_blank" class="footer-link" aria-label="Instagram">
-            <i class="fa-brands fa-instagram"></i>
-            <span>Instagram</span>
-          </a>
-          <a href="https://linkedin.com/in/budife/" target="_blank" class="footer-link" aria-label="LinkedIn">
-            <i class="fa-brands fa-linkedin"></i>
-            <span>LinkedIn</span>
-          </a>
-        </nav>
-        <p class="footer-text">
-          &copy; <span id="footer-year">2025</span> eDM Helper <span class="footer-version" data-version>v1.0.0</span>. 
-          Built with <i class="fa-solid fa-heart"></i> for developers.
-        </p>
-      </div>
+<!-- Top Navigation Bar -->
+<nav class="top-nav">
+  <div class="nav-left">
+    <a href="#index" class="nav-btn home-btn" aria-label="Navigate to home page">
+      <i class="fa-solid fa-home"></i>
+      <span class="home-text">eDM Helper</span>
+    </a>
+  </div>
+  <div class="nav-center">
+    <div class="nav-brand">
+      <i class="fa-solid fa-envelope-open-text"></i>
+      <span class="nav-title">eDM Helper</span>
     </div>
   </div>
+  <div class="nav-right">
+    <button class="nav-btn mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Toggle mobile menu">
+      <i class="fa-solid fa-bars"></i>
+    </button>
+  </div>
+</nav>
 
-  <!-- Modal Container -->
+<!-- Main Content Container -->
+  <main id="main-content" role="main">
+    <!-- Content will be loaded here by SPA router -->
+  </main>
+
+<!-- Modal Container -->
   <div id="settings-container" role="dialog" ></div>
 
   <!-- Scripts -->
-  <script src="js/footer.js" defer></script>
-  <script src="js/pages-index.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/codemirror.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/mode/xml/xml.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/addon/edit/closebrackets.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/addon/mode/overlay.min.js" defer></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/codemirror.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/theme/material.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+  <script src="js/utils.js" defer></script>
   <script src="js/version-config.js" defer></script>
+  
+  <!-- Remove CSS loading overlay when page is ready -->
+  <script>
+    window.addEventListener('load', () => {
+      const overlay = document.getElementById('css-loading-overlay');
+      const body = document.body;
+      
+      if (overlay) {
+        overlay.classList.add('loaded');
+        setTimeout(() => {
+          overlay.remove();
+        }, 300);
+      }
+      
+      if (body) {
+        body.classList.add('loaded');
+      }
+    });
+  </script>
+  <script src="js/components/sidebar.js" defer></script>
+  <script src="js/components/spa-router.js" defer></script>
 </body>
 </html>
+
+
+
+

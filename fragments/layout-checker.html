@@ -1,0 +1,80 @@
+<div class="lc-header">
+  <div class="lc-header-content">
+    <h1 class="lc-title">Layout Checker</h1>
+    <p class="lc-description">Check and validate email layouts with KRHRED values</p>
+  </div>
+  <div class="lc-header-actions">
+    <button id="startBtn" class="lc-btn lc-btn-success lc-btn-sm">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M8,5.14V19.14L19,12.14L8,5.14Z"/>
+      </svg>
+      Start
+    </button>
+    <button id="stopBtn" class="lc-btn lc-btn-error lc-btn-sm">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M18,18H6V6H18V18Z"/>
+      </svg>
+      Stop
+    </button>
+  </div>
+</div>
+
+<div class="lc-main-layout">
+  <!-- Left Column: KRHRED Values -->
+  <div class="lc-sidebar">
+    <label for="krhredInput" class="lc-label">KRHRED Values:</label>
+    <textarea id="krhredInput" placeholder="Check database di brickstreet dan generate value sampai muncul, ctrl + A, lalu paste ke sini!" class="lc-textarea"></textarea>
+    <div class="lc-button-group">
+      <button id="applyKrhredBtn" class="lc-btn lc-btn-success">Apply values</button>
+      <button id="checkLayoutBtn" class="lc-btn lc-btn-primary">Check Layout</button>
+      <button id="addKrhredBtn" class="lc-btn lc-btn-info">Add Unit</button>
+      <button id="clearAllBtn" class="lc-btn lc-btn-error">Clear Values</button>
+    </div>
+  </div>
+
+  <!-- Right Column: CodeMirror + KRHRED Units -->
+  <div class="lc-content">
+    <div class="lc-content-section">
+      <!-- HTML Content (CodeMirror) -->
+      <div>
+        <label for="htmlInput" class="lc-label">HTML Content:</label>
+        <textarea id="htmlInput" placeholder="Paste your HTML content here" class="lc-textarea lc-textarea-sm"></textarea>
+      </div>
+
+      <!-- KRHRED Units Container (4x2 grid) -->
+      <div id="krhredUnitsContainer" class="lc-units-container">
+        <div class="lc-units-header">
+          <label class="lc-units-label">KRHRED Units</label>
+          <div id="inputGrid" class="lc-input-grid">
+            <!-- Row 1 -->
+            <div class="lc-input-col">
+              <input type="text" id="krhred_unit_30" name="krhred_unit_30" placeholder="30" class="lc-input-field" />
+            </div>
+            <div class="lc-input-col">
+              <input type="text" id="krhred_unit_31" name="krhred_unit_31" placeholder="31" class="lc-input-field" />
+            </div>
+            <div class="lc-input-col">
+              <input type="text" id="krhred_unit_32" name="krhred_unit_32" placeholder="32" class="lc-input-field" />
+            </div>
+            <div class="lc-input-col">
+              <input type="text" id="krhred_unit_33" name="krhred_unit_33" placeholder="33" class="lc-input-field" />
+            </div>
+            <!-- Row 2 -->
+            <div class="lc-input-col">
+              <input type="text" id="krhred_unit_34" name="krhred_unit_34" placeholder="34" class="lc-input-field" />
+            </div>
+            <div class="lc-input-col">
+              <input type="text" id="krhred_unit_35" name="krhred_unit_35" placeholder="35" class="lc-input-field" />
+            </div>
+            <div class="lc-input-col">
+              <input type="text" id="krhred_unit_36" name="krhred_unit_36" placeholder="36" class="lc-input-field" />
+            </div>
+            <div class="lc-input-col">
+              <input type="text" id="krhred_unit_37" name="krhred_unit_37" placeholder="37" class="lc-input-field" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

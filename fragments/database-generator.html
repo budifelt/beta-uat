@@ -1,0 +1,126 @@
+<div class="container">
+  <header class="main-header">
+    <h1>Database Generator</h1>
+    <p>Generate email database files for eDM campaigns</p>
+  </header>
+
+  <!-- Campaign Type Selection -->
+  <div class="campaign-type-section">
+    <label class="form-label">Campaign Type</label>
+    <div class="campaign-type-selector">
+      <label class="radio-option">
+        <input type="radio" name="campaignType" value="static" checked>
+        <span class="radio-label">Static</span>
+        <span class="radio-hint">Tanpa KRHRED</span>
+      </label>
+      <label class="radio-option">
+        <input type="radio" name="campaignType" value="dynamic">
+        <span class="radio-label">Dynamic</span>
+        <span class="radio-hint">Dengan KRHRED</span>
+      </label>
+    </div>
+  </div>
+
+  <!-- PANEL: EMAIL + KRHRED -->
+  <section id="krPanel" class="panel">
+    <div class="panel-header">
+      <div class="panel-row">
+        <div class="panel-field">
+          <label for="newEmail" class="form-label">
+            <i class="fa-solid fa-envelope form-label-icon"></i>
+            Tambah Email
+          </label>
+          <input id="newEmail" class="form-input" placeholder="email@contoh.com"/>
+        </div>
+        <button id="addEmail" class="btn success">Tambah email</button>
+      </div>
+      
+      <!-- KRHRED Section - Only for Dynamic Campaign -->
+      <div id="krhredSection" class="krhred-section">
+        <div class="panel-field">
+          <label for="newKey" class="form-label">
+            <i class="fa-solid fa-columns form-label-icon"></i>
+            Tambah kolom KRHRED
+          </label>
+          <div class="input-button-group">
+            <input id="newKey" class="form-input" placeholder="KRHRED_Unit_30"/>
+            <button id="addKey" class="btn primary">Tambah kolom</button>
+          </div>
+          <p class="form-hint">Kosongkan untuk auto: <span class="font-mono">KRHRED_Unit_N</span> berikutnya.</p>
+        </div>
+      </div>
+
+      <!-- tombol buka panel bulk -->
+      <div>
+        <button id="bulkBtn" class="btn secondary">Tempel banyak email</button>
+      </div>
+    </div>
+
+    <!-- panel bulk -->
+    <div id="bulkBox" class="bulk-box hidden">
+      <label class="form-label">
+        <i class="fa-solid fa-paste form-label-icon"></i>
+        Tempel banyak email (pisahkan dengan baris/koma/titik koma/spasi)
+      </label>
+      <textarea id="bulkEmails" placeholder="email1@a.com&#10;email2@a.com, email3@a.com; email4@a.com"></textarea>
+      <div class="flex">
+        <button id="applyBulk">Tambahkan</button>
+        <button id="cancelBulk">Batal</button>
+      </div>
+      <p id="bulkInfo"></p>
+    </div>
+
+    <div class="text-xs text-slate-400 mb-2 flex items-center gap-3">
+      <span id="countInfo">Total: 0</span>
+      <span id="invalidInfo" class="hidden text-rose-400"></span>
+    </div>
+
+    <div class="overflow-auto">
+      <table>
+        <thead>
+          <tr id="krHeadRow">
+            <th>Email</th>
+            <!-- dynamic head cells here -->
+          </tr>
+        </thead>
+        <tbody id="krBody"></tbody>
+      </table>
+    </div>
+
+    <div class="table-tips">
+      <h4><i class="fa-solid fa-lightbulb"></i> Tips Penggunaan</h4>
+      <ul>
+        <li>Klik ikon <i class="fa-solid fa-times"></i> di header kolom untuk menghapus kolom KRHRED</li>
+        <li>Klik ikon <i class="fa-solid fa-trash"></i> di baris email untuk menghapus email</li>
+        <li>Input email bisa diedit langsung di tabel</li>
+        <li>Nilai KRHRED akan otomatis tersimpan saat Anda mengetik</li>
+        <li>Tabel bisa scroll horizontal jika kolom terlalu banyak</li>
+      </ul>
+    </div>
+  </section>
+
+  <div class="flex flex-wrap">
+    <button id="btnDownload" class="btn" disabled>
+      Download 4 file
+    </button>
+    <button id="btnSave" class="btn success" disabled>
+      Save to folder
+    </button>
+    <span id="stateMsg" class="text-xs text-slate-400"></span>
+  </div>
+
+  <p id="error" class="hidden"></p>
+
+  <section id="previews" class="grid grid-cols-1 md:grid-cols-2 gap-4"></section>
+
+  <!-- Fallback links jika auto-download diblok -->
+  <section id="dlSection" class="hidden">
+    <h3>Unduhan manual (fallback)</h3>
+    <div id="downloadsList"></div>
+    <p>Jika auto-download tidak berjalan, klik link di atas satu per satu.</p>
+  </section>
+
+  <footer class="mt-6 text-xs text-slate-400">
+    <p>Catatan: "Save to folder" memakai File System Access API (tersedia di Chrome/Edge desktop). Jika tidak didukung, gunakan tombol <em>Download 4 file</em> atau link fallback.</p>
+  </footer>
+</div>

@@ -1,0 +1,836 @@
+<section class="campaign-section">
+  <div class="container">
+    <div class="main-layout">
+      <div class="tab-content">
+      <!-- Campaign 1 Tab -->
+      <div class="tab-pane active" id="campaign1-tab">
+        <div class="counter-container campaign1-counter">
+          <div class="counter-tabs">
+            <button class="tab-btn active" data-tab="campaign1" data-color="primary" title="">
+              <i class="fa-solid fa-chart-line"></i>
+              <span class="tab-name"></span>
+            </button>
+            <button class="tab-btn" data-tab="campaign2" data-color="success" title="">
+              <i class="fa-solid fa-ticket"></i>
+              <span class="tab-name"></span>
+            </button>
+            <button class="tab-btn" data-tab="campaign3" data-color="warning" title="">
+              <i class="fa-solid fa-gift"></i>
+              <span class="tab-name"></span>
+            </button>
+            <button class="tab-btn" data-tab="campaign4" data-color="info" title="">
+              <i class="fa-solid fa-tag"></i>
+              <span class="tab-name"></span>
+            </button>
+            <button class="tab-btn" data-tab="campaign5" data-color="primary" title="">
+              <i class="fa-solid fa-star"></i>
+              <span class="tab-name"></span>
+            </button>
+            <button class="tab-btn" data-tab="campaign6" data-color="success" title="">
+              <i class="fa-solid fa-heart"></i>
+              <span class="tab-name"></span>
+            </button>
+            <button class="tab-btn" data-tab="campaign7" data-color="warning" title="">
+              <i class="fa-solid fa-bolt"></i>
+              <span class="tab-name"></span>
+            </button>
+            <button class="tab-btn" data-tab="campaign8" data-color="info" title="">
+              <i class="fa-solid fa-rocket"></i>
+              <span class="tab-name"></span>
+            </button>
+            <button class="tab-btn" data-tab="campaign9" data-color="primary" title="">
+              <i class="fa-solid fa-crown"></i>
+              <span class="tab-name"></span>
+            </button>
+            <button class="tab-btn" data-tab="campaign10" data-color="success" title="">
+              <i class="fa-solid fa-diamond"></i>
+              <span class="tab-name"></span>
+            </button>
+          </div>
+          <h2><span class="campaign-title"></span>
+            <button class="edit-icon" onclick="editCounter('campaign1')" title="Edit manually">
+              <i class="fa-solid fa-pen-to-square"></i>
+            </button>
+          </h2>
+          <div class="counter-value">
+            <span id="campaign1-number">0001</span>
+          </div>
+          <div class="progress-bar-container">
+            <div class="progress-bar" id="campaign1-progress"></div>
+          </div>
+          <div class="sync-status">Ready</div>
+          <div class="last-updated" id="campaign1-updated"></div>
+          <div class="cache-status">
+            <i class="fa-solid fa-database"></i> Browser Cache: <span id="campaign1-cache">0</span> items
+          </div>
+          <div class="buttons">
+            <button onclick="addCounter('campaign1')" class="add-btn">
+              <i class="fa-solid fa-plus"></i> Generate New
+            </button>
+            <button onclick="decrementCounter('campaign1')" class="decrement-btn">
+              <i class="fa-solid fa-rotate-left"></i> Revert
+            </button>
+          </div>
+          <div class="history-container">
+            <h2>History</h2>
+            <div class="history-list-wrapper" style="scrollbar-width: none; -ms-overflow-style: none;">
+              <div id="campaign1-history" class="history-list" style="overflow-y: scroll; scrollbar-width: none; -ms-overflow-style: none; -webkit-overflow-scrolling: touch;"></div>
+            </div>
+            <button onclick="loadMoreHistory('campaign1')" class="load-more-btn-custom">Load More</button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Campaign 2 Tab -->
+      <div class="tab-pane" id="campaign2-tab">
+        <div class="counter-container campaign2-counter">
+          <div class="counter-tabs">
+            <button class="tab-btn active" data-tab="campaign1" data-color="primary" title="">
+              <i class="fa-solid fa-chart-line"></i>
+              <span class="tab-name"></span>
+            </button>
+            <button class="tab-btn" data-tab="campaign2" data-color="success" title="">
+              <i class="fa-solid fa-ticket"></i>
+              <span class="tab-name"></span>
+            </button>
+            <button class="tab-btn" data-tab="campaign3" data-color="warning" title="">
+              <i class="fa-solid fa-gift"></i>
+              <span class="tab-name"></span>
+            </button>
+            <button class="tab-btn" data-tab="campaign4" data-color="info" title="">
+              <i class="fa-solid fa-tag"></i>
+              <span class="tab-name"></span>
+            </button>
+            <button class="tab-btn" data-tab="campaign5" data-color="primary" title="">
+              <i class="fa-solid fa-star"></i>
+              <span class="tab-name"></span>
+            </button>
+            <button class="tab-btn" data-tab="campaign6" data-color="success" title="">
+              <i class="fa-solid fa-heart"></i>
+              <span class="tab-name"></span>
+            </button>
+            <button class="tab-btn" data-tab="campaign7" data-color="warning" title="">
+              <i class="fa-solid fa-bolt"></i>
+              <span class="tab-name"></span>
+            </button>
+            <button class="tab-btn" data-tab="campaign8" data-color="info" title="">
+              <i class="fa-solid fa-rocket"></i>
+              <span class="tab-name"></span>
+            </button>
+            <button class="tab-btn" data-tab="campaign9" data-color="primary" title="">
+              <i class="fa-solid fa-crown"></i>
+              <span class="tab-name"></span>
+            </button>
+            <button class="tab-btn" data-tab="campaign10" data-color="success" title="">
+              <i class="fa-solid fa-diamond"></i>
+              <span class="tab-name"></span>
+            </button>
+          </div>
+          <h2><span class="campaign-title"></span>
+            <button class="edit-icon" onclick="editCounter('campaign2')" title="Edit manually">
+              <i class="fa-solid fa-pen-to-square"></i>
+            </button>
+          </h2>
+          <div class="counter-value">
+            <span id="campaign2-number">0001</span>
+          </div>
+          <div class="progress-bar-container">
+            <div class="progress-bar" id="campaign2-progress"></div>
+          </div>
+          <div class="sync-status">Ready</div>
+          <div class="last-updated" id="campaign2-updated"></div>
+          <div class="cache-status">
+            <i class="fa-solid fa-database"></i> Browser Cache: <span id="campaign2-cache">0</span> items
+          </div>
+          <div class="buttons">
+            <button onclick="addCounter('campaign2')" class="add-btn">
+              <i class="fa-solid fa-plus"></i> Generate New
+            </button>
+            <button onclick="decrementCounter('campaign2')" class="decrement-btn">
+              <i class="fa-solid fa-rotate-left"></i> Revert
+            </button>
+          </div>
+          <div class="history-container">
+            <h2>History</h2>
+            <div class="history-list-wrapper" style="scrollbar-width: none; -ms-overflow-style: none;">
+              <div id="campaign2-history" class="history-list" style="overflow-y: scroll; scrollbar-width: none; -ms-overflow-style: none; -webkit-overflow-scrolling: touch;"></div>
+            </div>
+            <button onclick="loadMoreHistory('campaign2')" class="load-more-btn-custom">Load More</button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Campaign 3 Tab -->
+      <div class="tab-pane" id="campaign3-tab">
+        <div class="counter-container campaign3-counter">
+          <div class="counter-tabs">
+            <button class="tab-btn active" data-tab="campaign1" data-color="primary" title="">
+              <i class="fa-solid fa-chart-line"></i>
+              <span class="tab-name"></span>
+            </button>
+            <button class="tab-btn" data-tab="campaign2" data-color="success" title="">
+              <i class="fa-solid fa-ticket"></i>
+              <span class="tab-name"></span>
+            </button>
+            <button class="tab-btn" data-tab="campaign3" data-color="warning" title="">
+              <i class="fa-solid fa-gift"></i>
+              <span class="tab-name"></span>
+            </button>
+            <button class="tab-btn" data-tab="campaign4" data-color="info" title="">
+              <i class="fa-solid fa-tag"></i>
+              <span class="tab-name"></span>
+            </button>
+            <button class="tab-btn" data-tab="campaign5" data-color="primary" title="">
+              <i class="fa-solid fa-star"></i>
+              <span class="tab-name"></span>
+            </button>
+            <button class="tab-btn" data-tab="campaign6" data-color="success" title="">
+              <i class="fa-solid fa-heart"></i>
+              <span class="tab-name"></span>
+            </button>
+            <button class="tab-btn" data-tab="campaign7" data-color="warning" title="">
+              <i class="fa-solid fa-bolt"></i>
+              <span class="tab-name"></span>
+            </button>
+            <button class="tab-btn" data-tab="campaign8" data-color="info" title="">
+              <i class="fa-solid fa-rocket"></i>
+              <span class="tab-name"></span>
+            </button>
+            <button class="tab-btn" data-tab="campaign9" data-color="primary" title="">
+              <i class="fa-solid fa-crown"></i>
+              <span class="tab-name"></span>
+            </button>
+            <button class="tab-btn" data-tab="campaign10" data-color="success" title="">
+              <i class="fa-solid fa-diamond"></i>
+              <span class="tab-name"></span>
+            </button>
+          </div>
+          <h2><span class="campaign-title"></span>
+            <button class="edit-icon" onclick="editCounter('campaign3')" title="Edit manually">
+              <i class="fa-solid fa-pen-to-square"></i>
+            </button>
+          </h2>
+          <div class="counter-value">
+            <span id="campaign3-number">0001</span>
+          </div>
+          <div class="progress-bar-container">
+            <div class="progress-bar" id="campaign3-progress"></div>
+          </div>
+          <div class="sync-status">Ready</div>
+          <div class="last-updated" id="campaign3-updated"></div>
+          <div class="cache-status">
+            <i class="fa-solid fa-database"></i> Browser Cache: <span id="campaign3-cache">0</span> items
+          </div>
+          <div class="buttons">
+            <button onclick="addCounter('campaign3')" class="add-btn">
+              <i class="fa-solid fa-plus"></i> Generate New
+            </button>
+            <button onclick="decrementCounter('campaign3')" class="decrement-btn">
+              <i class="fa-solid fa-rotate-left"></i> Revert
+            </button>
+          </div>
+          <div class="history-container">
+            <h2>History</h2>
+            <div class="history-list-wrapper" style="scrollbar-width: none; -ms-overflow-style: none;">
+              <div id="campaign3-history" class="history-list" style="overflow-y: scroll; scrollbar-width: none; -ms-overflow-style: none; -webkit-overflow-scrolling: touch;"></div>
+            </div>
+            <button onclick="loadMoreHistory('campaign3')" class="load-more-btn-custom">Load More</button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Campaign 4 Tab -->
+      <div class="tab-pane" id="campaign4-tab">
+        <div class="counter-container campaign4-counter">
+          <div class="counter-tabs">
+            <button class="tab-btn active" data-tab="campaign1" data-color="primary" title="">
+              <i class="fa-solid fa-chart-line"></i>
+              <span class="tab-name"></span>
+            </button>
+            <button class="tab-btn" data-tab="campaign2" data-color="success" title="">
+              <i class="fa-solid fa-ticket"></i>
+              <span class="tab-name"></span>
+            </button>
+            <button class="tab-btn" data-tab="campaign3" data-color="warning" title="">
+              <i class="fa-solid fa-gift"></i>
+              <span class="tab-name"></span>
+            </button>
+            <button class="tab-btn" data-tab="campaign4" data-color="info" title="">
+              <i class="fa-solid fa-tag"></i>
+              <span class="tab-name"></span>
+            </button>
+            <button class="tab-btn" data-tab="campaign5" data-color="primary" title="">
+              <i class="fa-solid fa-star"></i>
+              <span class="tab-name"></span>
+            </button>
+            <button class="tab-btn" data-tab="campaign6" data-color="success" title="">
+              <i class="fa-solid fa-heart"></i>
+              <span class="tab-name"></span>
+            </button>
+            <button class="tab-btn" data-tab="campaign7" data-color="warning" title="">
+              <i class="fa-solid fa-bolt"></i>
+              <span class="tab-name"></span>
+            </button>
+            <button class="tab-btn" data-tab="campaign8" data-color="info" title="">
+              <i class="fa-solid fa-rocket"></i>
+              <span class="tab-name"></span>
+            </button>
+            <button class="tab-btn" data-tab="campaign9" data-color="primary" title="">
+              <i class="fa-solid fa-crown"></i>
+              <span class="tab-name"></span>
+            </button>
+            <button class="tab-btn" data-tab="campaign10" data-color="success" title="">
+              <i class="fa-solid fa-diamond"></i>
+              <span class="tab-name"></span>
+            </button>
+          </div>
+          <h2><span class="campaign-title"></span>
+            <button class="edit-icon" onclick="editCounter('campaign4')" title="Edit manually">
+              <i class="fa-solid fa-pen-to-square"></i>
+            </button>
+          </h2>
+          <div class="counter-value">
+            <span id="campaign4-number">0001</span>
+          </div>
+          <div class="progress-bar-container">
+            <div class="progress-bar" id="campaign4-progress"></div>
+          </div>
+          <div class="sync-status">Ready</div>
+          <div class="last-updated" id="campaign4-updated"></div>
+          <div class="cache-status">
+            <i class="fa-solid fa-database"></i> Browser Cache: <span id="campaign4-cache">0</span> items
+          </div>
+          <div class="buttons">
+            <button onclick="addCounter('campaign4')" class="add-btn">
+              <i class="fa-solid fa-plus"></i> Generate New
+            </button>
+            <button onclick="decrementCounter('campaign4')" class="decrement-btn">
+              <i class="fa-solid fa-rotate-left"></i> Revert
+            </button>
+          </div>
+          <div class="history-container">
+            <h2>History</h2>
+            <div class="history-list-wrapper" style="scrollbar-width: none; -ms-overflow-style: none;">
+              <div id="campaign4-history" class="history-list" style="overflow-y: scroll; scrollbar-width: none; -ms-overflow-style: none; -webkit-overflow-scrolling: touch;"></div>
+            </div>
+            <button onclick="loadMoreHistory('campaign4')" class="load-more-btn-custom">Load More</button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Campaign 5 Tab -->
+      <div class="tab-pane" id="campaign5-tab">
+        <div class="counter-container campaign5-counter">
+          <div class="counter-tabs">
+            <button class="tab-btn active" data-tab="campaign1" data-color="primary" title="">
+              <i class="fa-solid fa-chart-line"></i>
+              <span class="tab-name"></span>
+            </button>
+            <button class="tab-btn" data-tab="campaign2" data-color="success" title="">
+              <i class="fa-solid fa-ticket"></i>
+              <span class="tab-name"></span>
+            </button>
+            <button class="tab-btn" data-tab="campaign3" data-color="warning" title="">
+              <i class="fa-solid fa-gift"></i>
+              <span class="tab-name"></span>
+            </button>
+            <button class="tab-btn" data-tab="campaign4" data-color="info" title="">
+              <i class="fa-solid fa-tag"></i>
+              <span class="tab-name"></span>
+            </button>
+            <button class="tab-btn" data-tab="campaign5" data-color="primary" title="">
+              <i class="fa-solid fa-star"></i>
+              <span class="tab-name"></span>
+            </button>
+            <button class="tab-btn" data-tab="campaign6" data-color="success" title="">
+              <i class="fa-solid fa-heart"></i>
+              <span class="tab-name"></span>
+            </button>
+            <button class="tab-btn" data-tab="campaign7" data-color="warning" title="">
+              <i class="fa-solid fa-bolt"></i>
+              <span class="tab-name"></span>
+            </button>
+            <button class="tab-btn" data-tab="campaign8" data-color="info" title="">
+              <i class="fa-solid fa-rocket"></i>
+              <span class="tab-name"></span>
+            </button>
+            <button class="tab-btn" data-tab="campaign9" data-color="primary" title="">
+              <i class="fa-solid fa-crown"></i>
+              <span class="tab-name"></span>
+            </button>
+            <button class="tab-btn" data-tab="campaign10" data-color="success" title="">
+              <i class="fa-solid fa-diamond"></i>
+              <span class="tab-name"></span>
+            </button>
+          </div>
+          <h2><span class="campaign-title"></span>
+            <button class="edit-icon" onclick="editCounter('campaign5')" title="Edit manually">
+              <i class="fa-solid fa-pen-to-square"></i>
+            </button>
+          </h2>
+          <div class="counter-value">
+            <span id="campaign5-number">0001</span>
+          </div>
+          <div class="progress-bar-container">
+            <div class="progress-bar" id="campaign5-progress"></div>
+          </div>
+          <div class="sync-status">Ready</div>
+          <div class="last-updated" id="campaign5-updated"></div>
+          <div class="cache-status">
+            <i class="fa-solid fa-database"></i> Browser Cache: <span id="campaign5-cache">0</span> items
+          </div>
+          <div class="buttons">
+            <button onclick="addCounter('campaign5')" class="add-btn">
+              <i class="fa-solid fa-plus"></i> Generate New
+            </button>
+            <button onclick="decrementCounter('campaign5')" class="decrement-btn">
+              <i class="fa-solid fa-rotate-left"></i> Revert
+            </button>
+          </div>
+          <div class="history-container">
+            <h2>History</h2>
+            <div class="history-list-wrapper" style="scrollbar-width: none; -ms-overflow-style: none;">
+              <div id="campaign5-history" class="history-list" style="overflow-y: scroll; scrollbar-width: none; -ms-overflow-style: none; -webkit-overflow-scrolling: touch;"></div>
+            </div>
+            <button onclick="loadMoreHistory('campaign5')" class="load-more-btn-custom">Load More</button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Campaign 6 Tab -->
+      <div class="tab-pane" id="campaign6-tab">
+        <div class="counter-container campaign6-counter">
+          <div class="counter-tabs">
+            <button class="tab-btn active" data-tab="campaign1" data-color="primary" title="">
+              <i class="fa-solid fa-chart-line"></i>
+              <span class="tab-name"></span>
+            </button>
+            <button class="tab-btn" data-tab="campaign2" data-color="success" title="">
+              <i class="fa-solid fa-ticket"></i>
+              <span class="tab-name"></span>
+            </button>
+            <button class="tab-btn" data-tab="campaign3" data-color="warning" title="">
+              <i class="fa-solid fa-gift"></i>
+              <span class="tab-name"></span>
+            </button>
+            <button class="tab-btn" data-tab="campaign4" data-color="info" title="">
+              <i class="fa-solid fa-tag"></i>
+              <span class="tab-name"></span>
+            </button>
+            <button class="tab-btn" data-tab="campaign5" data-color="primary" title="">
+              <i class="fa-solid fa-star"></i>
+              <span class="tab-name"></span>
+            </button>
+            <button class="tab-btn" data-tab="campaign6" data-color="success" title="">
+              <i class="fa-solid fa-heart"></i>
+              <span class="tab-name"></span>
+            </button>
+            <button class="tab-btn" data-tab="campaign7" data-color="warning" title="">
+              <i class="fa-solid fa-bolt"></i>
+              <span class="tab-name"></span>
+            </button>
+            <button class="tab-btn" data-tab="campaign8" data-color="info" title="">
+              <i class="fa-solid fa-rocket"></i>
+              <span class="tab-name"></span>
+            </button>
+            <button class="tab-btn" data-tab="campaign9" data-color="primary" title="">
+              <i class="fa-solid fa-crown"></i>
+              <span class="tab-name"></span>
+            </button>
+            <button class="tab-btn" data-tab="campaign10" data-color="success" title="">
+              <i class="fa-solid fa-diamond"></i>
+              <span class="tab-name"></span>
+            </button>
+          </div>
+          <h2><span class="campaign-title"></span>
+            <button class="edit-icon" onclick="editCounter('campaign6')" title="Edit manually">
+              <i class="fa-solid fa-pen-to-square"></i>
+            </button>
+          </h2>
+          <div class="counter-value">
+            <span id="campaign6-number">0001</span>
+          </div>
+          <div class="progress-bar-container">
+            <div class="progress-bar" id="campaign6-progress"></div>
+          </div>
+          <div class="sync-status">Ready</div>
+          <div class="last-updated" id="campaign6-updated"></div>
+          <div class="cache-status">
+            <i class="fa-solid fa-database"></i> Browser Cache: <span id="campaign6-cache">0</span> items
+          </div>
+          <div class="buttons">
+            <button onclick="addCounter('campaign6')" class="add-btn">
+              <i class="fa-solid fa-plus"></i> Generate New
+            </button>
+            <button onclick="decrementCounter('campaign6')" class="decrement-btn">
+              <i class="fa-solid fa-rotate-left"></i> Revert
+            </button>
+          </div>
+          <div class="history-container">
+            <h2>History</h2>
+            <div class="history-list-wrapper" style="scrollbar-width: none; -ms-overflow-style: none;">
+              <div id="campaign6-history" class="history-list" style="overflow-y: scroll; scrollbar-width: none; -ms-overflow-style: none; -webkit-overflow-scrolling: touch;"></div>
+            </div>
+            <button onclick="loadMoreHistory('campaign6')" class="load-more-btn-custom">Load More</button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Campaign 7 Tab -->
+      <div class="tab-pane" id="campaign7-tab">
+        <div class="counter-container campaign7-counter">
+          <div class="counter-tabs">
+            <button class="tab-btn active" data-tab="campaign1" data-color="primary" title="">
+              <i class="fa-solid fa-chart-line"></i>
+              <span class="tab-name"></span>
+            </button>
+            <button class="tab-btn" data-tab="campaign2" data-color="success" title="">
+              <i class="fa-solid fa-ticket"></i>
+              <span class="tab-name"></span>
+            </button>
+            <button class="tab-btn" data-tab="campaign3" data-color="warning" title="">
+              <i class="fa-solid fa-gift"></i>
+              <span class="tab-name"></span>
+            </button>
+            <button class="tab-btn" data-tab="campaign4" data-color="info" title="">
+              <i class="fa-solid fa-tag"></i>
+              <span class="tab-name"></span>
+            </button>
+            <button class="tab-btn" data-tab="campaign5" data-color="primary" title="">
+              <i class="fa-solid fa-star"></i>
+              <span class="tab-name"></span>
+            </button>
+            <button class="tab-btn" data-tab="campaign6" data-color="success" title="">
+              <i class="fa-solid fa-heart"></i>
+              <span class="tab-name"></span>
+            </button>
+            <button class="tab-btn" data-tab="campaign7" data-color="warning" title="">
+              <i class="fa-solid fa-bolt"></i>
+              <span class="tab-name"></span>
+            </button>
+            <button class="tab-btn" data-tab="campaign8" data-color="info" title="">
+              <i class="fa-solid fa-rocket"></i>
+              <span class="tab-name"></span>
+            </button>
+            <button class="tab-btn" data-tab="campaign9" data-color="primary" title="">
+              <i class="fa-solid fa-crown"></i>
+              <span class="tab-name"></span>
+            </button>
+            <button class="tab-btn" data-tab="campaign10" data-color="success" title="">
+              <i class="fa-solid fa-diamond"></i>
+              <span class="tab-name"></span>
+            </button>
+          </div>
+          <h2><span class="campaign-title"></span>
+            <button class="edit-icon" onclick="editCounter('campaign7')" title="Edit manually">
+              <i class="fa-solid fa-pen-to-square"></i>
+            </button>
+          </h2>
+          <div class="counter-value">
+            <span id="campaign7-number">0001</span>
+          </div>
+          <div class="progress-bar-container">
+            <div class="progress-bar" id="campaign7-progress"></div>
+          </div>
+          <div class="sync-status">Ready</div>
+          <div class="last-updated" id="campaign7-updated"></div>
+          <div class="cache-status">
+            <i class="fa-solid fa-database"></i> Browser Cache: <span id="campaign7-cache">0</span> items
+          </div>
+          <div class="buttons">
+            <button onclick="addCounter('campaign7')" class="add-btn">
+              <i class="fa-solid fa-plus"></i> Generate New
+            </button>
+            <button onclick="decrementCounter('campaign7')" class="decrement-btn">
+              <i class="fa-solid fa-rotate-left"></i> Revert
+            </button>
+          </div>
+          <div class="history-container">
+            <h2>History</h2>
+            <div class="history-list-wrapper" style="scrollbar-width: none; -ms-overflow-style: none;">
+              <div id="campaign7-history" class="history-list" style="overflow-y: scroll; scrollbar-width: none; -ms-overflow-style: none; -webkit-overflow-scrolling: touch;"></div>
+            </div>
+            <button onclick="loadMoreHistory('campaign7')" class="load-more-btn-custom">Load More</button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Campaign 8 Tab -->
+      <div class="tab-pane" id="campaign8-tab">
+        <div class="counter-container campaign8-counter">
+          <div class="counter-tabs">
+            <button class="tab-btn active" data-tab="campaign1" data-color="primary" title="">
+              <i class="fa-solid fa-chart-line"></i>
+              <span class="tab-name"></span>
+            </button>
+            <button class="tab-btn" data-tab="campaign2" data-color="success" title="">
+              <i class="fa-solid fa-ticket"></i>
+              <span class="tab-name"></span>
+            </button>
+            <button class="tab-btn" data-tab="campaign3" data-color="warning" title="">
+              <i class="fa-solid fa-gift"></i>
+              <span class="tab-name"></span>
+            </button>
+            <button class="tab-btn" data-tab="campaign4" data-color="info" title="">
+              <i class="fa-solid fa-tag"></i>
+              <span class="tab-name"></span>
+            </button>
+            <button class="tab-btn" data-tab="campaign5" data-color="primary" title="">
+              <i class="fa-solid fa-star"></i>
+              <span class="tab-name"></span>
+            </button>
+            <button class="tab-btn" data-tab="campaign6" data-color="success" title="">
+              <i class="fa-solid fa-heart"></i>
+              <span class="tab-name"></span>
+            </button>
+            <button class="tab-btn" data-tab="campaign7" data-color="warning" title="">
+              <i class="fa-solid fa-bolt"></i>
+              <span class="tab-name"></span>
+            </button>
+            <button class="tab-btn" data-tab="campaign8" data-color="info" title="">
+              <i class="fa-solid fa-rocket"></i>
+              <span class="tab-name"></span>
+            </button>
+            <button class="tab-btn" data-tab="campaign9" data-color="primary" title="">
+              <i class="fa-solid fa-crown"></i>
+              <span class="tab-name"></span>
+            </button>
+            <button class="tab-btn" data-tab="campaign10" data-color="success" title="">
+              <i class="fa-solid fa-diamond"></i>
+              <span class="tab-name"></span>
+            </button>
+          </div>
+          <h2><span class="campaign-title"></span>
+            <button class="edit-icon" onclick="editCounter('campaign8')" title="Edit manually">
+              <i class="fa-solid fa-pen-to-square"></i>
+            </button>
+          </h2>
+          <div class="counter-value">
+            <span id="campaign8-number">0001</span>
+          </div>
+          <div class="progress-bar-container">
+            <div class="progress-bar" id="campaign8-progress"></div>
+          </div>
+          <div class="sync-status">Ready</div>
+          <div class="last-updated" id="campaign8-updated"></div>
+          <div class="cache-status">
+            <i class="fa-solid fa-database"></i> Browser Cache: <span id="campaign8-cache">0</span> items
+          </div>
+          <div class="buttons">
+            <button onclick="addCounter('campaign8')" class="add-btn">
+              <i class="fa-solid fa-plus"></i> Generate New
+            </button>
+            <button onclick="decrementCounter('campaign8')" class="decrement-btn">
+              <i class="fa-solid fa-rotate-left"></i> Revert
+            </button>
+          </div>
+          <div class="history-container">
+            <h2>History</h2>
+            <div class="history-list-wrapper" style="scrollbar-width: none; -ms-overflow-style: none;">
+              <div id="campaign8-history" class="history-list" style="overflow-y: scroll; scrollbar-width: none; -ms-overflow-style: none; -webkit-overflow-scrolling: touch;"></div>
+            </div>
+            <button onclick="loadMoreHistory('campaign8')" class="load-more-btn-custom">Load More</button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Campaign 9 Tab -->
+      <div class="tab-pane" id="campaign9-tab">
+        <div class="counter-container campaign9-counter">
+          <div class="counter-tabs">
+            <button class="tab-btn active" data-tab="campaign1" data-color="primary" title="">
+              <i class="fa-solid fa-chart-line"></i>
+              <span class="tab-name"></span>
+            </button>
+            <button class="tab-btn" data-tab="campaign2" data-color="success" title="">
+              <i class="fa-solid fa-ticket"></i>
+              <span class="tab-name"></span>
+            </button>
+            <button class="tab-btn" data-tab="campaign3" data-color="warning" title="">
+              <i class="fa-solid fa-gift"></i>
+              <span class="tab-name"></span>
+            </button>
+            <button class="tab-btn" data-tab="campaign4" data-color="info" title="">
+              <i class="fa-solid fa-tag"></i>
+              <span class="tab-name"></span>
+            </button>
+            <button class="tab-btn" data-tab="campaign5" data-color="primary" title="">
+              <i class="fa-solid fa-star"></i>
+              <span class="tab-name"></span>
+            </button>
+            <button class="tab-btn" data-tab="campaign6" data-color="success" title="">
+              <i class="fa-solid fa-heart"></i>
+              <span class="tab-name"></span>
+            </button>
+            <button class="tab-btn" data-tab="campaign7" data-color="warning" title="">
+              <i class="fa-solid fa-bolt"></i>
+              <span class="tab-name"></span>
+            </button>
+            <button class="tab-btn" data-tab="campaign8" data-color="info" title="">
+              <i class="fa-solid fa-rocket"></i>
+              <span class="tab-name"></span>
+            </button>
+            <button class="tab-btn" data-tab="campaign9" data-color="primary" title="">
+              <i class="fa-solid fa-crown"></i>
+              <span class="tab-name"></span>
+            </button>
+            <button class="tab-btn" data-tab="campaign10" data-color="success" title="">
+              <i class="fa-solid fa-diamond"></i>
+              <span class="tab-name"></span>
+            </button>
+          </div>
+          <h2><span class="campaign-title"></span>
+            <button class="edit-icon" onclick="editCounter('campaign9')" title="Edit manually">
+              <i class="fa-solid fa-pen-to-square"></i>
+            </button>
+          </h2>
+          <div class="counter-value">
+            <span id="campaign9-number">0001</span>
+          </div>
+          <div class="progress-bar-container">
+            <div class="progress-bar" id="campaign9-progress"></div>
+          </div>
+          <div class="sync-status">Ready</div>
+          <div class="last-updated" id="campaign9-updated"></div>
+          <div class="cache-status">
+            <i class="fa-solid fa-database"></i> Browser Cache: <span id="campaign9-cache">0</span> items
+          </div>
+          <div class="buttons">
+            <button onclick="addCounter('campaign9')" class="add-btn">
+              <i class="fa-solid fa-plus"></i> Generate New
+            </button>
+            <button onclick="decrementCounter('campaign9')" class="decrement-btn">
+              <i class="fa-solid fa-rotate-left"></i> Revert
+            </button>
+          </div>
+          <div class="history-container">
+            <h2>History</h2>
+            <div class="history-list-wrapper" style="scrollbar-width: none; -ms-overflow-style: none;">
+              <div id="campaign9-history" class="history-list" style="overflow-y: scroll; scrollbar-width: none; -ms-overflow-style: none; -webkit-overflow-scrolling: touch;"></div>
+            </div>
+            <button onclick="loadMoreHistory('campaign9')" class="load-more-btn-custom">Load More</button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Campaign 10 Tab -->
+      <div class="tab-pane" id="campaign10-tab">
+        <div class="counter-container campaign10-counter">
+          <div class="counter-tabs">
+            <button class="tab-btn active" data-tab="campaign1" data-color="primary" title="">
+              <i class="fa-solid fa-chart-line"></i>
+              <span class="tab-name"></span>
+            </button>
+            <button class="tab-btn" data-tab="campaign2" data-color="success" title="">
+              <i class="fa-solid fa-ticket"></i>
+              <span class="tab-name"></span>
+            </button>
+            <button class="tab-btn" data-tab="campaign3" data-color="warning" title="">
+              <i class="fa-solid fa-gift"></i>
+              <span class="tab-name"></span>
+            </button>
+            <button class="tab-btn" data-tab="campaign4" data-color="info" title="">
+              <i class="fa-solid fa-tag"></i>
+              <span class="tab-name"></span>
+            </button>
+            <button class="tab-btn" data-tab="campaign5" data-color="primary" title="">
+              <i class="fa-solid fa-star"></i>
+              <span class="tab-name"></span>
+            </button>
+            <button class="tab-btn" data-tab="campaign6" data-color="success" title="">
+              <i class="fa-solid fa-heart"></i>
+              <span class="tab-name"></span>
+            </button>
+            <button class="tab-btn" data-tab="campaign7" data-color="warning" title="">
+              <i class="fa-solid fa-bolt"></i>
+              <span class="tab-name"></span>
+            </button>
+            <button class="tab-btn" data-tab="campaign8" data-color="info" title="">
+              <i class="fa-solid fa-rocket"></i>
+              <span class="tab-name"></span>
+            </button>
+            <button class="tab-btn" data-tab="campaign9" data-color="primary" title="">
+              <i class="fa-solid fa-crown"></i>
+              <span class="tab-name"></span>
+            </button>
+            <button class="tab-btn" data-tab="campaign10" data-color="success" title="">
+              <i class="fa-solid fa-diamond"></i>
+              <span class="tab-name"></span>
+            </button>
+          </div>
+          <h2><span class="campaign-title"></span>
+            <button class="edit-icon" onclick="editCounter('campaign10')" title="Edit manually">
+              <i class="fa-solid fa-pen-to-square"></i>
+            </button>
+          </h2>
+          <div class="counter-value">
+            <span id="campaign10-number">0001</span>
+          </div>
+          <div class="progress-bar-container">
+            <div class="progress-bar" id="campaign10-progress"></div>
+          </div>
+          <div class="sync-status">Ready</div>
+          <div class="last-updated" id="campaign10-updated"></div>
+          <div class="cache-status">
+            <i class="fa-solid fa-database"></i> Browser Cache: <span id="campaign10-cache">0</span> items
+          </div>
+          <div class="buttons">
+            <button onclick="addCounter('campaign10')" class="add-btn">
+              <i class="fa-solid fa-plus"></i> Generate New
+            </button>
+            <button onclick="decrementCounter('campaign10')" class="decrement-btn">
+              <i class="fa-solid fa-rotate-left"></i> Revert
+            </button>
+          </div>
+          <div class="history-container">
+            <h2>History</h2>
+            <div class="history-list-wrapper" style="scrollbar-width: none; -ms-overflow-style: none;">
+              <div id="campaign10-history" class="history-list" style="overflow-y: scroll; scrollbar-width: none; -ms-overflow-style: none; -webkit-overflow-scrolling: touch;"></div>
+            </div>
+            <button onclick="loadMoreHistory('campaign10')" class="load-more-btn-custom">Load More</button>
+          </div>
+        </div>
+      </div>
+      </div>
+      
+      <!-- Folder Browser Section - Right Column -->
+      <div class="folder-browser">
+        <div class="folder-container">
+          <h2>
+            <i class="fa-solid fa-folder-open"></i>
+            <span id="folder-browser-title">Folder Browser</span>
+          </h2>
+          <div class="folder-controls">
+            <button onclick="openDirectory()" class="folder-select-btn">
+              <i class="fa-solid fa-folder-open"></i>
+              Open Folder
+            </button>
+            <button onclick="clearFolders()" class="folder-clear-btn">
+              <i class="fa-solid fa-trash"></i>
+              Clear All
+            </button>
+          </div>
+          <div class="folder-list">
+            <div id="folder-items" class="folder-items">
+              <div class="folder-empty-state">
+                <i class="fa-solid fa-folder-open"></i>
+                <h3>No folders selected</h3>
+                <p>Click "Open Folder" to select a directory containing campaign folders</p>
+                <p class="folder-hint">Folders should follow the format: 0001 Campaign Name Manager MM-DD</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Folder Details Tooltip -->
+<div class="folder-tooltip" id="folder-tooltip" style="display: none;">
+  <div class="tooltip-content">
+    <div id="tooltip-dates" class="tooltip-dates"></div>
+  </div>
+  <div class="tooltip-arrow"></div>
+</div>
+

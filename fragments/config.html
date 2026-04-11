@@ -1,0 +1,160 @@
+<div class="layout">
+  <div class="container">
+
+    <nav class="sidebar flex flex-col" role="navigation" aria-label="File explorer">
+
+      <div class="sidebar-header">
+
+        <button id="openFolderBtn" class="btn" title="Open Folder" aria-label="Open folder">
+
+          <i class="fa-solid fa-folder-open" aria-hidden="true"></i> Open Folder
+
+        </button>
+
+        <button id="refreshTreeBtn" class="btn secondary" title="Refresh" aria-label="Refresh file tree">
+
+          <i class="fa-solid fa-refresh" aria-hidden="true"></i>
+
+        </button>
+
+      </div>
+
+      <div class="sidebar-body flex-1">
+
+        <div id="fileTree" class="file-tree" role="tree" aria-label="File tree"></div>
+
+      </div>
+
+      <div class="resize-handle" id="resizeHandle" aria-label="Resize sidebar"></div>
+
+    </nav>
+
+    <section class="content flex-1" aria-label="Configuration editor">
+
+      <header class="content-header">
+
+        <div class="breadcrumb" id="breadcrumb" aria-live="polite" aria-atomic="true">No folder</div>
+
+        <div id="campaignCountIndicator" class="campaign-count-indicator" aria-live="polite" aria-atomic="true">0/7</div>
+
+      </header>
+
+      
+
+      <form id="configForm" onsubmit="return false" aria-label="Campaign configuration">
+
+      <div class="controls">
+
+        <div class="field campaign-id-field">
+
+          <label for="campaignId">
+
+            Campaign ID
+
+          </label>
+
+          <div class="control">
+
+            <div class="input-wrapper campaign-id-field">
+
+              <input id="campaignId" type="text" placeholder="YYYYMMDD[X]_nama-campaign_XXX atau XXXX" aria-describedby="campaignIdWarningTooltip campaignIdMismatchTooltip campaignIdCharCount" autocomplete="off" />
+
+              <span id="campaignIdWarningTooltip" class="warning-tooltip"></span>
+
+              <span id="campaignIdMismatchTooltip" class="mismatch-tooltip"></span>
+
+              <span id="campaignIdCharCount" class="char-count">0</span>
+
+              <span id="campaignIdCheckmark" class="checkmark" style="display:none"><i class="fa-solid fa-check"></i></span>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+
+        <div class="field">
+
+          <label for="subject">Subject</label>
+
+          <div class="control">
+
+            <div class="input-wrapper subject-field">
+
+              <input id="subject" type="text" placeholder="Subject with <%[KRHRED_Unit_XX]|%>" aria-describedby="subjectCharCount" autocomplete="off" />
+
+              <span id="subjectCharCount" class="char-count">0</span>
+
+              <span id="subjectCheckmark" class="checkmark" style="display:none"><i class="fa-solid fa-check"></i></span>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+
+        <div class="field link-field">
+
+          <label for="link">
+
+            Link
+
+          </label>
+
+          <div class="control">
+
+            <div class="input-wrapper link-field">
+
+              <input id="link" type="url" placeholder="http://mail.hsbc.com.hk/1450-campaign-name.html" aria-describedby="linkValidationTooltip linkMismatchTooltip linkCharCount mismatchWarning" autocomplete="off" />
+
+              <span id="linkValidationTooltip" class="validation-tooltip"></span>
+
+              <span id="linkMismatchTooltip" class="mismatch-tooltip"></span>
+
+              <span id="linkCharCount" class="char-count">0</span>
+
+              <span id="mismatchWarning" class="warn" style="display:none">!</span>
+
+              <span id="linkCheckmark" class="checkmark" style="display:none"><i class="fa-solid fa-check"></i></span>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+
+        <div class="buttons">
+
+          <button id="applyUpdateBtn" class="btn" type="button" aria-label="Apply updates to XML"><i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i> Apply Update</button>
+
+          <button id="saveFileBtn" class="btn" type="button" title="Save File" aria-label="Save current file">
+
+            <i class="fa-solid fa-save" aria-hidden="true"></i> Save
+
+          </button>
+
+        </div>
+
+      </div>
+
+      </form>
+
+
+
+      <div class="editor-container">
+
+        <textarea id="editor" class="editor" aria-label="XML editor"></textarea>
+
+      </div>
+
+    </section>
+
+  </div>
+</div>
+

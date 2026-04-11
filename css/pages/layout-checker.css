@@ -1,0 +1,457 @@
+/* Layout Checker Page Styles */
+
+/* Body adjustments for no header */
+body {
+  padding-top: 0;
+  background: var(--background);
+}
+
+main#main-content {
+  padding-top: var(--space-4);
+  min-height: 100vh;
+}
+
+/* Page Container */
+.page {
+  padding: var(--space-6) 0;
+}
+
+/* Page Title */
+.page-title {
+  text-align: center;
+  margin-bottom: var(--space-8);
+}
+
+.page-title h2 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: var(--space-2);
+}
+
+.page-title p {
+  font-size: 1.125rem;
+  color: var(--text-secondary);
+}
+
+/* Layout Checker Interface */
+.layout-checker {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: var(--space-6);
+  margin-bottom: var(--space-6);
+}
+
+/* Control Panel */
+.control-panel {
+  background: var(--surface);
+  border-radius: var(--border-radius-xl);
+  padding: var(--space-6);
+  box-shadow: var(--shadow-md);
+  height: fit-content;
+  position: sticky;
+  top: var(--space-4);
+}
+
+.panel-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: var(--space-4);
+}
+
+/* Form Controls */
+.control-group {
+  margin-bottom: var(--space-4);
+}
+
+.control-label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: var(--space-2);
+}
+
+.control-input,
+.control-select {
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  border: 2px solid var(--border);
+  border-radius: var(--border-radius);
+  font-size: 0.875rem;
+  background: var(--background);
+  color: var(--text);
+  transition: all 0.2s ease;
+}
+
+.control-input:focus,
+.control-select:focus {
+  outline: none;
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 3px var(--primary-opacity-15);
+}
+
+/* Device Presets */
+.device-presets {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+}
+
+.device-btn {
+  padding: var(--space-2);
+  background: var(--background);
+  border: 2px solid var(--border);
+  border-radius: var(--border-radius);
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+.device-btn:hover {
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+}
+
+.device-btn.active {
+  background: var(--accent-primary);
+  color: white;
+  border-color: var(--accent-primary);
+}
+
+/* Preview Area */
+.preview-area {
+  background: var(--surface);
+  border-radius: var(--border-radius-xl);
+  padding: var(--space-6);
+  box-shadow: var(--shadow-md);
+}
+
+.preview-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-4);
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid var(--border);
+}
+
+.preview-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.preview-info {
+  display: flex;
+  gap: var(--space-4);
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+/* Preview Container */
+.preview-container {
+  background: var(--background);
+  border-radius: var(--border-radius);
+  padding: var(--space-4);
+  min-height: 500px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.preview-frame {
+  width: 100%;
+  height: 100%;
+  border: 1px solid var(--border);
+  border-radius: var(--border-radius);
+  background: white;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+/* Email Preview */
+.email-preview {
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  padding: var(--space-4);
+}
+
+.email-header {
+  background: var(--surface);
+  padding: var(--space-3);
+  border-radius: var(--border-radius);
+  margin-bottom: var(--space-4);
+  border: 1px solid var(--border);
+}
+
+.email-subject {
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: var(--space-2);
+}
+
+.email-meta {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+.email-body {
+  background: white;
+  padding: var(--space-4);
+  border-radius: var(--border-radius);
+  border: 1px solid var(--border);
+  min-height: 300px;
+}
+
+/* Client Compatibility */
+.compatibility-section {
+  background: var(--surface);
+  border-radius: var(--border-radius-xl);
+  padding: var(--space-6);
+  box-shadow: var(--shadow-md);
+}
+
+.compatibility-header {
+  margin-bottom: var(--space-4);
+}
+
+.compatibility-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.client-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--space-3);
+}
+
+.client-card {
+  padding: var(--space-3);
+  background: var(--background);
+  border-radius: var(--border-radius);
+  border: 1px solid var(--border);
+  transition: all 0.2s ease;
+}
+
+.client-card:hover {
+  border-color: var(--accent-primary);
+}
+
+.client-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-2);
+}
+
+.client-name {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.client-status {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.status-supported {
+  background: var(--success);
+}
+
+.status-partial {
+  background: var(--warning);
+}
+
+.status-unsupported {
+  background: var(--error);
+}
+
+.client-details {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.ruler-vertical {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 20px;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--space-2) 0;
+  font-size: 0.625rem;
+  color: var(--text-secondary);
+  writing-mode: vertical-rl;
+}
+
+/* Buttons */
+.btn {
+  padding: var(--space-3) var(--space-4);
+  border: none;
+  border-radius: var(--border-radius);
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.btn-primary {
+  background: var(--accent-primary);
+  color: white;
+}
+
+.btn-primary:hover {
+  background: var(--accent-primary-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+}
+
+.btn-secondary {
+  background: var(--surface);
+  color: var(--text);
+  border: 2px solid var(--border);
+}
+
+.btn-secondary:hover {
+  background: var(--background);
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+}
+
+/* Action Buttons */
+.action-buttons {
+  display: flex;
+  gap: var(--space-2);
+  margin-top: var(--space-4);
+}
+
+/* Ruler Guides */
+.ruler-horizontal {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 20px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  padding: 0 var(--space-2);
+  font-size: 0.625rem;
+  color: var(--text-secondary);
+}
+
+.ruler-horizontal {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 20px;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--space-2) 0;
+  font-size: 0.625rem;
+  color: var(--text-secondary);
+  writing-mode: vertical-rl;
+}
+
+/* Grid Overlay */
+.grid-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    linear-gradient(rgba(0, 0, 0, 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.1) 1px, transparent 1px);
+  background-size: 20px 20px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.grid-overlay.active {
+  opacity: 1;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.client-card {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Loading State */
+.loading {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .layout-checker {
+    grid-template-columns: 1fr;
+  }
+  
+  .control-panel {
+    position: static;
+  }
+}
+
+@media (max-width: 768px) {
+  .page-title h2 {
+    font-size: 2rem;
+  }
+  
+  .device-presets {
+    grid-template-columns: 1fr;
+  }
+  
+  .client-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .action-buttons {
+    flex-direction: column;
+  }
+}
+
+/* Focus styles for accessibility */
+.btn:focus,
+.control-input:focus,
+.control-select:focus,
+.device-btn:focus {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+}

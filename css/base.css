@@ -1,0 +1,225 @@
+/* ===================================
+   BASE.CSS - Foundation Styles
+   =================================== */
+
+/* CSS Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Remove default browser styling */
+* {
+  border-radius: 0;
+}
+
+/* Base HTML */
+html {
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-text-size-adjust: 100%;
+  -moz-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-base);
+  color: var(--text);
+  background: var(--background);
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+/* Main content layout with sidebar */
+#main-content {
+  margin-left: 280px;
+  min-height: 100vh;
+  transition: margin-left 0.3s ease;
+}
+
+/* Adjust main content when sidebar is collapsed */
+body.sidebar-collapsed #main-content {
+  margin-left: 70px;
+}
+
+/* Adjust for mobile */
+@media (max-width: 767px) {
+  #main-content {
+    margin-left: 0;
+  }
+}
+
+/* Container System */
+.container {
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 0 0 var(--space-4);
+}
+
+/* Container sizes using CSS custom properties */
+.container {
+  --container-max-width: var(--container-lg, 1200px);
+  max-width: var(--container-max-width);
+}
+
+.container--sm {
+  --container-max-width: var(--container-sm, 640px);
+}
+
+.container--md {
+  --container-max-width: var(--container-md, 768px);
+}
+
+.container--lg {
+  --container-max-width: var(--container-lg, 1200px);
+}
+
+.container--xl {
+  --container-max-width: var(--container-xl, 1280px);
+}
+
+.container--2xl {
+  --container-max-width: var(--container-2xl, 1536px);
+}
+
+.container--full {
+  --container-max-width: 100%;
+}
+
+/* Fluid container for responsive design */
+.container--fluid {
+  max-width: none;
+}
+
+/* Center container utility */
+.container--center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100%;
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 600;
+  line-height: 1.25;
+  margin-bottom: 1rem;
+}
+
+h1 { font-size: 2rem; }
+h2 { font-size: 1.5rem; }
+h3 { font-size: 1.25rem; }
+h4 { font-size: 1rem; }
+h5 { font-size: 0.875rem; }
+h6 { font-size: 0.75rem; }
+
+p {
+  margin-bottom: 1rem;
+}
+
+a {
+  color: var(--accent-primary);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* Form elements */
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  margin: 0;
+}
+
+button,
+[type="button"],
+[type="reset"],
+[type="submit"] {
+  -webkit-appearance: button;
+  -moz-appearance: button;
+  appearance: button;
+  cursor: pointer;
+}
+
+/* Images */
+img {
+  max-width: 100%;
+  height: auto;
+  border: 0;
+}
+
+/* Lists */
+ul, ol {
+  list-style: none;
+}
+
+/* Table */
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+/* Focus styles */
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+/* Remove all transitions for better performance */
+* {
+  transition: none;
+  animation: none;
+}
+
+/* Performance optimizations */
+* {
+  box-shadow: none !important;
+  text-shadow: none !important;
+  will-change: auto;
+  backface-visibility: hidden;
+}
+
+/* Skip to content link */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 6px;
+  background: var(--accent-primary);
+  color: white;
+  padding: 8px;
+  text-decoration: none;
+  border-radius: 4px;
+  z-index: 10000;
+  transition: top 0.3s;
+}
+
+.skip-link:focus {
+  top: 6px;
+}
+
+/* Screen reader only content */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
