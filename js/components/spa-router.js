@@ -11,6 +11,12 @@ class SPARouter {
     this.loadedStyles = new Map();
     this.loadingIndicator = null;
     
+    // Detect base path for GitHub Pages
+    this.basePath = window.location.pathname.replace(/\/[^\/]*$/, '');
+    if (this.basePath === '/') {
+      this.basePath = '';
+    }
+    
     this.init();
   }
 
@@ -156,11 +162,11 @@ class SPARouter {
   async fetchToolContent(tool) {
     if (tool === 'index' || tool === '') {
       // Return home content
-      return await this.fetchFile('/fragments/home.html');
+      return await this.fetchFile(`${this.basePath}/fragments/home.html`);
     }
     
     // Fetch tool content fragment
-    return await this.fetchFile(`/fragments/${tool}.html`);
+    return await this.fetchFile(`${this.basePath}/fragments/${tool}.html`);
   }
 
   async fetchFile(url) {
@@ -179,7 +185,7 @@ class SPARouter {
     
     if (tool === 'index') {
       // Ensure index.css is loaded for home
-      const cssUrl = '/css/pages/index.css';
+      const cssUrl = `${this.basePath}/css/pages/index.css`;
       if (!this.loadedStyles.has(cssUrl)) {
         return new Promise((resolve) => {
           const link = document.createElement('link');
@@ -199,7 +205,7 @@ class SPARouter {
       return;
     }
     
-    const cssUrl = `/css/pages/${tool}.css`;
+    const cssUrl = `${this.basePath}/css/pages/${tool}.css`;
     
     // Skip if already loaded
     if (this.loadedStyles.has(cssUrl)) {
@@ -237,12 +243,12 @@ class SPARouter {
   async loadToolJS(tool) {
     if (tool === 'index') {
       // Load home JS
-      await this.loadScript('/js/pages/index.js');
+      await this.loadScript(`${this.basePath}/js/pages/index.js`);
       return;
     }
     
     // Load tool-specific JS with pages- prefix
-    await this.loadScript(`/js/pages/pages-${tool}.js`);
+    await this.loadScript(`${this.basePath}/js/pages/pages-${tool}.js`);
   }
 
   loadScript(url) {
