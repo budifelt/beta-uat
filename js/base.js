@@ -91,7 +91,7 @@ function showTooltip(e) {
     background: var(--text);
     color: white;
     padding: 4px 8px;
-    border-radius: 4px;
+    border-radius: 0;
     font-size: 12px;
     z-index: 10000;
     pointer-events: none;

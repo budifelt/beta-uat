@@ -19,6 +19,13 @@
   border-radius: 0;
 }
 
+/* Force border-radius to 0 for all elements including pseudo-elements */
+*,
+*::before,
+*::after {
+  border-radius: 0 !important;
+}
+
 /* Base HTML */
 html {
   font-size: 16px;

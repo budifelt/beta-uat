@@ -56,7 +56,7 @@ function showNotification(message, type = 'info', duration = 3000) {
                   'var(--link-checker-primary)'};
     color: white;
     padding: 12px 20px;
-    border-radius: var(--link-checker-radius);
+    border-radius: 0;
     box-shadow: var(--link-checker-shadow-lg);
     font-weight: 500;
     font-size: 14px;
@@ -165,7 +165,7 @@ function createRipple(event) {
     left: ${x}px;
     top: ${y}px;
     background: rgba(255, 255, 255, 0.5);
-    border-radius: 50%;
+    border-radius: 0;
     transform: scale(0);
     animation: ripple 0.6s linear;
     pointer-events: none;
@@ -224,7 +224,7 @@ function createProgressOverlay(current, total) {
     content.style.cssText = `
       background: white;
       padding: 32px;
-      border-radius: var(--link-checker-radius);
+      border-radius: 0;
       box-shadow: var(--link-checker-shadow-lg);
       min-width: 300px;
       text-align: center;
@@ -243,13 +243,13 @@ function createProgressOverlay(current, total) {
         width: 100%;
         height: 4px;
         background: #E5E7EB;
-        border-radius: 4px;
+        border-radius: 0;
         overflow: hidden;
       ">
         <div class="progress-bar-fill" style="
           height: 100%;
           background: linear-gradient(90deg, #F18C8E 0%, #E53935 100%);
-          border-radius: 4px;
+          border-radius: 0;
           transition: width 0.3s ease;
         "></div>
       </div>
