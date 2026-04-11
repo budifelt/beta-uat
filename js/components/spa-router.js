@@ -57,9 +57,6 @@ class SPARouter {
       console.error('Main content container not found');
       return;
     }
-    
-    // Add transition container class
-    this.contentContainer.classList.add('page-transition-container');
 
     // Create loading indicator
     this.createLoadingIndicator();
@@ -86,28 +83,24 @@ class SPARouter {
   }
 
   createLoadingIndicator() {
-    // Use the new loader animation
     this.loadingIndicator = document.createElement('div');
-    this.loadingIndicator.className = 'loader';
-    this.loadingIndicator.style.cssText = `
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      z-index: 9999;
-      display: none;
+    this.loadingIndicator.className = 'spa-loading';
+    this.loadingIndicator.innerHTML = `
+      <div class="loading-spinner">
+        <i class="fa-solid fa-spinner fa-spin"></i>
+        <span>Loading...</span>
+      </div>
     `;
     document.body.appendChild(this.loadingIndicator);
   }
 
   showLoading() {
-    this.loadingIndicator.style.display = 'block';
+    this.loadingIndicator.classList.add('active');
   }
 
   hideLoading() {
-    this.loadingIndicator.style.display = 'none';
+    this.loadingIndicator.classList.remove('active');
   }
-
 
   interceptLinks() {
     // Intercept sidebar links
@@ -157,11 +150,8 @@ class SPARouter {
       return;
     }
 
-    // Start fade out transition
-    this.contentContainer.classList.add('page-transition-fade-out');
-    
-    // Wait for fade out
-    await new Promise(resolve => setTimeout(resolve, 200));
+    // Show loading
+    this.showLoading();
     
     try {
       // Clean up previous tool
@@ -173,22 +163,13 @@ class SPARouter {
       // Load tool-specific CSS
       await this.loadToolCSS(tool);
       
+      // Update content
+      this.contentContainer.innerHTML = content;
+      
       // Load tool-specific JS
       await this.loadToolJS(tool);
       
-      // Update content with initial state
-      this.contentContainer.innerHTML = content;
-      this.contentContainer.classList.remove('page-transition-fade-out');
-      this.contentContainer.classList.add('page-transition-initial');
-      
-      // Force reflow
-      this.contentContainer.offsetHeight;
-      
-      // Fade in
-      this.contentContainer.classList.remove('page-transition-initial');
-      this.contentContainer.classList.add('page-transition-fade-in');
-      
-      // Initialize page
+      // Initialize page if initialization function exists
       this.initializePage(tool);
       
       // Update current tool
@@ -197,24 +178,14 @@ class SPARouter {
       // Update page title
       this.updatePageTitle(tool);
       
-      // Update sidebar active state
-      if (window.sidebarMenu) {
-        window.sidebarMenu.updateActivePage(tool);
-      }
-      
       // Scroll to top
       window.scrollTo(0, 0);
-      
-      // Clean up transition classes after animation
-      setTimeout(() => {
-        this.contentContainer.classList.remove('page-transition-fade-in');
-      }, 200);
       
     } catch (error) {
       console.error('Error loading tool:', error);
       this.showError('Failed to load tool. Please try again.');
-      // Reset classes on error
-      this.contentContainer.classList.remove('page-transition-fade-out', 'page-transition-initial', 'page-transition-fade-in');
+    } finally {
+      this.hideLoading();
     }
   }
 
