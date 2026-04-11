@@ -11,7 +11,42 @@ class SPARouter {
     this.loadedStyles = new Map();
     this.loadingIndicator = null;
     
+    // Dynamic BASE_PATH detection
+    this.BASE_PATH = this.detectBasePath();
+    
+    // Debug: Log the detected BASE_PATH
+    console.log('SPA Router - Detected BASE_PATH:', this.BASE_PATH);
+    console.log('SPA Router - Hostname:', window.location.hostname);
+    console.log('SPA Router - Pathname:', window.location.pathname);
+    
+    // Initialization guard for GitHub Pages
+    this.initGuard();
+    
     this.init();
+  }
+
+  detectBasePath() {
+    // Check if we're on GitHub Pages
+    if (window.location.hostname === 'budife.github.io') {
+      // Ensure we have the /beta-uat/ base path
+      if (!window.location.pathname.startsWith('/beta-uat/')) {
+        return '/beta-uat/';
+      }
+      return '/beta-uat/';
+    }
+    // Local development or other environments
+    return '/';
+  }
+  
+  initGuard() {
+    // If on GitHub Pages and not on the correct base path, redirect
+    if (window.location.hostname === 'budife.github.io' && 
+        !window.location.pathname.startsWith('/beta-uat/')) {
+      const currentHash = window.location.hash || '';
+      window.location.replace('/beta-uat/' + currentHash);
+      return true; // Stop initialization
+    }
+    return false;
   }
 
   init() {
@@ -102,7 +137,8 @@ class SPARouter {
   navigate(tool) {
     // Update URL without refresh using hash
     const hash = tool === 'index' ? '' : `#${tool}`;
-    history.pushState({ tool }, '', `/${hash}`);
+    const url = this.BASE_PATH === '/' ? `/${hash}` : `${this.BASE_PATH}${hash}`;
+    history.pushState({ tool }, '', url);
     
     // Load tool content
     this.loadTool(tool, true);
@@ -156,11 +192,11 @@ class SPARouter {
   async fetchToolContent(tool) {
     if (tool === 'index' || tool === '') {
       // Return home content
-      return await this.fetchFile('fragments/home.html');
+      return await this.fetchFile(`${this.BASE_PATH}fragments/home.html`);
     }
     
     // Fetch tool content fragment
-    return await this.fetchFile(`fragments/${tool}.html`);
+    return await this.fetchFile(`${this.BASE_PATH}fragments/${tool}.html`);
   }
 
   async fetchFile(url) {
@@ -179,7 +215,7 @@ class SPARouter {
     
     if (tool === 'index') {
       // Ensure index.css is loaded for home
-      const cssUrl = 'css/pages/index.css';
+      const cssUrl = `${this.BASE_PATH}css/pages/index.css`;
       if (!this.loadedStyles.has(cssUrl)) {
         return new Promise((resolve) => {
           const link = document.createElement('link');
@@ -199,7 +235,7 @@ class SPARouter {
       return;
     }
     
-    const cssUrl = `css/pages/${tool}.css`;
+    const cssUrl = `${this.BASE_PATH}css/pages/${tool}.css`;
     
     // Skip if already loaded
     if (this.loadedStyles.has(cssUrl)) {
@@ -237,12 +273,12 @@ class SPARouter {
   async loadToolJS(tool) {
     if (tool === 'index') {
       // Load home JS
-      await this.loadScript('js/pages/index.js');
+      await this.loadScript(`${this.BASE_PATH}js/pages/index.js`);
       return;
     }
     
     // Load tool-specific JS with pages- prefix
-    await this.loadScript(`js/pages/pages-${tool}.js`);
+    await this.loadScript(`${this.BASE_PATH}js/pages/pages-${tool}.js`);
   }
 
   loadScript(url) {
