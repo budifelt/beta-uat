@@ -17,6 +17,10 @@ class SPARouter {
       this.basePath = '';
     }
     
+    // Debug: Log the detected base path
+    console.log('SPA Router - Detected basePath:', this.basePath);
+    console.log('SPA Router - Current pathname:', window.location.pathname);
+    
     this.init();
   }
 
