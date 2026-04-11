@@ -86,16 +86,14 @@ class SPARouter {
   }
 
   createLoadingIndicator() {
-    // Simple loading indicator - no overlay needed since we use transitions
+    // Use the new loader animation
     this.loadingIndicator = document.createElement('div');
-    this.loadingIndicator.className = 'simple-loading';
-    this.loadingIndicator.innerHTML = `<i class="fa-solid fa-gear fa-spin"></i>`;
+    this.loadingIndicator.className = 'loader';
     this.loadingIndicator.style.cssText = `
       position: fixed;
-      top: 20px;
-      right: 20px;
-      color: var(--accent-primary);
-      font-size: 16px;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
       z-index: 9999;
       display: none;
     `;
