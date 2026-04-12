@@ -130,15 +130,15 @@ function initializeFields() {
     // Don't show tooltips on initialization - only on user interaction
     if (!formatValidation.valid) {
       if (elements.campaignIdInput) {
-        elements.campaignIdInput.title = formatValidation.error;
+        // elements.campaignIdInput.title = formatValidation.error; // Removed hover tooltip
       }
     } else if (formatValidation.isPastDate) {
       if (elements.campaignIdInput) {
-        elements.campaignIdInput.title = TOOLTIP_MESSAGES.warning.past;
+        // elements.campaignIdInput.title = TOOLTIP_MESSAGES.warning.past; // Removed hover tooltip
       }
     } else if (formatValidation.isToday) {
       if (elements.campaignIdInput) {
-        elements.campaignIdInput.title = TOOLTIP_MESSAGES.warning.today;
+        // elements.campaignIdInput.title = TOOLTIP_MESSAGES.warning.today; // Removed hover tooltip
       }
     }
     // Note: No tooltips shown on load - only when user interacts
@@ -195,17 +195,23 @@ const elements = {
 // Initialize CodeMirror editor
 let editor;
 function initializeCodeMirror() {
+  console.log('Initializing CodeMirror...');
   const textarea = document.getElementById('editor');
-  if (textarea) {
+  console.log('Textarea found:', !!textarea);
+  console.log('CodeMirror available:', typeof CodeMirror !== 'undefined');
+  
+  if (textarea && typeof CodeMirror !== 'undefined') {
+    console.log('Creating CodeMirror instance...');
     editor = CodeMirror.fromTextArea(textarea, {
       mode: 'xml',
-      theme: 'monokai',
+      theme: 'material',
       lineNumbers: true,
       lineWrapping: true,
       foldGutter: true,
       gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
       autoCloseTags: true,
       matchTags: true,
+      readOnly: true,
       extraKeys: {
         'Ctrl-F': 'findPersistent',
         'Ctrl-H': 'replace',
@@ -217,9 +223,6 @@ function initializeCodeMirror() {
         }
       }
     });
-    
-    // Hide the original textarea
-    textarea.style.display = 'none';
     
     // Update elements.editor to reference CodeMirror instance
     elements.editor = editor;
@@ -874,7 +877,7 @@ if (elements.campaignIdInput) {
       elements.campaignIdInput.classList.add('error');
       // Show format error if applicable
       if (campaignId && !formatValidation.valid && formatValidation.error) {
-        elements.campaignIdInput.title = formatValidation.error;
+        // elements.campaignIdInput.title = formatValidation.error; // Removed hover tooltip
         
         // Add tooltip for validation error using the proper function
         let fieldContainer = document.querySelector('.field.campaign-id-field');
@@ -889,7 +892,7 @@ if (elements.campaignIdInput) {
         // Manage tooltip collision
         manageTooltipCollision(fieldContainer);
       } else if (hasSpace) {
-        elements.campaignIdInput.title = TOOLTIP_MESSAGES.validation.space;
+        // elements.campaignIdInput.title = TOOLTIP_MESSAGES.validation.space; // Removed hover tooltip
         
         fieldContainer = document.querySelector('.field.campaign-id-field');
         if (fieldContainer) {
@@ -933,7 +936,7 @@ if (elements.campaignIdInput) {
           warningMessage = TOOLTIP_MESSAGES.warning.future;
         }
         
-        elements.campaignIdInput.title = warningMessage;
+        // elements.campaignIdInput.title = warningMessage; // Removed hover tooltip
         
         // Update warning tooltip using the proper function
         showCampaignIdTooltip(warningMessage, formatValidation.isToday ? 'today' : formatValidation.isPastDate ? 'past' : 'future', {
@@ -1337,7 +1340,7 @@ if (elements.linkInput) {
       const linkValidation = validateLinkFormat(linkValue);
       if (!linkValidation.valid) {
         elements.linkInput.classList.add('error');
-        elements.linkInput.title = linkValidation.error;
+        // elements.linkInput.title = linkValidation.error; // Removed hover tooltip
         
         // Show validation tooltip
         if (linkFieldContainer) {
@@ -1568,7 +1571,7 @@ function loadState() {
         // Only set title if invalid, but don't show tooltip or add classes
         if (!formatValidation.valid) {
           if (elements.campaignIdInput) {
-            elements.campaignIdInput.title = formatValidation.error;
+            // elements.campaignIdInput.title = formatValidation.error; // Removed hover tooltip
           }
         }
       }
@@ -1580,7 +1583,7 @@ function loadState() {
         // Only set title if invalid, but don't show tooltip or add classes
         if (!linkValidation.valid) {
           if (elements.linkInput) {
-            elements.linkInput.title = linkValidation.error;
+            // elements.linkInput.title = linkValidation.error; // Removed hover tooltip
           }
         }
       }
@@ -1689,9 +1692,7 @@ function showCampaignIdTooltip(message, type = 'validation', options = {}) {
   }
   
   // Show tooltip with smooth animation
-  tooltip.style.transition = 'opacity 0.2s ease, transform 0.2s ease';
-  tooltip.style.transform = 'translateY(0)';
-  tooltip.style.opacity = '1';
+  tooltip.classList.add('show');
   
   // DEBUG: Log when tooltip is actually shown
   console.log('\u2705 TOOLTIP ACTUALLY SHOWN:', {
@@ -1730,9 +1731,7 @@ function hideCampaignIdTooltip() {
   // Hide tooltips with smooth animation
   [tooltip, mismatchTooltip].forEach(t => {
     if (t) {
-      t.style.transition = 'opacity 0.2s ease, transform 0.2s ease';
-      t.style.opacity = '0';
-      t.style.transform = 'translateY(2px)';
+      t.classList.remove('show');
       
       // Remove animation
       t.style.animation = '';
@@ -1971,7 +1970,7 @@ function manageTooltipCollision(fieldContainer) {
           allValid = false;
           if (elements.linkInput) {
             elements.linkInput.classList.add('error');
-            elements.linkInput.title = linkValidation.error;
+            // elements.linkInput.title = linkValidation.error; // Removed hover tooltip
           }
           // Show validation tooltip
           const linkFieldContainer = document.querySelector('.field.link-field');
@@ -2253,10 +2252,15 @@ if (elements.editor) {
   });
 }
 
-// Initialize on page load
-window.addEventListener('load', () => {
-  // Initialize CodeMirror first
-  initializeCodeMirror();
+// Initialize immediately when script loads
+console.log('Config page script loading...');
+initializeConfigPage();
+
+function initializeConfigPage() {
+  console.log('Initializing config page...');
+  
+  // Load saved state
+  loadState();
   
   // Check if no folder is active
   if (typeof currentDirHandle === 'undefined' || currentDirHandle === null) {
@@ -2266,6 +2270,13 @@ window.addEventListener('load', () => {
   // Note: loadState() is already called in DOMContentLoaded, don't call it again
   updateSaveAndApplyButtons();
   initializeFileTree();
+  initializeCodeMirror();
+}
+
+// Also handle DOMContentLoaded for direct page loads
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initializeConfigPage);
+}
 
   // CRITICAL: Clear tooltips again after all initialization is complete
   // This prevents any tooltips that might have appeared during input restoration
@@ -2338,7 +2349,6 @@ window.addEventListener('load', () => {
       }
     });
   }
-});
 
 // Clear content section when no folder/file is active
 function clearContentWhenNoFolder() {
@@ -2382,13 +2392,23 @@ function initializeFileTree() {
   const resizeHandle = document.getElementById('resizeHandle');
   const fileTree = document.getElementById('fileTree');
   
+  console.log('Initializing file tree...');
+  console.log('openFolderBtn found:', !!openFolderBtn);
+  console.log('refreshTreeBtn found:', !!refreshTreeBtn);
+  
   // Show empty state initially
   if (fileTree && !fileTree.hasChildNodes()) {
     fileTree.innerHTML = '<div class="file-tree-empty">No folder opened. Click "Open Folder" to begin.</div>';
   }
   
   if (openFolderBtn) {
-    openFolderBtn.addEventListener('click', openFolder);
+    openFolderBtn.addEventListener('click', function(e) {
+      console.log('Open folder button clicked!');
+      openFolder();
+    });
+    console.log('Event listener attached to openFolderBtn');
+  } else {
+    console.error('openFolderBtn not found!');
   }
   
   if (refreshTreeBtn) {
@@ -2417,6 +2437,28 @@ function initializeFileTree() {
         e.stopPropagation();
         e.preventDefault();
         selectFile(li, li._fileHandle);
+      }
+    });
+
+    // Add keyboard support
+    fileTree.addEventListener('keydown', function(e) {
+      const li = e.target.closest('li');
+      if (!li) {
+        return;
+      }
+
+      // Handle Enter or Space key
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        
+        if (li.classList.contains('folder')) {
+          toggleFolder(li);
+          // Update aria-expanded
+          const isExpanded = li.classList.contains('open');
+          li.setAttribute('aria-expanded', isExpanded ? 'true' : 'false');
+        } else if (li.classList.contains('file')) {
+          selectFile(li, li._fileHandle);
+        }
       }
     });
   }
@@ -2481,18 +2523,39 @@ function initializeResizableSidebar() {
 // Open folder using File System Access API
 async function openFolder() {
   try {
-    if ('showDirectoryPicker' in window) {
-      const dirHandle = await window.showDirectoryPicker();
-      currentDirHandle = dirHandle;
-      updateBreadcrumb(dirHandle.name);
-      await loadFileTree(dirHandle);
-      console.log(`Folder "${dirHandle.name}" opened successfully`);
-    } else {
-      console.log('File System Access API not supported in this browser');
+    if (!('showDirectoryPicker' in window)) {
+      alert('File System Access API is not supported in this browser. Please use Chrome, Edge, or Firefox 88+.');
+      return;
+    }
+    
+    // Check if running in secure context
+    if (location.protocol !== 'https:' && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
+      alert('File System Access API requires a secure context (HTTPS) or localhost.');
+      return;
+    }
+    
+    const dirHandle = await window.showDirectoryPicker();
+    currentDirHandle = dirHandle;
+    updateBreadcrumb(dirHandle.name);
+    await loadFileTree(dirHandle);
+    console.log(`Folder "${dirHandle.name}" opened successfully`);
+    
+    // Show success message
+    const breadcrumb = document.getElementById('breadcrumb');
+    if (breadcrumb) {
+      breadcrumb.style.color = 'var(--success)';
+      setTimeout(() => {
+        breadcrumb.style.color = '';
+      }, 2000);
     }
   } catch (error) {
-    if (error.name !== 'AbortError') {
-      console.log('Failed to open folder');
+    if (error.name === 'AbortError') {
+      console.log('Folder selection cancelled by user');
+    } else if (error.name === 'SecurityError') {
+      alert('Security error: Make sure you are accessing this page from a secure origin (HTTPS or localhost).');
+    } else {
+      console.error('Failed to open folder:', error);
+      alert('Failed to open folder. Please check browser permissions and try again.');
     }
   }
 }
@@ -2610,29 +2673,78 @@ async function loadDirectoryChildren(dirHandle, container) {
     });
 
     for (const entry of entries) {
-      const item = createTreeItem(entry.name, entry.handle.kind, entry.handle, false);
+      // Create item initially with 0 count
+      const item = createTreeItem(entry.name, entry.handle.kind, entry.handle, false, 0);
       container.appendChild(item);
 
       if (entry.handle.kind === 'directory') {
         const childrenContainer = document.createElement('ul');
-        await loadDirectoryChildren(entry.handle, childrenContainer);
+        const childCount = await loadDirectoryChildren(entry.handle, childrenContainer);
         item.appendChild(childrenContainer);
+        
+        // Update badge with actual child count
+        const badge = item.querySelector('.file-tree-badge');
+        if (badge && childCount > 0) {
+          badge.textContent = childCount;
+        }
       }
     }
+    
+    return entries.length;
   } catch (error) {
     console.error('Error loading directory children:', error);
+    return 0;
   }
 }
 
 // Create tree item element
-function createTreeItem(name, type, handle, isRoot = false) {
+function createTreeItem(name, type, handle, isRoot = false, childCount = 0) {
   const item = document.createElement('li');
   // Fix class name - use 'folder' instead of 'directory' for consistency
   item.className = type === 'directory' ? 'folder' : type;
+  item.setAttribute('tabindex', '0');
+  item.setAttribute('role', type === 'directory' ? 'treeitem' : 'treeitem');
+  item.setAttribute('aria-expanded', type === 'directory' ? 'false' : 'undefined');
+  item.setAttribute('data-name', name);
+
+  // Create wrapper for content
+  const content = document.createElement('div');
+  content.className = 'file-tree-content';
+
+  // Add chevron for folders
+  if (type === 'directory') {
+    const chevron = document.createElement('i');
+    chevron.className = 'file-tree-chevron fa-solid fa-chevron-right';
+    content.appendChild(chevron);
+  } else {
+    // Add spacer for files to align with folders
+    const spacer = document.createElement('span');
+    spacer.className = 'file-tree-spacer';
+    spacer.style.width = '16px';
+    spacer.style.display = 'inline-block';
+    content.appendChild(spacer);
+  }
+
+  // Create icon element
+  const icon = document.createElement('i');
+  icon.className = 'file-tree-icon';
+  
+  // Set appropriate icon based on type
+  if (type === 'directory') {
+    icon.className += ' fa-solid fa-folder';
+  } else {
+    const ext = name.split('.').pop().toLowerCase();
+    if (ext === 'xml') {
+      icon.className += ' fa-solid fa-file-code';
+    } else {
+      icon.className += ' fa-solid fa-file';
+    }
+  }
 
   const label = document.createElement('span');
   label.className = 'label';
   label.textContent = name;
+  label.title = name; // Show full name on hover
 
   // Add file extension as data attribute for styling
   if (type === 'file') {
@@ -2640,7 +2752,18 @@ function createTreeItem(name, type, handle, isRoot = false) {
     item.setAttribute('data-ext', ext);
   }
 
-  item.appendChild(label);
+  content.appendChild(icon);
+  content.appendChild(label);
+  
+  // Add count badge for folders
+  if (type === 'directory' && childCount > 0) {
+    const badge = document.createElement('span');
+    badge.className = 'file-tree-badge';
+    badge.textContent = childCount;
+    content.appendChild(badge);
+  }
+  
+  item.appendChild(content);
 
   // Only root folder gets expanded by default
   if (type === 'directory' && isRoot) {
@@ -2657,7 +2780,50 @@ function createTreeItem(name, type, handle, isRoot = false) {
 
 // Toggle folder expansion
 function toggleFolder(folderItem) {
-  folderItem.classList.toggle('open');
+  console.log('Toggle folder called on:', folderItem);
+  const isOpen = folderItem.classList.contains('open');
+  console.log('Folder is open:', isOpen);
+  
+  if (isOpen) {
+    folderItem.classList.remove('open');
+    // Update chevron
+    const chevron = folderItem.querySelector('.file-tree-chevron');
+    if (chevron) {
+      chevron.classList.remove('fa-chevron-down');
+      chevron.classList.add('fa-chevron-right');
+    }
+    // Update folder icon
+    const icon = folderItem.querySelector('.file-tree-icon');
+    if (icon) {
+      icon.classList.remove('fa-folder-open');
+      icon.classList.add('fa-folder');
+    }
+    // Update aria-expanded
+    folderItem.setAttribute('aria-expanded', 'false');
+  } else {
+    folderItem.classList.add('open');
+    // Update chevron
+    const chevron = folderItem.querySelector('.file-tree-chevron');
+    if (chevron) {
+      chevron.classList.remove('fa-chevron-right');
+      chevron.classList.add('fa-chevron-down');
+    }
+    // Update folder icon
+    const icon = folderItem.querySelector('.file-tree-icon');
+    if (icon) {
+      icon.classList.remove('fa-folder');
+      icon.classList.add('fa-folder-open');
+    }
+    // Update aria-expanded
+    folderItem.setAttribute('aria-expanded', 'true');
+  }
+  
+  // Check if nested ul exists
+  const nestedUl = folderItem.querySelector(':scope > ul');
+  console.log('Nested UL found:', !!nestedUl);
+  if (nestedUl) {
+    console.log('Nested UL children count:', nestedUl.children.length);
+  }
 }
 
 // Select and load file
@@ -2739,7 +2905,7 @@ function validateFormFields() {
     if (!formatValidation.valid) {
       if (elements.campaignIdInput) {
         elements.campaignIdInput.classList.add('error');
-        elements.campaignIdInput.title = formatValidation.error;
+        // elements.campaignIdInput.title = formatValidation.error; // Removed hover tooltip
       }
       if (fieldContainer) {
         fieldContainer.classList.add('validation-error');
@@ -2759,7 +2925,7 @@ function validateFormFields() {
         day: 'numeric'
       });
       if (elements.campaignIdInput) {
-        elements.campaignIdInput.title = TOOLTIP_MESSAGES.warning.past;
+        // elements.campaignIdInput.title = TOOLTIP_MESSAGES.warning.past; // Removed hover tooltip
       }
       if (fieldContainer) {
         fieldContainer.classList.add('past-date-warning');
@@ -2767,7 +2933,7 @@ function validateFormFields() {
       }
     } else if (formatValidation.isFutureDate) {
       if (elements.campaignIdInput) {
-        elements.campaignIdInput.title = TOOLTIP_MESSAGES.warning.future;
+        // elements.campaignIdInput.title = TOOLTIP_MESSAGES.warning.future; // Removed hover tooltip
       }
       if (fieldContainer) {
         fieldContainer.classList.add('past-date-warning');
@@ -2776,7 +2942,7 @@ function validateFormFields() {
       }
     } else if (formatValidation.isToday) {
       if (elements.campaignIdInput) {
-        elements.campaignIdInput.title = TOOLTIP_MESSAGES.warning.today;
+        // elements.campaignIdInput.title = TOOLTIP_MESSAGES.warning.today; // Removed hover tooltip
       }
       if (fieldContainer) {
         fieldContainer.classList.add('past-date-warning');
@@ -2813,7 +2979,7 @@ function validateFormFields() {
     if (!linkValidation.valid) {
       if (elements.linkInput) {
         elements.linkInput.classList.add('error');
-        elements.linkInput.title = linkValidation.error;
+        // elements.linkInput.title = linkValidation.error; // Removed hover tooltip
       }
       if (linkFieldContainer) {
         linkFieldContainer.classList.add('validation-error');
@@ -2874,29 +3040,6 @@ function validateFormFields() {
 // Initialize config page when called by SPA router
 function initConfigPage() {
   console.log('Config page initialized');
-  
-  // Initialize CodeMirror editor
-  const editor = CodeMirror.fromTextArea(document.getElementById('editor'), {
-    lineNumbers: true,
-    mode: 'xml',
-    theme: 'default',
-    lineWrapping: true,
-    indentUnit: 2,
-    tabSize: 2,
-    indentWithTabs: false
-  });
-  
-  // Store editor instance
-  elements.editor = editor;
-  
-  // Load state with tooltips disabled
-  loadState();
-  
-  // Clear any tooltips that might have appeared during state loading
-  clearAllTooltips();
-  
-  // Remove initializing class but KEEP TOOLTIPS DISABLED
-  document.body.classList.remove('initializing');
 }
 
 // Only initialize if not in SPA mode

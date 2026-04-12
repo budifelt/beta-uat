@@ -120,17 +120,16 @@ class SidebarMenu {
             <a href="https://github.com/budife" target="_blank" class="sidebar-item">
               <i class="fa-brands fa-github"></i>
               <span class="sidebar-item-text">GitHub</span>
-              <span class="sidebar-item-badge">New</span>
             </a>
-            <a href="https://instagram.com/budife.psd/" target="_blank" class="sidebar-item">
+            <a href="https://www.instagram.com/budife.psd/" target="_blank" class="sidebar-item">
               <i class="fa-brands fa-instagram"></i>
               <span class="sidebar-item-text">Instagram</span>
             </a>
-            <a href="https://linkedin.com/in/budife/" target="_blank" class="sidebar-item">
+            <a href="https://www.linkedin.com/in/budife/" target="_blank" class="sidebar-item">
               <i class="fa-brands fa-linkedin"></i>
               <span class="sidebar-item-text">LinkedIn</span>
             </a>
-          </div>
+                      </div>
         </nav>
       </aside>
 

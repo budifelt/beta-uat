@@ -11,36 +11,22 @@ class SPARouter {
     this.loadedStyles = new Map();
     this.loadingIndicator = null;
     
-    // Dynamic BASE_PATH detection
-    this.BASE_PATH = this.detectBasePath();
+    // Use centralized config
+    this.config = window.APP_CONFIG;
+    this.BASE_PATH = this.config.BASE_PATH;
     
     // Debug: Log the detected BASE_PATH
-    console.log('SPA Router - Detected BASE_PATH:', this.BASE_PATH);
-    console.log('SPA Router - Hostname:', window.location.hostname);
-    console.log('SPA Router - Pathname:', window.location.pathname);
+    console.log('SPA Router - Using BASE_PATH:', this.BASE_PATH);
     
     // Initialization guard for GitHub Pages
     this.initGuard();
     
     this.init();
   }
-
-  detectBasePath() {
-    // Check if we're on GitHub Pages
-    if (window.location.hostname === 'budife.github.io') {
-      // Ensure we have the /beta-uat/ base path
-      if (!window.location.pathname.startsWith('/beta-uat/')) {
-        return '/beta-uat/';
-      }
-      return '/beta-uat/';
-    }
-    // Local development or other environments
-    return '/';
-  }
   
   initGuard() {
     // If on GitHub Pages and not on the correct base path, redirect
-    if (window.location.hostname === 'budife.github.io' && 
+    if (this.config.ENV.isGitHubPages && 
         !window.location.pathname.startsWith('/beta-uat/')) {
       const currentHash = window.location.hash || '';
       window.location.replace('/beta-uat/' + currentHash);
@@ -192,11 +178,11 @@ class SPARouter {
   async fetchToolContent(tool) {
     if (tool === 'index' || tool === '') {
       // Return home content
-      return await this.fetchFile(`${this.BASE_PATH}fragments/home.html`);
+      return await this.fetchFile(this.config.API.fragments('home'));
     }
     
     // Fetch tool content fragment
-    return await this.fetchFile(`${this.BASE_PATH}fragments/${tool}.html`);
+    return await this.fetchFile(this.config.API.fragments(tool));
   }
 
   async fetchFile(url) {
@@ -215,7 +201,7 @@ class SPARouter {
     
     if (tool === 'index') {
       // Ensure index.css is loaded for home
-      const cssUrl = `${this.BASE_PATH}css/pages/index.css`;
+      const cssUrl = this.config.API.css('index');
       if (!this.loadedStyles.has(cssUrl)) {
         return new Promise((resolve) => {
           const link = document.createElement('link');
@@ -235,7 +221,7 @@ class SPARouter {
       return;
     }
     
-    const cssUrl = `${this.BASE_PATH}css/pages/${tool}.css`;
+    const cssUrl = this.config.API.css(tool);
     
     // Skip if already loaded
     if (this.loadedStyles.has(cssUrl)) {
@@ -273,12 +259,12 @@ class SPARouter {
   async loadToolJS(tool) {
     if (tool === 'index') {
       // Load home JS
-      await this.loadScript(`${this.BASE_PATH}js/pages/index.js`);
+      await this.loadScript(this.config.API.js('index'));
       return;
     }
     
     // Load tool-specific JS with pages- prefix
-    await this.loadScript(`${this.BASE_PATH}js/pages/pages-${tool}.js`);
+    await this.loadScript(this.config.API.js(tool));
   }
 
   loadScript(url) {
@@ -335,36 +321,14 @@ class SPARouter {
   }
 
   updatePageTitle(tool) {
-    const titles = {
-      index: 'eDM Helper - Tools for Email Marketing & Productivity',
-      config: 'Config eDM - eDM Helper',
-      bookmarklet: 'Bookmarklet - eDM Helper',
-      'campaign-counter': 'Campaign Counter - eDM Helper',
-      'database-checker': 'Database Checker - eDM Helper',
-      'database-generator': 'Database Generator - eDM Helper',
-      'layout-checker': 'Layout Checker - eDM Helper',
-      'link-checker': 'Link Checker - eDM Helper',
-      'wfh-tracker': 'WFH Tracker - eDM Helper'
-    };
+    const pageConfig = this.config.PAGES[tool] || this.config.PAGES.index;
     
-    const toolNames = {
-      index: 'eDM Helper',
-      config: 'Config eDM',
-      bookmarklet: 'Bookmarklet',
-      'campaign-counter': 'Campaign Counter',
-      'database-checker': 'Database Checker',
-      'database-generator': 'Database Generator',
-      'layout-checker': 'Layout Checker',
-      'link-checker': 'Link Checker',
-      'wfh-tracker': 'WFH Tracker'
-    };
-    
-    document.title = titles[tool] || titles.index;
+    document.title = pageConfig.title;
     
     // Update nav-brand text
     const navTitleElement = document.querySelector('.nav-title');
     if (navTitleElement) {
-      navTitleElement.textContent = toolNames[tool] || toolNames.index;
+      navTitleElement.textContent = pageConfig.name;
     }
     
     // Update nav-page-title
